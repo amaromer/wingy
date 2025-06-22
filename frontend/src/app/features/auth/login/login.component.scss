@@ -16,6 +16,32 @@
   max-width: 450px;
   margin: 0 auto;
   color: #1f2937;
+  position: relative;
+}
+
+.language-switcher-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Reduce width of language switcher */
+  ::ng-deep .language-switcher {
+    display: inline-flex !important;
+    max-width: 200px !important;
+    width: auto !important;
+  }
+  
+  ::ng-deep .language-btn {
+    min-width: 40px !important;
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  ::ng-deep .language-label {
+    font-size: 0.7rem !important;
+  }
 }
 
 .login-header {

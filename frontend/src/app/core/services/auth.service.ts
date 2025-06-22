@@ -66,15 +66,11 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
-    const user = this.currentUserSubject.value;
-    console.log('Getting current user:', user);
-    return user;
+    return this.currentUserSubject.value;
   }
 
   isAuthenticated(): boolean {
-    const authenticated = !!this.getCurrentUser();
-    console.log('Is authenticated:', authenticated);
-    return authenticated;
+    return !!this.getCurrentUser();
   }
 
   hasRole(role: string): boolean {

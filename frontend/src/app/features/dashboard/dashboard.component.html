@@ -1,83 +1,58 @@
-<div class="dashboard">
-  <div class="dashboard-header">
-    <h1>Dashboard Overview</h1>
-    <p class="subtitle">Welcome back! Here's what's happening with your construction projects.</p>
-  </div>
-  
-  <div class="stats-grid" *ngIf="stats">
-    <div class="stat-card">
-      <div class="stat-icon">🏗️</div>
-      <div class="stat-content">
-        <h3>{{ stats.overview.totalProjects }}</h3>
-        <p>Total Projects</p>
-      </div>
+<div class="dashboard-container">
+  <!-- Main Content -->
+  <main class="dashboard-content">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">{{ 'DASHBOARD.LOADING_DASHBOARD' | translate }}</p>
     </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">💰</div>
-      <div class="stat-content">
-        <h3>${{ stats.overview.totalExpenses | number:'1.0-0' }}</h3>
-        <p>Total Expenses</p>
-      </div>
+
+    <!-- Error State -->
+    <div class="error-container" *ngIf="error">
+      <div class="error-icon">⚠️</div>
+      <p class="error-text">{{ 'DASHBOARD.FAILED_TO_LOAD' | translate }}</p>
+      <button (click)="loadDashboard()" class="retry-button">
+        {{ 'COMMON.RETRY' | translate }}
+      </button>
     </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">📊</div>
-      <div class="stat-content">
-        <h3>{{ stats.overview.totalExpenseCount }}</h3>
-        <p>Expense Count</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">🏢</div>
-      <div class="stat-content">
-        <h3>{{ stats.overview.totalSuppliers }}</h3>
-        <p>Suppliers</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">📂</div>
-      <div class="stat-content">
-        <h3>{{ stats.overview.totalCategories }}</h3>
-        <p>Categories</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">👥</div>
-      <div class="stat-content">
-        <h3>{{ stats.overview.totalUsers }}</h3>
-        <p>Active Users</p>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Recent Expenses Section -->
-  <div class="recent-section" *ngIf="stats && stats.recentExpenses && stats.recentExpenses.length > 0">
-    <h2>Recent Expenses</h2>
-    <div class="recent-expenses">
-      <div class="expense-item" *ngFor="let expense of stats.recentExpenses">
-        <div class="expense-info">
-          <div class="expense-project">{{ expense.project_id?.name || 'Unknown Project' }}</div>
-          <div class="expense-supplier">{{ expense.supplier_id?.name || 'Unknown Supplier' }}</div>
-          <div class="expense-category">{{ expense.category_id?.name || 'Uncategorized' }}</div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-main" *ngIf="stats && !loading && !error">
+      <!-- Statistics Cards -->
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of getStats()">
+            <div class="stat-icon">{{ stat.icon }}</div>
+            <div class="stat-content">
+              <h3 class="stat-value">{{ stat.value }}</h3>
+              <p class="stat-label">{{ stat.label | translate }}</p>
+            </div>
+          </div>
         </div>
-        <div class="expense-amount">${{ expense.amount | number:'1.0-0' }}</div>
-        <div class="expense-date">{{ expense.date | date:'shortDate' }}</div>
-      </div>
+      </section>
+
+      <!-- Recent Expenses -->
+      <section class="recent-section" *ngIf="stats.recentExpenses && stats.recentExpenses.length > 0">
+        <div class="section-header">
+          <h2 class="section-title">{{ 'DASHBOARD.RECENT_EXPENSES' | translate }}</h2>
+        </div>
+        
+        <div class="expenses-list">
+          <div class="expense-card" *ngFor="let expense of stats.recentExpenses">
+            <div class="expense-main">
+              <div class="expense-details">
+                <h4 class="expense-project">{{ expense.project_id?.name || ('DASHBOARD.UNKNOWN_PROJECT' | translate) }}</h4>
+                <p class="expense-supplier">{{ expense.supplier_id?.name || ('DASHBOARD.UNKNOWN_SUPPLIER' | translate) }}</p>
+                <span class="expense-category">{{ expense.category_id?.name || ('DASHBOARD.UNCATEGORIZED' | translate) }}</span>
+              </div>
+              <div class="expense-meta">
+                <div class="expense-amount">${{ expense.amount | number:'1.0-0' }}</div>
+                <div class="expense-date">{{ expense.date | date:'shortDate' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
-  
-  <div class="loading" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Loading dashboard data...</p>
-  </div>
-  
-  <div class="error" *ngIf="error">
-    <div class="error-icon">⚠️</div>
-    <p>{{ error }}</p>
-    <button (click)="loadDashboard()" class="btn btn-primary">Retry</button>
-  </div>
+  </main>
 </div> 

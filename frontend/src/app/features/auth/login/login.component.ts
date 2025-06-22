@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, LanguageSwitcherComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -19,7 +22,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

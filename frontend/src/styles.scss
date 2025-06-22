@@ -8,6 +8,7 @@
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 body {
@@ -19,6 +20,124 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden; /* Prevent horizontal scroll */
+  width: 100%;
+  max-width: 100%;
+}
+
+/* RTL Support */
+body.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+body.rtl * {
+  direction: rtl;
+}
+
+/* RTL specific adjustments */
+.rtl {
+  .btn {
+    flex-direction: row-reverse;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    text-align: right;
+  }
+  
+  .table th,
+  .table td {
+    text-align: right;
+  }
+  
+  .language-switcher {
+    flex-direction: row-reverse;
+  }
+  
+  /* Fix mobile menu toggle for RTL */
+  .mobile-menu-toggle {
+    left: auto !important;
+    right: 1rem !important;
+  }
+}
+
+/* Desktop RTL layout - using flexbox order */
+.app-container.rtl {
+  flex-direction: row-reverse !important;
+  
+  .sidebar {
+    border-right: none !important;
+    border-left: 1px solid var(--border-color) !important;
+  }
+  
+  .main-content {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Force RTL layout with higher specificity */
+div.app-container.rtl {
+  flex-direction: row-reverse !important;
+}
+
+/* Even more specific for debugging */
+body .app-container.rtl {
+  flex-direction: row-reverse !important;
+}
+
+/* Mobile RTL adjustments */
+@media (max-width: 768px) {
+  .app-container.rtl {
+    .main-content {
+      order: 1 !important;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+    
+    .main-header {
+      padding-right: 4rem !important;
+      padding-left: var(--spacing-md) !important;
+    }
+    
+    .mobile-menu-toggle {
+      right: 0.75rem !important;
+      left: auto !important;
+    }
+    
+    /* Mobile sidebar RTL */
+    .sidebar {
+      position: fixed !important;
+      right: 0 !important;
+      left: auto !important;
+      transform: translateX(100%) !important;
+      width: 280px !important;
+      order: 2 !important;
+      
+      &.open {
+        transform: translateX(0) !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .main-header {
+        padding-right: 3.5rem !important;
+        padding-left: var(--spacing-sm) !important;
+      }
+      
+      .mobile-menu-toggle {
+        right: 0.5rem !important;
+        left: auto !important;
+      }
+      
+      .sidebar {
+        width: 100% !important;
+        max-width: 300px !important;
+      }
+    }
+  }
 }
 
 /* Variables */
@@ -273,10 +392,13 @@ body {
   
   .container {
     padding: 0 var(--spacing-sm);
+    max-width: 100%;
+    width: 100%;
   }
   
   .card {
     padding: var(--spacing-md);
+    margin: 0 var(--spacing-sm) var(--spacing-md) var(--spacing-sm);
   }
   
   .btn {
@@ -298,11 +420,19 @@ body {
   .grid-cols-4 {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  .container {
+    padding: 0 var(--spacing-md);
+  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .grid-cols-4 {
     grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .container {
+    padding: 0 var(--spacing-lg);
   }
 }
 
@@ -344,9 +474,12 @@ body {
 /* Mobile-specific utilities */
 @media (max-width: 768px) {
   .mobile-hidden { display: none !important; }
-  .mobile-full { width: 100% !important; }
+  .mobile-full { width: 100% !important; max-width: 100% !important; }
   .mobile-text-center { text-align: center !important; }
   .mobile-stack { flex-direction: column !important; }
+  .mobile-padding-sm { padding: var(--spacing-sm) !important; }
+  .mobile-padding-xs { padding: var(--spacing-xs) !important; }
+  .mobile-margin-0 { margin: 0 !important; }
 }
 
 @media (min-width: 769px) {

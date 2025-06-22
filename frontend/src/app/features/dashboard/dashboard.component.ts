@@ -1,41 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
+import { AuthService } from '../../core/services/auth.service';
 
-interface DashboardStats {
-  overview: {
-    totalExpenses: number;
-    totalExpenseCount: number;
-    totalProjects: number;
-    totalSuppliers: number;
-    totalCategories: number;
-    totalUsers: number;
-  };
-  expenseStats: Array<{
-    period: string;
-    total: number;
-    count: number;
-  }>;
-  projectStats: Array<{
-    _id: string;
-    count: number;
-  }>;
-  recentExpenses: Array<any>;
+interface StatItem {
+  icon: string;
+  value: string | number;
+  label: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
   stats: DashboardStats | null = null;
   loading = true;
-  error = '';
+  error = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private dashboardService: DashboardService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadDashboard();
@@ -43,21 +33,55 @@ export class DashboardComponent implements OnInit {
 
   loadDashboard() {
     this.loading = true;
-    this.error = '';
+    this.error = false;
     
-    console.log('Loading dashboard data...');
-    
-    this.http.get<DashboardStats>('/api/dashboard/overview').subscribe({
-      next: (data) => {
+    this.dashboardService.getDashboardStats().subscribe({
+      next: (data: DashboardStats) => {
         this.stats = data;
         this.loading = false;
-        console.log('Dashboard data loaded:', data);
       },
-      error: (error) => {
-        this.error = 'Failed to load dashboard data. Please try again.';
+      error: (error: any) => {
+        console.error('Error loading dashboard:', error);
+        this.error = true;
         this.loading = false;
-        console.error('Dashboard error:', error);
       }
     });
+  }
+
+  getStats(): StatItem[] {
+    if (!this.stats) return [];
+    
+    return [
+      {
+        icon: '🏗️',
+        value: this.stats.overview.totalProjects,
+        label: 'DASHBOARD.TOTAL_PROJECTS'
+      },
+      {
+        icon: '💰',
+        value: '$' + this.stats.overview.totalExpenses.toLocaleString(),
+        label: 'DASHBOARD.TOTAL_EXPENSES'
+      },
+      {
+        icon: '📊',
+        value: this.stats.overview.totalExpenseCount,
+        label: 'DASHBOARD.EXPENSE_COUNT'
+      },
+      {
+        icon: '🏢',
+        value: this.stats.overview.totalSuppliers,
+        label: 'DASHBOARD.SUPPLIERS'
+      },
+      {
+        icon: '📂',
+        value: this.stats.overview.totalCategories,
+        label: 'DASHBOARD.CATEGORIES'
+      },
+      {
+        icon: '👥',
+        value: this.stats.overview.totalUsers,
+        label: 'DASHBOARD.ACTIVE_USERS'
+      }
+    ];
   }
 } 

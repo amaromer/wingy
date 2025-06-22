@@ -1,42 +1,47 @@
 <div class="login-container">
   <div class="login-card">
+    <!-- Language Switcher -->
+    <div class="language-switcher-container">
+      <app-language-switcher></app-language-switcher>
+    </div>
+    
     <div class="login-header">
-      <h1>🏗️ Construction ERP</h1>
-      <p>Sign in to your account</p>
+      <h1>🏗️ {{ 'NAVIGATION.CONSTRUCTION_ERP' | translate }}</h1>
+      <p>{{ 'AUTH.PLEASE_LOGIN' | translate }}</p>
     </div>
     
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">{{ 'AUTH.EMAIL' | translate }}</label>
         <input 
           type="email" 
           id="email" 
           formControlName="email" 
-          placeholder="Enter your email"
+          [placeholder]="'AUTH.EMAIL' | translate"
           class="form-control"
           [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
           autocomplete="email"
         >
         <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">{{ 'VALIDATION.INVALID_EMAIL' | translate }}</span>
         </div>
       </div>
       
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">{{ 'AUTH.PASSWORD' | translate }}</label>
         <input 
           type="password" 
           id="password" 
           formControlName="password" 
-          placeholder="Enter your password"
+          [placeholder]="'AUTH.PASSWORD' | translate"
           class="form-control"
           [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
           autocomplete="current-password"
         >
         <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'VALIDATION.PASSWORD_MIN_LENGTH' | translate }}</span>
         </div>
       </div>
       
@@ -46,7 +51,7 @@
         class="btn btn-primary btn-lg login-btn"
       >
         <span class="spinner" *ngIf="isLoading"></span>
-        {{ isLoading ? 'Signing in...' : 'Sign In' }}
+        {{ isLoading ? ('COMMON.LOADING' | translate) : ('AUTH.LOGIN' | translate) }}
       </button>
       
       <div *ngIf="errorMessage" class="error-alert">
