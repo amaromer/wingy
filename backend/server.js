@@ -28,11 +28,17 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// CORS configuration - Allow local network access
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:4200'],
+    : [
+        'http://localhost:4200',
+        'http://127.0.0.1:4200',
+        /^http:\/\/192\.168\.\d+\.\d+:4200$/, // Allow local network IPs
+        /^http:\/\/10\.\d+\.\d+\.\d+:4200$/,  // Allow 10.x.x.x network
+        /^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+:4200$/ // Allow 172.16-31.x.x network
+      ],
   credentials: true
 }));
 
@@ -75,8 +81,11 @@ app.use('*', (req, res) => {
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/construction_erp')
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT}`);
+      console.log(`Server accessible at:`);
+      console.log(`  - Local: http://localhost:${PORT}`);
+      console.log(`  - Network: http://YOUR_IP_ADDRESS:${PORT}`);
     });
   })
   .catch((error) => {

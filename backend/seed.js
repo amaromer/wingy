@@ -31,7 +31,7 @@ const projects = [
     code: 'DOC-2024',
     start_date: '2024-01-15',
     end_date: '2024-12-31',
-    status: 'In Progress',
+    status: 'Active',
     notes: 'Multi-story office building in downtown area'
   },
   {
@@ -47,7 +47,7 @@ const projects = [
     code: 'HBR-2024',
     start_date: '2024-02-01',
     end_date: '2024-06-30',
-    status: 'In Progress',
+    status: 'Active',
     notes: 'Renovation of main highway bridge'
   }
 ];
@@ -82,26 +82,32 @@ const suppliers = [
 const categories = [
   {
     name: 'Materials',
+    code: 'MAT',
     description: 'Construction materials and supplies'
   },
   {
     name: 'Equipment',
+    code: 'EQUIP',
     description: 'Equipment rental and maintenance'
   },
   {
     name: 'Labor',
+    code: 'LAB',
     description: 'Labor costs and wages'
   },
   {
     name: 'Transportation',
+    code: 'TRANS',
     description: 'Transportation and logistics costs'
   },
   {
     name: 'Utilities',
+    code: 'UTIL',
     description: 'Utility costs for construction sites'
   },
   {
     name: 'Insurance',
+    code: 'INS',
     description: 'Insurance and liability costs'
   }
 ];
@@ -203,26 +209,28 @@ async function seedDatabase() {
         amount: 12000.00,
         currency: 'USD',
         date: '2024-02-10',
-        description: 'Reinforcement materials for bridge',
+        description: 'Bridge construction materials',
         invoice_number: 'INV-004-2024'
       }
     ];
 
+    const createdExpenses = [];
     for (const expenseData of sampleExpenses) {
       const expense = new Expense(expenseData);
       await expense.save();
+      createdExpenses.push(expense);
     }
-    console.log(`✅ Created ${sampleExpenses.length} sample expenses`);
+    console.log(`✅ Created ${createdExpenses.length} expenses`);
 
-    console.log('\n🎉 Database seeding completed successfully!');
-    console.log('\n📋 Sample Data Summary:');
-    console.log(`   Users: ${createdUsers.length}`);
-    console.log(`   Projects: ${createdProjects.length}`);
-    console.log(`   Suppliers: ${createdSuppliers.length}`);
-    console.log(`   Categories: ${createdCategories.length}`);
-    console.log(`   Expenses: ${sampleExpenses.length}`);
-    
-    console.log('\n👤 Login Credentials:');
+    console.log('🎉 Database seeded successfully!');
+    console.log('\n📊 Summary:');
+    console.log(`   👥 Users: ${createdUsers.length}`);
+    console.log(`   🏗️ Projects: ${createdProjects.length}`);
+    console.log(`   🏢 Suppliers: ${createdSuppliers.length}`);
+    console.log(`   📂 Categories: ${createdCategories.length}`);
+    console.log(`   💰 Expenses: ${createdExpenses.length}`);
+
+    console.log('\n🔑 Default Login Credentials:');
     console.log('   Admin: admin@construction.com / admin123');
     console.log('   Accountant: accountant@construction.com / accountant123');
 
@@ -234,5 +242,5 @@ async function seedDatabase() {
   }
 }
 
-// Run the seed function
+// Run the seeder
 seedDatabase(); 
