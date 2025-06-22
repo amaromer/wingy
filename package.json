@@ -1,0 +1,20 @@
+{
+  "name": "construction-erp",
+  "version": "1.0.0",
+  "description": "Custom ERP system for construction company with Expense Module",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "test": "cd backend && npm test && cd ../frontend && npm test"
+  },
+  "keywords": ["erp", "construction", "expense", "angular", "nodejs", "mongodb"],
+  "author": "Construction ERP Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
