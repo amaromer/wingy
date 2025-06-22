@@ -1,0 +1,88 @@
+<div [class]="getContainerClasses()" 
+     [ngStyle]="getContainerStyles()" 
+     *ngIf="authService.isAuthenticated()">
+  
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" (click)="toggleSidebar()" *ngIf="isMobile">
+    <span class="hamburger" [class.active]="sidebarOpen">☰</span>
+  </button>
+  
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" *ngIf="isMobile && sidebarOpen" (click)="closeSidebar()"></div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="sidebarOpen" [ngStyle]="getSidebarStyles()">
+    <div class="sidebar-header">
+      <h2>{{ 'NAVIGATION.CONSTRUCTION_ERP' | translate }}</h2>
+      <button class="close-sidebar" (click)="closeSidebar()" *ngIf="isMobile">✕</button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">📊</span>
+        {{ 'NAVIGATION.DASHBOARD' | translate }}
+      </a>
+      
+      <a routerLink="/projects" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">🏗️</span>
+        {{ 'NAVIGATION.PROJECTS' | translate }}
+      </a>
+      
+      <a routerLink="/suppliers" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">🏢</span>
+        {{ 'NAVIGATION.SUPPLIERS' | translate }}
+      </a>
+      
+      <a routerLink="/categories" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">📂</span>
+        {{ 'NAVIGATION.CATEGORIES' | translate }}
+      </a>
+      
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">💰</span>
+        {{ 'NAVIGATION.EXPENSES' | translate }}
+      </a>
+      
+      <a routerLink="/users" routerLinkActive="active" class="nav-item" *ngIf="authService.hasRole('Admin')" (click)="closeSidebar()">
+        <span class="nav-icon">👥</span>
+        {{ 'NAVIGATION.USERS' | translate }}
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/profile" class="nav-item" (click)="closeSidebar()">
+        <span class="nav-icon">👤</span>
+        {{ 'NAVIGATION.PROFILE' | translate }}
+      </a>
+      <button (click)="logout()" class="nav-item logout-btn">
+        <span class="nav-icon">🚪</span>
+        {{ 'AUTH.LOGOUT' | translate }}
+      </button>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content" [ngStyle]="getMainContentStyles()">
+    <header class="main-header">
+      <div class="header-content" [class.rtl-header]="isArabic">
+        <h1 class="page-title" [class.rtl-title]="isArabic">{{ getPageTitle() | translate }}</h1>
+        <div class="header-center" [class.rtl-center]="isArabic">
+          <app-language-switcher (languageChange)="onLanguageSwitch($event)"></app-language-switcher>
+        </div>
+        <div class="header-right" [class.rtl-right]="isArabic">
+          <div class="user-info">
+            <span class="user-name" [class.rtl-name]="isArabic">{{ authService.getCurrentUser()?.name }}</span>
+            <span class="user-role">{{ authService.getCurrentUser()?.role }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<!-- Login page -->
+<router-outlet *ngIf="!authService.isAuthenticated()"></router-outlet> 
