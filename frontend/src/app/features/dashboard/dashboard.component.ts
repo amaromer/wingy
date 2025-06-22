@@ -1,38 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+
+interface DashboardStats {
+  overview: {
+    totalExpenses: number;
+    totalExpenseCount: number;
+    totalProjects: number;
+    totalSuppliers: number;
+    totalCategories: number;
+    totalUsers: number;
+  };
+  expenseStats: Array<{
+    period: string;
+    total: number;
+    count: number;
+  }>;
+  projectStats: Array<{
+    _id: string;
+    count: number;
+  }>;
+  recentExpenses: Array<any>;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="dashboard">
-      <h1>Dashboard</h1>
-      <p>Welcome to Construction ERP Dashboard</p>
-      <div class="stats">
-        <div class="stat">Total Projects: 12</div>
-        <div class="stat">Total Expenses: $245,000</div>
-        <div class="stat">Active Projects: 8</div>
-        <div class="stat">Suppliers: 25</div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .dashboard {
-      padding: 2rem;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    .stat {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-  `]
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {} 
+export class DashboardComponent implements OnInit {
+  stats: DashboardStats | null = null;
+  loading = true;
+  error = '';
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.loadDashboard();
+  }
+
+  loadDashboard() {
+    this.loading = true;
+    this.error = '';
+    
+    console.log('Loading dashboard data...');
+    
+    this.http.get<DashboardStats>('/api/dashboard/overview').subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.loading = false;
+        console.log('Dashboard data loaded:', data);
+      },
+      error: (error) => {
+        this.error = 'Failed to load dashboard data. Please try again.';
+        this.loading = false;
+        console.error('Dashboard error:', error);
+      }
+    });
+  }
+} 

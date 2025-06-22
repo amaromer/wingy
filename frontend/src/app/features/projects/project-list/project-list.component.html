@@ -1,0 +1,33 @@
+<div class="project-list">
+  <div class="header">
+    <h2>Projects</h2>
+  </div>
+  <div class="projects-grid" *ngIf="projects.length > 0">
+    <div class="project-card" *ngFor="let project of projects">
+      <div class="project-header">
+        <h3>{{ project.name }}</h3>
+        <span class="status-badge" [ngClass]="'status-' + project.status.toLowerCase()">
+          {{ project.status }}
+        </span>
+      </div>
+      <p class="description">{{ project.description }}</p>
+      <div class="project-details">
+        <div class="detail">
+          <strong>Budget:</strong> ${{ project.budget | number:'1.0-0' }}
+        </div>
+        <div class="detail">
+          <strong>Location:</strong> {{ project.location }}
+        </div>
+        <div class="detail">
+          <strong>Start Date:</strong> {{ project.start_date | date }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && projects.length === 0">
+    <p>No projects found. Create your first project to get started.</p>
+  </div>
+  <div class="loading" *ngIf="loading">
+    <p>Loading projects...</p>
+  </div>
+</div> 

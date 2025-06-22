@@ -1,0 +1,83 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard Overview</h1>
+    <p class="subtitle">Welcome back! Here's what's happening with your construction projects.</p>
+  </div>
+  
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon">🏗️</div>
+      <div class="stat-content">
+        <h3>{{ stats.overview.totalProjects }}</h3>
+        <p>Total Projects</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>${{ stats.overview.totalExpenses | number:'1.0-0' }}</h3>
+        <p>Total Expenses</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <h3>{{ stats.overview.totalExpenseCount }}</h3>
+        <p>Expense Count</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🏢</div>
+      <div class="stat-content">
+        <h3>{{ stats.overview.totalSuppliers }}</h3>
+        <p>Suppliers</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📂</div>
+      <div class="stat-content">
+        <h3>{{ stats.overview.totalCategories }}</h3>
+        <p>Categories</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-content">
+        <h3>{{ stats.overview.totalUsers }}</h3>
+        <p>Active Users</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Expenses Section -->
+  <div class="recent-section" *ngIf="stats && stats.recentExpenses && stats.recentExpenses.length > 0">
+    <h2>Recent Expenses</h2>
+    <div class="recent-expenses">
+      <div class="expense-item" *ngFor="let expense of stats.recentExpenses">
+        <div class="expense-info">
+          <div class="expense-project">{{ expense.project_id?.name || 'Unknown Project' }}</div>
+          <div class="expense-supplier">{{ expense.supplier_id?.name || 'Unknown Supplier' }}</div>
+          <div class="expense-category">{{ expense.category_id?.name || 'Uncategorized' }}</div>
+        </div>
+        <div class="expense-amount">${{ expense.amount | number:'1.0-0' }}</div>
+        <div class="expense-date">{{ expense.date | date:'shortDate' }}</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+  
+  <div class="error" *ngIf="error">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button (click)="loadDashboard()" class="btn btn-primary">Retry</button>
+  </div>
+</div> 
