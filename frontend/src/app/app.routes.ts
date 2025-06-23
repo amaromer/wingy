@@ -22,9 +22,29 @@ export const routes: Routes = [
     loadComponent: () => import('./features/projects/project-list/project-list.component').then(m => m.ProjectListComponent)
   },
   {
+    path: 'projects/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/projects/project-form/project-form.component').then(m => m.ProjectFormComponent)
+  },
+  {
+    path: 'projects/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/projects/project-form/project-form.component').then(m => m.ProjectFormComponent)
+  },
+  {
     path: 'suppliers',
     canActivate: [authGuard],
     loadComponent: () => import('./features/suppliers/supplier-list/supplier-list.component').then(m => m.SupplierListComponent)
+  },
+  {
+    path: 'suppliers/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/suppliers/supplier-form/supplier-form.component').then(m => m.SupplierFormComponent)
+  },
+  {
+    path: 'suppliers/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/suppliers/supplier-form/supplier-form.component').then(m => m.SupplierFormComponent)
   },
   {
     path: 'categories',
@@ -32,9 +52,29 @@ export const routes: Routes = [
     loadComponent: () => import('./features/categories/category-list/category-list.component').then(m => m.CategoryListComponent)
   },
   {
+    path: 'categories/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
+  },
+  {
+    path: 'categories/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
+  },
+  {
     path: 'expenses',
     canActivate: [authGuard],
     loadComponent: () => import('./features/expenses/expense-list/expense-list.component').then(m => m.ExpenseListComponent)
+  },
+  {
+    path: 'expenses/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
+  },
+  {
+    path: 'expenses/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
   },
   {
     path: 'users',

@@ -19,7 +19,14 @@
     "RESET": "Reset",
     "CONFIRM": "Confirm",
     "YES": "Yes",
-    "NO": "No"
+    "NO": "No",
+    "VIEW": "View",
+    "CREATE": "Create",
+    "UPDATE": "Update",
+    "SAVING": "Saving...",
+    "CLEAR_FILTERS": "Clear Filters",
+    "CREATED": "Created",
+    "ALL": "All"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -59,6 +66,148 @@
     "USERS": "Users",
     "PROFILE": "Profile",
     "CONSTRUCTION_ERP": "Construction ERP"
+  },
+  "PROJECT": {
+    "LIST_TITLE": "Project Management",
+    "LIST_SUBTITLE": "Manage and track all your construction projects",
+    "CREATE_TITLE": "Create New Project",
+    "CREATE_SUBTITLE": "Add a new construction project to your portfolio",
+    "EDIT_TITLE": "Edit Project",
+    "EDIT_SUBTITLE": "Update project information and details",
+    "CREATE_NEW": "Create New Project",
+    "CREATE_FIRST": "Create Your First Project",
+    "EMPTY_TITLE": "No Projects Yet",
+    "EMPTY_MESSAGE": "Get started by creating your first construction project.",
+    "NO_RESULTS_TITLE": "No Projects Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search or filter criteria.",
+    "SEARCH_PLACEHOLDER": "Search projects by name, description, or location...",
+    "PROGRESS": "Progress",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load projects. Please try again.",
+      "CREATE_FAILED": "Failed to create project. Please try again.",
+      "UPDATE_FAILED": "Failed to update project. Please try again.",
+      "DELETE_FAILED": "Failed to delete project. Please try again.",
+      "INVALID_PHASE_DATES": "Invalid phase dates. Please check that phases don't overlap and are within project timeline."
+    },
+    "SUCCESS": {
+      "CREATED": "Project created successfully!",
+      "UPDATED": "Project updated successfully!",
+      "DELETED": "Project deleted successfully!"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "ON_HOLD": "On Hold"
+    },
+    "PRIORITY": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical"
+    },
+    "PHASE_STATUS": {
+      "NOT_STARTED": "Not Started",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed"
+    },
+    "ROLES": {
+      "PROJECT_MANAGER": "Project Manager",
+      "ARCHITECT": "Architect",
+      "ENGINEER": "Engineer",
+      "CONTRACTOR": "Contractor",
+      "SUPERVISOR": "Supervisor",
+      "WORKER": "Worker"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "TIMELINE": "Timeline & Budget",
+      "PHASES": "Project Phases",
+      "TEAM": "Team Members"
+    },
+    "FIELDS": {
+      "NAME": "Project Name",
+      "NAME_PLACEHOLDER": "Enter project name",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Enter project description",
+      "STATUS": "Status",
+      "PRIORITY": "Priority",
+      "START_DATE": "Start Date",
+      "END_DATE": "End Date",
+      "BUDGET": "Total Budget",
+      "BUDGET_PLACEHOLDER": "Enter total budget",
+      "LOCATION": "Location",
+      "LOCATION_PLACEHOLDER": "Enter project location",
+      "CLIENT_NAME": "Client Name",
+      "CLIENT_NAME_PLACEHOLDER": "Enter client name",
+      "PROJECT_MANAGER": "Project Manager",
+      "PROJECT_MANAGER_PLACEHOLDER": "Enter project manager name",
+      "EXPENSES": "Total Expenses",
+      "PHASE_NAME": "Phase Name",
+      "PHASE_NAME_PLACEHOLDER": "Enter phase name",
+      "PHASE_DESCRIPTION": "Phase Description",
+      "PHASE_DESCRIPTION_PLACEHOLDER": "Enter phase description",
+      "PHASE_START_DATE": "Start Date",
+      "PHASE_END_DATE": "End Date",
+      "PHASE_BUDGET": "Phase Budget",
+      "PHASE_BUDGET_PLACEHOLDER": "Enter phase budget",
+      "PHASE_STATUS": "Phase Status",
+      "MEMBER_NAME": "Member Name",
+      "MEMBER_NAME_PLACEHOLDER": "Enter member name",
+      "MEMBER_ROLE": "Role",
+      "MEMBER_EMAIL": "Email",
+      "MEMBER_EMAIL_PLACEHOLDER": "Enter email address",
+      "MEMBER_PHONE": "Phone",
+      "MEMBER_PHONE_PLACEHOLDER": "Enter phone number",
+      "SELECT_ROLE": "Select a role"
+    },
+    "ACTIONS": {
+      "ADD_PHASE": "Add Phase",
+      "REMOVE_PHASE": "Remove Phase",
+      "ADD_MEMBER": "Add Member",
+      "REMOVE_MEMBER": "Remove Member"
+    },
+    "FILTERS": {
+      "STATUS": "Filter by Status",
+      "LOCATION": "Filter by Location",
+      "LOCATION_PLACEHOLDER": "Enter location to filter"
+    },
+    "SORT": {
+      "BY": "Sort By",
+      "ORDER": "Sort Order",
+      "ASC": "Ascending",
+      "DESC": "Descending",
+      "NAME": "Name",
+      "STATUS": "Status",
+      "START_DATE": "Start Date",
+      "BUDGET": "Budget",
+      "LOCATION": "Location",
+      "PROGRESS": "Progress"
+    },
+    "BUDGET": {
+      "TOTAL_PROJECT": "Total Project Budget",
+      "TOTAL_PHASES": "Total Phase Budget",
+      "DIFFERENCE": "Budget Difference"
+    },
+    "PHASE": "Phase",
+    "TEAM_MEMBER": "Team Member"
+  },
+  "ALL_STATUSES": "All Statuses",
+  "FORM": {
+    "ERROR": {
+      "REQUIRED": "This field is required",
+      "MIN_LENGTH_2": "Minimum 2 characters required",
+      "MIN_LENGTH_3": "Minimum 3 characters required",
+      "MIN_LENGTH_5": "Minimum 5 characters required",
+      "MIN_LENGTH_10": "Minimum 10 characters required",
+      "MAX_LENGTH_50": "Maximum 50 characters allowed",
+      "MAX_LENGTH_100": "Maximum 100 characters allowed",
+      "MAX_LENGTH_200": "Maximum 200 characters allowed",
+      "MAX_LENGTH_500": "Maximum 500 characters allowed",
+      "MIN_VALUE": "Value must be greater than 0",
+      "MAX_VALUE": "Value is too large",
+      "INVALID_EMAIL": "Please enter a valid email address",
+      "INVALID_PHONE": "Please enter a valid phone number"
+    }
   },
   "PROJECTS": {
     "TITLE": "Projects",

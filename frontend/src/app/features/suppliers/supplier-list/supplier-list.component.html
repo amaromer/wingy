@@ -1,0 +1,88 @@
+<div class="supplier-list-container">
+  <div class="list-header">
+    <div class="header-content">
+      <h2>{{ 'SUPPLIER.LIST_TITLE' | translate }}</h2>
+      <p class="subtitle">{{ 'SUPPLIER.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <button class="btn btn-primary create-btn" (click)="onCreateSupplier()">
+      <span class="icon">➕</span>
+      {{ 'SUPPLIER.CREATE_NEW' | translate }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <div class="suppliers-grid" *ngIf="suppliers.length > 0 && !loading">
+    <div class="supplier-card" *ngFor="let supplier of suppliers">
+      <div class="supplier-header">
+        <div class="supplier-title">
+          <h3>{{ supplier.name }}</h3>
+          <span class="contact-person">{{ supplier.contact_person }}</span>
+        </div>
+        <div class="supplier-actions">
+          <button 
+            class="btn btn-icon btn-edit" 
+            (click)="onEditSupplier(supplier._id)"
+            title="{{ 'COMMON.EDIT' | translate }}"
+          >
+            ✏️
+          </button>
+          <button 
+            class="btn btn-icon btn-delete" 
+            (click)="onDeleteSupplier(supplier._id)"
+            [disabled]="deletingSupplierId === supplier._id"
+            title="{{ 'COMMON.DELETE' | translate }}"
+          >
+            <span class="spinner-small" *ngIf="deletingSupplierId === supplier._id"></span>
+            🗑️
+          </button>
+        </div>
+      </div>
+      
+      <div class="supplier-details">
+        <div class="detail-item">
+          <span class="detail-label">{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}:</span>
+          <span class="detail-value">
+            <a href="mailto:{{ supplier.email }}" class="email-link">📧 {{ supplier.email }}</a>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'SUPPLIER.FIELDS.PHONE' | translate }}:</span>
+          <span class="detail-value">
+            <a href="tel:{{ supplier.phone }}" class="phone-link">📞 {{ supplier.phone }}</a>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}:</span>
+          <span class="detail-value">📍 {{ supplier.address }}</span>
+        </div>
+        <div class="detail-item" *ngIf="supplier.tax_number">
+          <span class="detail-label">{{ 'SUPPLIER.FIELDS.TAX_NUMBER' | translate }}:</span>
+          <span class="detail-value tax-number">{{ supplier.tax_number }}</span>
+        </div>
+      </div>
+      
+      <div class="supplier-footer">
+        <span class="created-date">
+          {{ 'COMMON.CREATED' | translate }}: {{ supplier.created_at | date:'short' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && suppliers.length === 0">
+    <div class="empty-icon">🏢</div>
+    <h3>{{ 'SUPPLIER.EMPTY_TITLE' | translate }}</h3>
+    <p>{{ 'SUPPLIER.EMPTY_MESSAGE' | translate }}</p>
+    <button class="btn btn-primary" (click)="onCreateSupplier()">
+      {{ 'SUPPLIER.CREATE_FIRST' | translate }}
+    </button>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+</div> 

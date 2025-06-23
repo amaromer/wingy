@@ -1,0 +1,439 @@
+<div class="project-form-container">
+  <div class="form-header">
+    <h2>{{ isEditMode ? ('PROJECT.EDIT_TITLE' | translate) : ('PROJECT.CREATE_TITLE' | translate) }}</h2>
+    <p class="subtitle">{{ isEditMode ? ('PROJECT.EDIT_SUBTITLE' | translate) : ('PROJECT.CREATE_SUBTITLE' | translate) }}</p>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" *ngIf="!loading" class="project-form">
+    <div class="form-sections">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">📋 {{ 'PROJECT.SECTIONS.BASIC_INFO' | translate }}</h3>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">{{ 'PROJECT.FIELDS.NAME' | translate }} *</label>
+            <input 
+              id="name"
+              type="text" 
+              formControlName="name"
+              [placeholder]="'PROJECT.FIELDS.NAME_PLACEHOLDER' | translate"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('name')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('name')">
+              {{ getFieldError('name') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="client_name">{{ 'PROJECT.FIELDS.CLIENT_NAME' | translate }} *</label>
+            <input 
+              id="client_name"
+              type="text" 
+              formControlName="client_name"
+              [placeholder]="'PROJECT.FIELDS.CLIENT_NAME_PLACEHOLDER' | translate"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('client_name')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('client_name')">
+              {{ getFieldError('client_name') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="project_manager">{{ 'PROJECT.FIELDS.PROJECT_MANAGER' | translate }} *</label>
+            <input 
+              id="project_manager"
+              type="text" 
+              formControlName="project_manager"
+              [placeholder]="'PROJECT.FIELDS.PROJECT_MANAGER_PLACEHOLDER' | translate"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('project_manager')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('project_manager')">
+              {{ getFieldError('project_manager') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">{{ 'PROJECT.FIELDS.PRIORITY' | translate }} *</label>
+            <select 
+              id="priority"
+              formControlName="priority"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('priority')}"
+            >
+              <option *ngFor="let option of priorityOptions" [value]="option.value">
+                {{ option.label | translate }}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="getFieldError('priority')">
+              {{ getFieldError('priority') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="description">{{ 'PROJECT.FIELDS.DESCRIPTION' | translate }} *</label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              [placeholder]="'PROJECT.FIELDS.DESCRIPTION_PLACEHOLDER' | translate"
+              class="form-control"
+              rows="4"
+              [ngClass]="{'error': getFieldError('description')}"
+            ></textarea>
+            <div class="error-message" *ngIf="getFieldError('description')">
+              {{ getFieldError('description') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="location">{{ 'PROJECT.FIELDS.LOCATION' | translate }} *</label>
+            <input 
+              id="location"
+              type="text" 
+              formControlName="location"
+              [placeholder]="'PROJECT.FIELDS.LOCATION_PLACEHOLDER' | translate"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('location')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('location')">
+              {{ getFieldError('location') | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="form-section">
+        <h3 class="section-title">📅 {{ 'PROJECT.SECTIONS.TIMELINE' | translate }}</h3>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="start_date">{{ 'PROJECT.FIELDS.START_DATE' | translate }} *</label>
+            <input 
+              id="start_date"
+              type="date" 
+              formControlName="start_date"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('start_date')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('start_date')">
+              {{ getFieldError('start_date') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="end_date">{{ 'PROJECT.FIELDS.END_DATE' | translate }}</label>
+            <input 
+              id="end_date"
+              type="date" 
+              formControlName="end_date"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('end_date')}"
+            >
+            <div class="error-message" *ngIf="getFieldError('end_date')">
+              {{ getFieldError('end_date') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="budget">{{ 'PROJECT.FIELDS.BUDGET' | translate }} *</label>
+            <div class="input-with-icon">
+              <span class="currency-icon">$</span>
+              <input 
+                id="budget"
+                type="number" 
+                formControlName="budget"
+                [placeholder]="'PROJECT.FIELDS.BUDGET_PLACEHOLDER' | translate"
+                class="form-control"
+                min="0"
+                step="0.01"
+                [ngClass]="{'error': getFieldError('budget')}"
+              >
+            </div>
+            <div class="error-message" *ngIf="getFieldError('budget')">
+              {{ getFieldError('budget') | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="status">{{ 'PROJECT.FIELDS.STATUS' | translate }} *</label>
+            <select 
+              id="status"
+              formControlName="status"
+              class="form-control"
+              [ngClass]="{'error': getFieldError('status')}"
+            >
+              <option *ngFor="let option of statusOptions" [value]="option.value">
+                {{ option.label | translate }}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="getFieldError('status')">
+              {{ getFieldError('status') | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Phases Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">🏗️ {{ 'PROJECT.SECTIONS.PHASES' | translate }}</h3>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="addPhase()">
+            ➕ {{ 'PROJECT.ACTIONS.ADD_PHASE' | translate }}
+          </button>
+        </div>
+
+        <div class="budget-summary" *ngIf="phases.length > 0">
+          <div class="budget-item">
+            <span class="budget-label">{{ 'PROJECT.BUDGET.TOTAL_PROJECT' | translate }}:</span>
+            <span class="budget-value">${{ projectForm.get('budget')?.value | number:'1.0-0' }}</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">{{ 'PROJECT.BUDGET.TOTAL_PHASES' | translate }}:</span>
+            <span class="budget-value">${{ calculateTotalPhaseBudget() | number:'1.0-0' }}</span>
+          </div>
+          <div class="budget-item" [ngClass]="'budget-' + getBudgetStatus()">
+            <span class="budget-label">{{ 'PROJECT.BUDGET.DIFFERENCE' | translate }}:</span>
+            <span class="budget-value">${{ getBudgetDifference() | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="phases-container" formArrayName="phases">
+          <div class="phase-card" *ngFor="let phase of phases.controls; let i = index" [formGroupName]="i">
+            <div class="phase-header">
+              <h4>{{ 'PROJECT.PHASE' | translate }} #{{ i + 1 }}</h4>
+              <button 
+                type="button" 
+                class="btn btn-icon btn-danger" 
+                (click)="removePhase(i)"
+                *ngIf="phases.length > 1"
+                title="{{ 'PROJECT.ACTIONS.REMOVE_PHASE' | translate }}"
+              >
+                🗑️
+              </button>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.PHASE_NAME' | translate }} *</label>
+                <input 
+                  type="text" 
+                  formControlName="name"
+                  [placeholder]="'PROJECT.FIELDS.PHASE_NAME_PLACEHOLDER' | translate"
+                  class="form-control"
+                  [ngClass]="{'error': getPhaseFieldError(i, 'name')}"
+                >
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'name')">
+                  {{ getPhaseFieldError(i, 'name') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.PHASE_STATUS' | translate }} *</label>
+                <select 
+                  formControlName="status"
+                  class="form-control"
+                  [ngClass]="{'error': getPhaseFieldError(i, 'status')}"
+                >
+                  <option *ngFor="let option of phaseStatusOptions" [value]="option.value">
+                    {{ option.label | translate }}
+                  </option>
+                </select>
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'status')">
+                  {{ getPhaseFieldError(i, 'status') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.PHASE_START_DATE' | translate }} *</label>
+                <input 
+                  type="date" 
+                  formControlName="start_date"
+                  class="form-control"
+                  [ngClass]="{'error': getPhaseFieldError(i, 'start_date')}"
+                >
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'start_date')">
+                  {{ getPhaseFieldError(i, 'start_date') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.PHASE_END_DATE' | translate }} *</label>
+                <input 
+                  type="date" 
+                  formControlName="end_date"
+                  class="form-control"
+                  [ngClass]="{'error': getPhaseFieldError(i, 'end_date')}"
+                >
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'end_date')">
+                  {{ getPhaseFieldError(i, 'end_date') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.PHASE_BUDGET' | translate }} *</label>
+                <div class="input-with-icon">
+                  <span class="currency-icon">$</span>
+                  <input 
+                    type="number" 
+                    formControlName="budget"
+                    [placeholder]="'PROJECT.FIELDS.PHASE_BUDGET_PLACEHOLDER' | translate"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    [ngClass]="{'error': getPhaseFieldError(i, 'budget')}"
+                  >
+                </div>
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'budget')">
+                  {{ getPhaseFieldError(i, 'budget') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label>{{ 'PROJECT.FIELDS.PHASE_DESCRIPTION' | translate }} *</label>
+                <textarea 
+                  formControlName="description"
+                  [placeholder]="'PROJECT.FIELDS.PHASE_DESCRIPTION_PLACEHOLDER' | translate"
+                  class="form-control"
+                  rows="3"
+                  [ngClass]="{'error': getPhaseFieldError(i, 'description')}"
+                ></textarea>
+                <div class="error-message" *ngIf="getPhaseFieldError(i, 'description')">
+                  {{ getPhaseFieldError(i, 'description') | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Members Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">👥 {{ 'PROJECT.SECTIONS.TEAM' | translate }}</h3>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="addTeamMember()">
+            ➕ {{ 'PROJECT.ACTIONS.ADD_MEMBER' | translate }}
+          </button>
+        </div>
+
+        <div class="team-container" formArrayName="team_members">
+          <div class="member-card" *ngFor="let member of teamMembers.controls; let i = index" [formGroupName]="i">
+            <div class="member-header">
+              <h4>{{ 'PROJECT.TEAM_MEMBER' | translate }} #{{ i + 1 }}</h4>
+              <button 
+                type="button" 
+                class="btn btn-icon btn-danger" 
+                (click)="removeTeamMember(i)"
+                title="{{ 'PROJECT.ACTIONS.REMOVE_MEMBER' | translate }}"
+              >
+                🗑️
+              </button>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.MEMBER_NAME' | translate }} *</label>
+                <input 
+                  type="text" 
+                  formControlName="name"
+                  [placeholder]="'PROJECT.FIELDS.MEMBER_NAME_PLACEHOLDER' | translate"
+                  class="form-control"
+                  [ngClass]="{'error': getMemberFieldError(i, 'name')}"
+                >
+                <div class="error-message" *ngIf="getMemberFieldError(i, 'name')">
+                  {{ getMemberFieldError(i, 'name') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.MEMBER_ROLE' | translate }} *</label>
+                <select 
+                  formControlName="role"
+                  class="form-control"
+                  [ngClass]="{'error': getMemberFieldError(i, 'role')}"
+                >
+                  <option value="">{{ 'PROJECT.FIELDS.SELECT_ROLE' | translate }}</option>
+                  <option *ngFor="let option of roleOptions" [value]="option.value">
+                    {{ option.label | translate }}
+                  </option>
+                </select>
+                <div class="error-message" *ngIf="getMemberFieldError(i, 'role')">
+                  {{ getMemberFieldError(i, 'role') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.MEMBER_EMAIL' | translate }} *</label>
+                <input 
+                  type="email" 
+                  formControlName="email"
+                  [placeholder]="'PROJECT.FIELDS.MEMBER_EMAIL_PLACEHOLDER' | translate"
+                  class="form-control"
+                  [ngClass]="{'error': getMemberFieldError(i, 'email')}"
+                >
+                <div class="error-message" *ngIf="getMemberFieldError(i, 'email')">
+                  {{ getMemberFieldError(i, 'email') | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ 'PROJECT.FIELDS.MEMBER_PHONE' | translate }}</label>
+                <input 
+                  type="tel" 
+                  formControlName="phone"
+                  [placeholder]="'PROJECT.FIELDS.MEMBER_PHONE_PLACEHOLDER' | translate"
+                  class="form-control"
+                  [ngClass]="{'error': getMemberFieldError(i, 'phone')}"
+                >
+                <div class="error-message" *ngIf="getMemberFieldError(i, 'phone')">
+                  {{ getMemberFieldError(i, 'phone') | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <div class="error-message" *ngIf="error">
+        {{ error | translate }}
+      </div>
+      
+      <div class="success-message" *ngIf="success">
+        {{ success | translate }}
+      </div>
+
+      <div class="action-buttons">
+        <button type="button" class="btn btn-outline" (click)="onCancel()">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="submitting || projectForm.invalid"
+        >
+          <span class="spinner-small" *ngIf="submitting"></span>
+          {{ submitting ? ('COMMON.SAVING' | translate) : (isEditMode ? ('COMMON.UPDATE' | translate) : ('COMMON.CREATE' | translate)) }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div> 

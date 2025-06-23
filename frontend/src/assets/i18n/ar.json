@@ -19,7 +19,12 @@
     "RESET": "إعادة تعيين",
     "CONFIRM": "تأكيد",
     "YES": "نعم",
-    "NO": "لا"
+    "NO": "لا",
+    "VIEW": "عرض",
+    "CREATE": "إنشاء",
+    "UPDATE": "تحديث",
+    "SAVING": "جاري الحفظ...",
+    "CLEAR_FILTERS": "مسح المرشحات"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -59,6 +64,147 @@
     "USERS": "المستخدمون",
     "PROFILE": "الملف الشخصي",
     "CONSTRUCTION_ERP": "نظام إدارة مشاريع البناء"
+  },
+  "PROJECT": {
+    "LIST_TITLE": "إدارة المشاريع",
+    "LIST_SUBTITLE": "إدارة وتتبع جميع مشاريع البناء الخاصة بك",
+    "CREATE_TITLE": "إنشاء مشروع جديد",
+    "CREATE_SUBTITLE": "إضافة مشروع بناء جديد إلى محفظتك",
+    "EDIT_TITLE": "تعديل المشروع",
+    "EDIT_SUBTITLE": "تحديث معلومات وتفاصيل المشروع",
+    "CREATE_NEW": "إنشاء مشروع جديد",
+    "CREATE_FIRST": "إنشاء أول مشروع لك",
+    "EMPTY_TITLE": "لا توجد مشاريع بعد",
+    "EMPTY_MESSAGE": "ابدأ بإنشاء أول مشروع بناء لك.",
+    "NO_RESULTS_TITLE": "لم يتم العثور على مشاريع",
+    "NO_RESULTS_MESSAGE": "جرب تعديل معايير البحث أو التصفية.",
+    "SEARCH_PLACEHOLDER": "البحث في المشاريع بالاسم أو الوصف أو الموقع...",
+    "PROGRESS": "التقدم",
+    "ERROR": {
+      "LOAD_FAILED": "فشل في تحميل المشاريع. يرجى المحاولة مرة أخرى.",
+      "CREATE_FAILED": "فشل في إنشاء المشروع. يرجى المحاولة مرة أخرى.",
+      "UPDATE_FAILED": "فشل في تحديث المشروع. يرجى المحاولة مرة أخرى.",
+      "DELETE_FAILED": "فشل في حذف المشروع. يرجى المحاولة مرة أخرى.",
+      "INVALID_PHASE_DATES": "تواريخ المراحل غير صحيحة. يرجى التحقق من عدم تداخل المراحل وأنها ضمن الجدول الزمني للمشروع."
+    },
+    "SUCCESS": {
+      "CREATED": "تم إنشاء المشروع بنجاح!",
+      "UPDATED": "تم تحديث المشروع بنجاح!",
+      "DELETED": "تم حذف المشروع بنجاح!"
+    },
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "COMPLETED": "مكتمل",
+      "ON_HOLD": "معلق"
+    },
+    "PRIORITY": {
+      "LOW": "منخفض",
+      "MEDIUM": "متوسط",
+      "HIGH": "عالي",
+      "CRITICAL": "حرج"
+    },
+    "PHASE_STATUS": {
+      "NOT_STARTED": "لم يبدأ",
+      "IN_PROGRESS": "قيد التنفيذ",
+      "COMPLETED": "مكتمل"
+    },
+    "ROLES": {
+      "PROJECT_MANAGER": "مدير المشروع",
+      "ARCHITECT": "مهندس معماري",
+      "ENGINEER": "مهندس",
+      "CONTRACTOR": "مقاول",
+      "SUPERVISOR": "مشرف",
+      "WORKER": "عامل"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "المعلومات الأساسية",
+      "TIMELINE": "الجدول الزمني والميزانية",
+      "PHASES": "مراحل المشروع",
+      "TEAM": "أعضاء الفريق"
+    },
+    "FIELDS": {
+      "NAME": "اسم المشروع",
+      "NAME_PLACEHOLDER": "أدخل اسم المشروع",
+      "DESCRIPTION": "الوصف",
+      "DESCRIPTION_PLACEHOLDER": "أدخل وصف المشروع",
+      "STATUS": "الحالة",
+      "PRIORITY": "الأولوية",
+      "START_DATE": "تاريخ البدء",
+      "END_DATE": "تاريخ الانتهاء",
+      "BUDGET": "الميزانية الإجمالية",
+      "BUDGET_PLACEHOLDER": "أدخل الميزانية الإجمالية",
+      "LOCATION": "الموقع",
+      "LOCATION_PLACEHOLDER": "أدخل موقع المشروع",
+      "CLIENT_NAME": "اسم العميل",
+      "CLIENT_NAME_PLACEHOLDER": "أدخل اسم العميل",
+      "PROJECT_MANAGER": "مدير المشروع",
+      "PROJECT_MANAGER_PLACEHOLDER": "أدخل اسم مدير المشروع",
+      "EXPENSES": "إجمالي المصروفات",
+      "PHASE_NAME": "اسم المرحلة",
+      "PHASE_NAME_PLACEHOLDER": "أدخل اسم المرحلة",
+      "PHASE_DESCRIPTION": "وصف المرحلة",
+      "PHASE_DESCRIPTION_PLACEHOLDER": "أدخل وصف المرحلة",
+      "PHASE_START_DATE": "تاريخ البدء",
+      "PHASE_END_DATE": "تاريخ الانتهاء",
+      "PHASE_BUDGET": "ميزانية المرحلة",
+      "PHASE_BUDGET_PLACEHOLDER": "أدخل ميزانية المرحلة",
+      "PHASE_STATUS": "حالة المرحلة",
+      "MEMBER_NAME": "اسم العضو",
+      "MEMBER_NAME_PLACEHOLDER": "أدخل اسم العضو",
+      "MEMBER_ROLE": "الدور",
+      "MEMBER_EMAIL": "البريد الإلكتروني",
+      "MEMBER_EMAIL_PLACEHOLDER": "أدخل عنوان البريد الإلكتروني",
+      "MEMBER_PHONE": "الهاتف",
+      "MEMBER_PHONE_PLACEHOLDER": "أدخل رقم الهاتف",
+      "SELECT_ROLE": "اختر دوراً"
+    },
+    "ACTIONS": {
+      "ADD_PHASE": "إضافة مرحلة",
+      "REMOVE_PHASE": "إزالة مرحلة",
+      "ADD_MEMBER": "إضافة عضو",
+      "REMOVE_MEMBER": "إزالة عضو"
+    },
+    "FILTERS": {
+      "STATUS": "تصفية حسب الحالة",
+      "LOCATION": "تصفية حسب الموقع",
+      "LOCATION_PLACEHOLDER": "أدخل الموقع للتصفية"
+    },
+    "SORT": {
+      "BY": "ترتيب حسب",
+      "ORDER": "ترتيب",
+      "ASC": "تصاعدي",
+      "DESC": "تنازلي",
+      "NAME": "الاسم",
+      "STATUS": "الحالة",
+      "START_DATE": "تاريخ البدء",
+      "BUDGET": "الميزانية",
+      "PROGRESS": "التقدم"
+    },
+    "BUDGET": {
+      "TOTAL_PROJECT": "إجمالي ميزانية المشروع",
+      "TOTAL_PHASES": "إجمالي ميزانية المراحل",
+      "DIFFERENCE": "فرق الميزانية"
+    },
+    "PHASE": "المرحلة",
+    "TEAM_MEMBER": "عضو الفريق"
+  },
+  "ALL_STATUSES": "جميع الحالات",
+  "FORM": {
+    "ERROR": {
+      "REQUIRED": "هذا الحقل مطلوب",
+      "MIN_LENGTH_2": "مطلوب حرفان على الأقل",
+      "MIN_LENGTH_3": "مطلوب 3 أحرف على الأقل",
+      "MIN_LENGTH_5": "مطلوب 5 أحرف على الأقل",
+      "MIN_LENGTH_10": "مطلوب 10 أحرف على الأقل",
+      "MAX_LENGTH_50": "الحد الأقصى 50 حرف",
+      "MAX_LENGTH_100": "الحد الأقصى 100 حرف",
+      "MAX_LENGTH_200": "الحد الأقصى 200 حرف",
+      "MAX_LENGTH_500": "الحد الأقصى 500 حرف",
+      "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
+      "MAX_VALUE": "القيمة كبيرة جداً",
+      "INVALID_EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "INVALID_PHONE": "يرجى إدخال رقم هاتف صحيح"
+    }
   },
   "PROJECTS": {
     "TITLE": "المشاريع",

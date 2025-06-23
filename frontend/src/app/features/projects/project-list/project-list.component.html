@@ -1,33 +1,184 @@
-<div class="project-list">
-  <div class="header">
-    <h2>Projects</h2>
+<div class="project-list-container">
+  <div class="list-header">
+    <div class="header-content">
+      <h2>{{ 'PROJECT.LIST_TITLE' | translate }}</h2>
+      <p class="subtitle">{{ 'PROJECT.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <button class="btn btn-primary create-btn" (click)="onCreateProject()">
+      <span class="icon">➕</span>
+      {{ 'PROJECT.CREATE_NEW' | translate }}
+    </button>
   </div>
-  <div class="projects-grid" *ngIf="projects.length > 0">
-    <div class="project-card" *ngFor="let project of projects">
-      <div class="project-header">
-        <h3>{{ project.name }}</h3>
-        <span class="status-badge" [ngClass]="'status-' + project.status.toLowerCase()">
-          {{ project.status }}
-        </span>
+
+  <!-- Search and Filters Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (keyup.enter)="onSearch()"
+          placeholder="{{ 'PROJECT.SEARCH_PLACEHOLDER' | translate }}"
+          class="search-input"
+        >
+        <button class="search-btn" (click)="onSearch()">🔍</button>
       </div>
-      <p class="description">{{ project.description }}</p>
-      <div class="project-details">
-        <div class="detail">
-          <strong>Budget:</strong> ${{ project.budget | number:'1.0-0' }}
-        </div>
-        <div class="detail">
-          <strong>Location:</strong> {{ project.location }}
-        </div>
-        <div class="detail">
-          <strong>Start Date:</strong> {{ project.start_date | date }}
-        </div>
+      
+      <button class="btn btn-outline" (click)="onClearFilters()">
+        🗑️ {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>{{ 'PROJECT.FILTERS.STATUS' | translate }}</label>
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label | translate }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'PROJECT.FILTERS.LOCATION' | translate }}</label>
+        <input 
+          type="text" 
+          [(ngModel)]="selectedLocation" 
+          (input)="onFilterChange()"
+          placeholder="{{ 'PROJECT.FILTERS.LOCATION_PLACEHOLDER' | translate }}"
+        >
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'PROJECT.SORT.BY' | translate }}</label>
+        <select [(ngModel)]="sortBy" (change)="onSortChange()">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label | translate }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'PROJECT.SORT.ORDER' | translate }}</label>
+        <button 
+          class="btn btn-icon sort-btn" 
+          (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; onSortChange()"
+          [title]="(sortOrder === 'asc' ? 'PROJECT.SORT.DESC' : 'PROJECT.SORT.ASC') | translate"
+        >
+          {{ sortOrder === 'asc' ? '↑' : '↓' }}
+        </button>
       </div>
     </div>
   </div>
-  <div class="empty-state" *ngIf="!loading && projects.length === 0">
-    <p>No projects found. Create your first project to get started.</p>
+
+  <div class="error-message" *ngIf="error">
+    <span>{{ error | translate }}</span>
   </div>
-  <div class="loading" *ngIf="loading">
-    <p>Loading projects...</p>
+
+  <!-- Projects Grid -->
+  <div class="projects-grid" *ngIf="filteredProjects.length > 0 && !loading">
+    <div class="project-card" *ngFor="let project of filteredProjects">
+      <div class="project-header">
+        <div class="project-title">
+          <h3>{{ project.name }}</h3>
+          <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+            {{ getStatusIcon(project.status) }} {{ project.status }}
+          </span>
+        </div>
+        <div class="project-actions">
+          <button 
+            class="btn btn-icon btn-view" 
+            (click)="onViewProject(project._id)"
+            title="{{ 'COMMON.VIEW' | translate }}"
+          >
+            👁️
+          </button>
+          <button 
+            class="btn btn-icon btn-edit" 
+            (click)="onEditProject(project._id)"
+            title="{{ 'COMMON.EDIT' | translate }}"
+          >
+            ✏️
+          </button>
+          <button 
+            class="btn btn-icon btn-delete" 
+            (click)="onDeleteProject(project._id)"
+            [disabled]="deletingProjectId === project._id"
+            title="{{ 'COMMON.DELETE' | translate }}"
+          >
+            <span class="spinner-small" *ngIf="deletingProjectId === project._id"></span>
+            🗑️
+          </button>
+        </div>
+      </div>
+      
+      <p class="description">{{ project.description }}</p>
+      
+      <!-- Progress Bar -->
+      <div class="progress-section" *ngIf="project.progress !== undefined">
+        <div class="progress-header">
+          <span class="progress-label">{{ 'PROJECT.PROGRESS' | translate }}</span>
+          <span class="progress-percentage">{{ project.progress }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div 
+            class="progress-fill" 
+            [ngClass]="getProgressClass(project.progress)"
+            [style.width.%]="project.progress"
+          ></div>
+        </div>
+      </div>
+      
+      <div class="project-details">
+        <div class="detail-item">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.BUDGET' | translate }}:</span>
+          <span class="detail-value budget">${{ project.budget | number:'1.0-0' }}</span>
+        </div>
+        <div class="detail-item" *ngIf="project.expenses !== undefined">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.EXPENSES' | translate }}:</span>
+          <span class="detail-value expenses" [ngClass]="getBudgetClass(getBudgetUtilization(project))">
+            ${{ project.expenses | number:'1.0-0' }}
+            <span class="utilization">({{ getBudgetUtilization(project) }}%)</span>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.LOCATION' | translate }}:</span>
+          <span class="detail-value">📍 {{ project.location }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.START_DATE' | translate }}:</span>
+          <span class="detail-value">📅 {{ project.start_date | date }}</span>
+        </div>
+        <div class="detail-item" *ngIf="project.end_date">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.END_DATE' | translate }}:</span>
+          <span class="detail-value">📅 {{ project.end_date | date }}</span>
+        </div>
+      </div>
+      
+      <div class="project-footer">
+        <span class="created-date">
+          {{ 'COMMON.CREATED' | translate }}: {{ project.created_at | date:'short' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredProjects.length === 0">
+    <div class="empty-icon">🏗️</div>
+    <h3>{{ projects.length === 0 ? ('PROJECT.EMPTY_TITLE' | translate) : ('PROJECT.NO_RESULTS_TITLE' | translate) }}</h3>
+    <p>{{ projects.length === 0 ? ('PROJECT.EMPTY_MESSAGE' | translate) : ('PROJECT.NO_RESULTS_MESSAGE' | translate) }}</p>
+    <button class="btn btn-primary" (click)="onCreateProject()" *ngIf="projects.length === 0">
+      {{ 'PROJECT.CREATE_FIRST' | translate }}
+    </button>
+    <button class="btn btn-secondary" (click)="onClearFilters()" *ngIf="projects.length > 0">
+      {{ 'COMMON.CLEAR_FILTERS' | translate }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 </div> 
