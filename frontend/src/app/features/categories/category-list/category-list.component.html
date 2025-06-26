@@ -1,0 +1,221 @@
+<div class="category-list-container">
+  <!-- Header Section -->
+  <div class="header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">{{ 'CATEGORIES.LIST_TITLE' | translate }}</h1>
+        <p class="page-subtitle">{{ 'CATEGORIES.LIST_SUBTITLE' | translate }}</p>
+      </div>
+      <div class="actions">
+        <button 
+          class="btn btn-primary" 
+          (click)="onCreateNew()"
+          [disabled]="loading">
+          <i class="icon-plus"></i>
+          {{ 'CATEGORIES.CREATE_NEW' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search Section -->
+  <div class="filters-section">
+    <div class="filters-content">
+      <!-- Search -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="icon-search"></i>
+          <input
+            type="text"
+            [formControl]="searchControl"
+            [placeholder]="'CATEGORIES.SEARCH_PLACEHOLDER' | translate"
+            class="search-input"
+            [disabled]="loading">
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <!-- Status Filter -->
+        <div class="filter-group">
+          <label class="filter-label">{{ 'CATEGORIES.FILTERS.STATUS' | translate }}</label>
+          <select 
+            [(ngModel)]="statusFilter" 
+            (change)="onStatusFilterChange()"
+            class="filter-select"
+            [disabled]="loading">
+            <option 
+              *ngFor="let option of statusOptions" 
+              [value]="option.value">
+              {{ option.label | translate }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Sort Options -->
+        <div class="filter-group">
+          <label class="filter-label">{{ 'CATEGORIES.SORT.BY' | translate }}</label>
+          <select 
+            [(ngModel)]="sortBy" 
+            (change)="onSortChange()"
+            class="filter-select"
+            [disabled]="loading">
+            <option 
+              *ngFor="let option of sortOptions" 
+              [value]="option.value">
+              {{ option.label | translate }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Sort Order -->
+        <div class="filter-group">
+          <label class="filter-label">{{ 'CATEGORIES.SORT.ORDER' | translate }}</label>
+          <select 
+            [(ngModel)]="sortOrder" 
+            (change)="onSortChange()"
+            class="filter-select"
+            [disabled]="loading">
+            <option value="asc">{{ 'CATEGORIES.SORT.ASC' | translate }}</option>
+            <option value="desc">{{ 'CATEGORIES.SORT.DESC' | translate }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+      <div class="error-message">
+        <i class="icon-alert"></i>
+        <p>{{ error | translate }}</p>
+        <button class="btn btn-secondary" (click)="loadCategories()">
+          {{ 'COMMON.RETRY' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && categories.length === 0" class="empty-container">
+      <div class="empty-content">
+        <i class="icon-category"></i>
+        <h3>{{ 'CATEGORIES.EMPTY_TITLE' | translate }}</h3>
+        <p>{{ 'CATEGORIES.EMPTY_MESSAGE' | translate }}</p>
+        <button class="btn btn-primary" (click)="onCreateNew()">
+          {{ 'CATEGORIES.CREATE_FIRST' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Categories List -->
+    <div *ngIf="!loading && !error && categories.length > 0" class="categories-container">
+      <!-- Categories Table -->
+      <div class="table-container">
+        <table class="categories-table">
+          <thead>
+            <tr>
+              <th>{{ 'CATEGORIES.FIELDS.CODE' | translate }}</th>
+              <th>{{ 'CATEGORIES.FIELDS.NAME' | translate }}</th>
+              <th>{{ 'CATEGORIES.FIELDS.DESCRIPTION' | translate }}</th>
+              <th>{{ 'CATEGORIES.FIELDS.PARENT_CATEGORY' | translate }}</th>
+              <th>{{ 'CATEGORIES.FIELDS.IS_ACTIVE' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let category of filteredCategories" class="category-row">
+              <td class="category-code">
+                <span class="code-badge">{{ category.code }}</span>
+              </td>
+              <td class="category-name">
+                <strong>{{ category.name }}</strong>
+              </td>
+              <td class="category-description">
+                <span *ngIf="category.description; else noDescription">
+                  {{ category.description }}
+                </span>
+                <ng-template #noDescription>
+                  <span class="text-muted">-</span>
+                </ng-template>
+              </td>
+              <td class="category-parent">
+                <span>{{ getParentCategoryDisplay(category.parent_category) }}</span>
+              </td>
+              <td class="category-status">
+                <span 
+                  class="status-badge"
+                  [class]="getStatusClass(category.is_active)">
+                  {{ getStatusText(category.is_active) | translate }}
+                </span>
+              </td>
+              <td class="category-actions">
+                <div class="action-buttons">
+                  <button 
+                    class="btn btn-icon btn-secondary"
+                    (click)="onEdit(category)"
+                    [title]="'CATEGORIES.ACTIONS.EDIT' | translate">
+                    <i class="icon-edit"></i>
+                  </button>
+                  <button 
+                    class="btn btn-icon btn-danger"
+                    (click)="onDelete(category)"
+                    [title]="'CATEGORIES.ACTIONS.DELETE' | translate">
+                    <i class="icon-delete"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="totalPages > 1" class="pagination-container">
+        <div class="pagination">
+          <button 
+            class="btn btn-secondary"
+            [disabled]="!hasPrevPage()"
+            (click)="onPageChange(currentPage - 1)">
+            <i class="icon-chevron-left"></i>
+            {{ 'COMMON.PREVIOUS' | translate }}
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of pages"
+              class="btn btn-page"
+              [class.active]="page === currentPage"
+              (click)="onPageChange(page)">
+              {{ page }}
+            </button>
+          </div>
+          
+          <button 
+            class="btn btn-secondary"
+            [disabled]="!hasNextPage()"
+            (click)="onPageChange(currentPage + 1)">
+            {{ 'COMMON.NEXT' | translate }}
+            <i class="icon-chevron-right"></i>
+          </button>
+        </div>
+        
+        <div class="pagination-info">
+          <span>
+            {{ 'COMMON.SHOWING' | translate }} 
+            {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+            {{ Math.min(currentPage * itemsPerPage, totalItems) }} 
+            {{ 'COMMON.OF' | translate }} {{ totalItems }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

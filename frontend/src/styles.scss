@@ -652,4 +652,42 @@ body .app-container.rtl {
   to {
     transform: translateX(0);
   }
+}
+
+/* Icon Definitions */
+[class^="icon-"] {
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-plus::before { content: "➕"; }
+.icon-search::before { content: "🔍"; }
+.icon-edit::before { content: "✏️"; }
+.icon-delete::before { content: "🗑️"; }
+.icon-chevron-left::before { content: "◀"; }
+.icon-chevron-right::before { content: "▶"; }
+.icon-arrow-left::before { content: "←"; }
+.icon-check::before { content: "✓"; }
+.icon-alert::before { content: "⚠️"; }
+.icon-category::before { content: "📁"; }
+.icon-info::before { content: "ℹ️"; }
+.icon-lightbulb::before { content: "💡"; }
+.icon-magic::before { content: "✨"; }
+.icon-hierarchy::before { content: "📊"; }
+.icon-x::before { content: "✕"; }
+.icon-save::before { content: "💾"; }
+.icon-spinner::before { 
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
 } 

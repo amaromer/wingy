@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 
 const projectSchema = new mongoose.Schema({
+  code: {
+    type: String,
+    unique: true,
+    sparse: true, // Allow multiple null values
+    trim: true,
+    maxlength: [50, 'Project code cannot exceed 50 characters']
+  },
   name: {
     type: String,
     required: [true, 'Project name is required'],

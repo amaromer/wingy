@@ -24,7 +24,12 @@
     "CREATE": "إنشاء",
     "UPDATE": "تحديث",
     "SAVING": "جاري الحفظ...",
-    "CLEAR_FILTERS": "مسح المرشحات"
+    "CLEAR_FILTERS": "مسح المرشحات",
+    "CREATED": "تم الإنشاء",
+    "ALL": "الكل",
+    "ACTIONS": "الإجراءات",
+    "SHOWING": "عرض",
+    "OF": "من"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -205,7 +210,8 @@
       "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
       "MAX_VALUE": "القيمة كبيرة جداً",
       "INVALID_EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
-      "INVALID_PHONE": "يرجى إدخال رقم هاتف صحيح"
+      "INVALID_PHONE": "يرجى إدخال رقم هاتف صحيح",
+      "INVALID_PATTERN": "يرجى إدخال تنسيق صحيح (أحرف وأرقام فقط)"
     }
   },
   "PROJECTS": {
@@ -304,10 +310,81 @@
   },
   "CATEGORIES": {
     "TITLE": "الفئات",
-    "ADD_CATEGORY": "إضافة فئة",
-    "EDIT_CATEGORY": "تعديل الفئة",
-    "CATEGORY_NAME": "اسم الفئة",
-    "CATEGORY_DESCRIPTION": "الوصف"
+    "LIST_TITLE": "الفئات",
+    "LIST_SUBTITLE": "إدارة فئات المصروفات لتنظيم أفضل",
+    "CREATE_TITLE": "إنشاء فئة جديدة",
+    "EDIT_TITLE": "تعديل الفئة",
+    "CREATE_NEW": "إضافة فئة",
+    "CREATE_FIRST": "أضف أول فئة لك",
+    "EMPTY_TITLE": "لا توجد فئات بعد",
+    "EMPTY_MESSAGE": "ابدأ بإضافة أول فئة لتنظيم مصروفاتك.",
+    "NO_RESULTS_TITLE": "لم يتم العثور على فئات",
+    "NO_RESULTS_MESSAGE": "جرب تعديل معايير البحث أو المرشحات.",
+    "SEARCH_PLACEHOLDER": "البحث في الفئات بالاسم أو الرمز...",
+    "ERROR": {
+      "LOAD_FAILED": "فشل في تحميل الفئات",
+      "CREATE_FAILED": "فشل في إنشاء الفئة",
+      "UPDATE_FAILED": "فشل في تحديث الفئة",
+      "DELETE_FAILED": "فشل في حذف الفئة",
+      "NOT_FOUND": "الفئة غير موجودة"
+    },
+    "FIELDS": {
+      "NAME": "اسم الفئة",
+      "NAME_PLACEHOLDER": "أدخل اسم الفئة",
+      "NAME_HELP": "أدخل اسماً وصفياً لفئة المصروفات",
+      "CODE": "رمز الفئة",
+      "CODE_PLACEHOLDER": "أدخل رمز فريد (مثل: MAT، LAB، EQ)",
+      "CODE_HELP": "أدخل رمزاً قصيراً وفريداً (أحرف وأرقام فقط)",
+      "CODE_AUTO_GENERATED": "يتم إنشاؤه تلقائياً من الاسم",
+      "DESCRIPTION": "الوصف",
+      "DESCRIPTION_PLACEHOLDER": "أدخل وصف الفئة",
+      "DESCRIPTION_HELP": "وصف اختياري لتقديم المزيد من التفاصيل حول هذه الفئة",
+      "PARENT_CATEGORY": "الفئة الأم",
+      "PARENT_CATEGORY_PLACEHOLDER": "اختر الفئة الأم (اختياري)",
+      "PARENT_CATEGORY_HELP": "اختر فئة أم لإنشاء هيكل هرمي",
+      "IS_ACTIVE": "الحالة النشطة",
+      "IS_ACTIVE_HELP": "الفئات غير النشطة لن تظهر في نماذج المصروفات"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "المعلومات الأساسية",
+      "HIERARCHY": "تسلسل الفئات"
+    },
+    "FILTERS": {
+      "STATUS": "تصفية حسب الحالة",
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط",
+      "ALL": "جميع الفئات"
+    },
+    "SORT": {
+      "BY": "ترتيب حسب",
+      "ORDER": "ترتيب",
+      "ASC": "تصاعدي",
+      "DESC": "تنازلي",
+      "NAME": "الاسم",
+      "CODE": "الرمز",
+      "CREATED_DATE": "تاريخ الإنشاء"
+    },
+    "ACTIONS": {
+      "VIEW": "عرض التفاصيل",
+      "EDIT": "تعديل الفئة",
+      "DELETE": "حذف الفئة",
+      "SAVE": "حفظ الفئة",
+      "CANCEL": "إلغاء",
+      "BACK": "العودة للقائمة"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "تم إنشاء الفئة بنجاح",
+      "UPDATE_SUCCESS": "تم تحديث الفئة بنجاح",
+      "DELETE_SUCCESS": "تم حذف الفئة بنجاح",
+      "DELETE_CONFIRM": "هل أنت متأكد من حذف هذه الفئة؟",
+      "DELETE_WARNING": "لا يمكن التراجع عن هذا الإجراء.",
+      "CODE_EXISTS": "رمز الفئة موجود بالفعل",
+      "NAME_EXISTS": "اسم الفئة موجود بالفعل"
+    },
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط"
+    }
   },
   "EXPENSES": {
     "TITLE": "المصروفات",

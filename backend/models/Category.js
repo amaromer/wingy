@@ -9,8 +9,9 @@ const categorySchema = new mongoose.Schema({
   },
   code: {
     type: String,
-    required: [true, 'Category code is required'],
+    required: false,
     unique: true,
+    sparse: true,
     trim: true,
     uppercase: true,
     maxlength: [10, 'Category code cannot exceed 10 characters']
@@ -33,7 +34,7 @@ const categorySchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for better query performance (excluding code since it's already unique)
+// Indexes for better query performance
 categorySchema.index({ is_active: 1 });
 categorySchema.index({ parent_category: 1 });
 

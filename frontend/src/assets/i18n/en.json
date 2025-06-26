@@ -26,7 +26,10 @@
     "SAVING": "Saving...",
     "CLEAR_FILTERS": "Clear Filters",
     "CREATED": "Created",
-    "ALL": "All"
+    "ALL": "All",
+    "ACTIONS": "Actions",
+    "SHOWING": "Showing",
+    "OF": "of"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -208,7 +211,8 @@
       "MIN_VALUE": "Value must be greater than 0",
       "MAX_VALUE": "Value is too large",
       "INVALID_EMAIL": "Please enter a valid email address",
-      "INVALID_PHONE": "Please enter a valid phone number"
+      "INVALID_PHONE": "Please enter a valid phone number",
+      "INVALID_PATTERN": "Please enter a valid format (letters and numbers only)"
     }
   },
   "PROJECTS": {
@@ -307,10 +311,81 @@
   },
   "CATEGORIES": {
     "TITLE": "Categories",
-    "ADD_CATEGORY": "Add Category",
-    "EDIT_CATEGORY": "Edit Category",
-    "CATEGORY_NAME": "Category Name",
-    "CATEGORY_DESCRIPTION": "Description"
+    "LIST_TITLE": "Categories",
+    "LIST_SUBTITLE": "Manage expense categories for better organization",
+    "CREATE_TITLE": "Create New Category",
+    "EDIT_TITLE": "Edit Category",
+    "CREATE_NEW": "Add Category",
+    "CREATE_FIRST": "Add Your First Category",
+    "EMPTY_TITLE": "No Categories Yet",
+    "EMPTY_MESSAGE": "Start by adding your first category to organize your expenses.",
+    "NO_RESULTS_TITLE": "No Categories Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search criteria or filters.",
+    "SEARCH_PLACEHOLDER": "Search categories by name or code...",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load categories",
+      "CREATE_FAILED": "Failed to create category",
+      "UPDATE_FAILED": "Failed to update category",
+      "DELETE_FAILED": "Failed to delete category",
+      "NOT_FOUND": "Category not found"
+    },
+    "FIELDS": {
+      "NAME": "Category Name",
+      "NAME_PLACEHOLDER": "Enter category name",
+      "NAME_HELP": "Enter a descriptive name for the expense category",
+      "CODE": "Category Code",
+      "CODE_PLACEHOLDER": "Enter unique code (e.g., MAT, LAB, EQ)",
+      "CODE_HELP": "Enter a short, unique code (letters and numbers only)",
+      "CODE_AUTO_GENERATED": "Auto-generated from name",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Enter category description",
+      "DESCRIPTION_HELP": "Optional description to provide more details about this category",
+      "PARENT_CATEGORY": "Parent Category",
+      "PARENT_CATEGORY_PLACEHOLDER": "Select parent category (optional)",
+      "PARENT_CATEGORY_HELP": "Select a parent category to create a hierarchical structure",
+      "IS_ACTIVE": "Active Status",
+      "IS_ACTIVE_HELP": "Inactive categories won't appear in expense forms"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "HIERARCHY": "Category Hierarchy"
+    },
+    "FILTERS": {
+      "STATUS": "Filter by Status",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "ALL": "All Categories"
+    },
+    "SORT": {
+      "BY": "Sort By",
+      "ORDER": "Sort Order",
+      "ASC": "Ascending",
+      "DESC": "Descending",
+      "NAME": "Name",
+      "CODE": "Code",
+      "CREATED_DATE": "Created Date"
+    },
+    "ACTIONS": {
+      "VIEW": "View Details",
+      "EDIT": "Edit Category",
+      "DELETE": "Delete Category",
+      "SAVE": "Save Category",
+      "CANCEL": "Cancel",
+      "BACK": "Back to List"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "Category created successfully",
+      "UPDATE_SUCCESS": "Category updated successfully",
+      "DELETE_SUCCESS": "Category deleted successfully",
+      "DELETE_CONFIRM": "Are you sure you want to delete this category?",
+      "DELETE_WARNING": "This action cannot be undone.",
+      "CODE_EXISTS": "Category code already exists",
+      "NAME_EXISTS": "Category name already exists"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    }
   },
   "EXPENSES": {
     "TITLE": "Expenses",

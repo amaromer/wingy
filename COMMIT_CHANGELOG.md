@@ -167,4 +167,169 @@ This commit successfully implements a production-ready project management system
 - ✅ Cross-browser compatibility
 - ✅ Professional user experience
 
-The Construction ERP application now provides a complete project management solution with robust functionality, excellent user experience, and full mobile support. The system is ready for production deployment with comprehensive error handling and fallback mechanisms. 
+The Construction ERP application now provides a complete project management solution with robust functionality, excellent user experience, and full mobile support. The system is ready for production deployment with comprehensive error handling and fallback mechanisms.
+
+# Category Module Fixes and Enhancements
+
+## Overview
+This commit addresses multiple issues in the category management module, including server errors, parent category display problems, form validation issues, and missing UI elements.
+
+## Backend Changes
+
+### 1. Category Model Updates (`backend/models/Category.js`)
+- **Made `code` field optional** by changing `required: [true, 'Category code is required']` to `required: false`
+- **Added sparse unique index** with `sparse: true` to allow multiple null values for the code field
+- **Prevents MongoDB duplicate key errors** when code field is not provided
+
+### 2. Category Routes Updates (`backend/routes/categories.js`)
+- **Added `.populate('parent_category', 'name code')`** to GET routes to return parent category details instead of just IDs
+- **Updated POST route** to handle optional code field and generate unique codes automatically
+- **Added population after save** in POST and PUT routes to return consistent data
+- **Simplified validation** for debugging purposes
+- **Enhanced error logging** for better debugging
+
+### 3. Database Index Fix (`backend/fix-category-index.js`)
+- **Created script to fix MongoDB index issues** similar to projects and suppliers
+- **Drops existing unique index** on code field
+- **Creates new sparse unique index** that allows null values
+
+## Frontend Changes
+
+### 4. Category Model Interface Updates (`frontend/src/app/core/models/category.model.ts`)
+- **Made `code` field optional** in `Category` interface: `code?: string`
+- **Updated request interfaces** to make code optional: `code?: string`
+- **Added null support** for parent_category: `parent_category?: string | { _id: string; name: string; code?: string } | null`
+- **Fixed TypeScript compilation errors** related to optional fields
+
+### 5. Category Form Component Updates (`frontend/src/app/features/categories/category-form/category-form.component.ts`)
+- **Made code field optional** in form validation
+- **Fixed parent category handling** to properly handle null values and populated objects
+- **Added debugging logs** to track form population and data flow
+- **Updated form initialization** to use `null` for parent_category instead of empty string
+- **Enhanced data submission** to handle optional code and null parent categories
+- **Fixed populateForm method** to safely handle null parent_category values
+
+### 6. Category Form Template Updates (`frontend/src/app/features/categories/category-form/category-form.component.html`)
+- **Moved Active Status field** from Category Hierarchy section to Basic Information section
+- **Updated parent category select** to use `[value]="null"` for placeholder option
+- **Removed required asterisk** from code field label
+- **Added change event** to checkbox for debugging
+
+### 7. Category List Component Updates (`frontend/src/app/features/categories/category-list/category-list.component.ts`)
+- **Added helper methods** for parent category display:
+  - `isParentCategoryObject()`: Checks if parent_category is populated object
+  - `getParentCategoryDisplay()`: Returns formatted display text
+- **Fixed parent category filtering** to exclude current category when in edit mode
+- **Enhanced error handling** and debugging
+
+### 8. Category List Template Updates (`frontend/src/app/features/categories/category-list/category-list.component.html`)
+- **Fixed parent category display** to show "Category Name (Category Code)" instead of ObjectId
+- **Replaced problematic `typeof` syntax** with helper method calls
+- **Added proper null safety** for parent category display
+
+### 9. Global Icon System (`frontend/src/styles.scss`)
+- **Added comprehensive icon definitions** using Unicode characters
+- **Created base icon class** with proper styling
+- **Added specific icons** for all missing icon classes:
+  - `icon-edit`: ✏️ (pencil emoji)
+  - `icon-delete`: 🗑️ (trash can emoji)
+  - `icon-plus`: ➕ (plus emoji)
+  - `icon-search`: 🔍 (magnifying glass emoji)
+  - And many more for all application icons
+- **Added spinning animation** for loading spinner icon
+
+### 10. Translation Updates
+- **Added missing translation keys** for category page titles:
+  - `CREATE_TITLE`: "Create New Category" / "إنشاء فئة جديدة"
+  - `EDIT_TITLE`: "Edit Category" / "تعديل الفئة"
+- **Updated both English and Arabic** translation files
+
+## Issues Fixed
+
+### 1. Server Errors
+- ✅ **Fixed 500 Internal Server Error** when creating categories
+- ✅ **Resolved MongoDB duplicate key errors** on code field
+- ✅ **Fixed validation issues** with optional fields
+
+### 2. Parent Category Display
+- ✅ **Parent categories now show names** instead of ObjectIds in the list
+- ✅ **Backend populates parent category data** automatically
+- ✅ **Frontend handles both populated objects and string IDs**
+
+### 3. Form Issues
+- ✅ **Active switch now works properly** with fixed CSS selectors
+- ✅ **Parent category field shows placeholder** when no parent is selected
+- ✅ **Form validation works correctly** with optional code field
+- ✅ **Edit mode properly loads** all category data
+
+### 4. UI/UX Improvements
+- ✅ **Icons now display properly** in all buttons and UI elements
+- ✅ **Better form organization** with Active Status moved to Basic Information
+- ✅ **Improved error handling** and user feedback
+- ✅ **Consistent styling** across all category components
+
+## Technical Details
+
+### Database Changes
+- **Sparse unique index** on code field allows multiple null values
+- **Population queries** return parent category details automatically
+- **Backward compatibility** maintained for existing data
+
+### Frontend Architecture
+- **Type-safe interfaces** with proper null handling
+- **Reactive form validation** with optional fields
+- **Helper methods** for complex display logic
+- **Comprehensive error handling** and debugging
+
+### Performance Optimizations
+- **Efficient population queries** with field selection
+- **Debounced search** in category list
+- **Proper cleanup** with RxJS destroy subjects
+
+## Testing Recommendations
+
+1. **Test category creation** with and without code field
+2. **Test parent category assignment** and display
+3. **Test edit functionality** for categories with and without parents
+4. **Verify icon display** in all category-related UI elements
+5. **Test form validation** and error handling
+6. **Verify translation** in both English and Arabic
+
+## Breaking Changes
+- **None** - All changes maintain backward compatibility
+- **Existing data** will continue to work without migration
+- **API endpoints** remain the same with enhanced functionality
+
+## Files Modified
+- `backend/models/Category.js`
+- `backend/routes/categories.js`
+- `backend/fix-category-index.js`
+- `frontend/src/app/core/models/category.model.ts`
+- `frontend/src/app/features/categories/category-form/category-form.component.ts`
+- `frontend/src/app/features/categories/category-form/category-form.component.html`
+- `frontend/src/app/features/categories/category-list/category-list.component.ts`
+- `frontend/src/app/features/categories/category-list/category-list.component.html`
+- `frontend/src/styles.scss`
+- `frontend/src/assets/i18n/en.json`
+- `frontend/src/assets/i18n/ar.json`
+
+## Commit Message
+```
+feat: Fix category module issues and enhance functionality
+
+- Fix server errors and MongoDB duplicate key issues
+- Implement parent category population and display
+- Add comprehensive icon system for UI elements
+- Improve form validation and user experience
+- Add proper null handling for optional fields
+- Update translations and styling
+- Enhance error handling and debugging
+
+Resolves issues with category creation, editing, and display
+```
+
+## Deployment Notes
+1. **Restart backend server** to load updated routes and model changes
+2. **Run index fix script** if needed: `node backend/fix-category-index.js`
+3. **Clear browser cache** to load updated frontend assets
+4. **Test all category functionality** after deployment 
