@@ -1,32 +1,69 @@
+// Updated Project interface with all required fields
 export interface Project {
-  id: string;
+  _id?: string;
   name: string;
-  code: string;
+  description?: string;
+  start_date: string;
+  end_date?: string;
+  budget?: number;
+  status: 'Active' | 'Completed' | 'On Hold';
+  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  location?: string;
+  client_name?: string;
+  manager?: string;
+  phases?: ProjectPhase[];
+  team_members?: TeamMember[];
+  duration?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  progress?: number;
+  expenses?: number;
+}
+
+export interface ProjectPhase {
+  name: string;
+  description: string;
   start_date: string;
   end_date: string;
-  status: 'Planning' | 'In Progress' | 'On Hold' | 'Completed' | 'Cancelled';
-  notes?: string;
-  duration?: number;
-  created_at?: string;
-  updated_at?: string;
+  budget: number;
+  status: 'Not Started' | 'In Progress' | 'Completed';
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  email: string;
+  phone?: string;
 }
 
 export interface CreateProjectRequest {
   name: string;
-  code: string;
-  start_date: string;
-  end_date: string;
-  status: 'Planning' | 'In Progress' | 'On Hold' | 'Completed' | 'Cancelled';
-  notes?: string;
+  description?: string;
+  start_date?: string;
+  end_date?: string;
+  budget?: number;
+  status?: 'Active' | 'Completed' | 'On Hold';
+  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  location?: string;
+  client_name?: string;
+  project_manager?: string;
+  phases?: ProjectPhase[];
+  team_members?: TeamMember[];
 }
 
 export interface UpdateProjectRequest {
   name?: string;
-  code?: string;
+  description?: string;
   start_date?: string;
   end_date?: string;
-  status?: 'Planning' | 'In Progress' | 'On Hold' | 'Completed' | 'Cancelled';
-  notes?: string;
+  budget?: number;
+  status?: 'Active' | 'Completed' | 'On Hold';
+  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  location?: string;
+  client_name?: string;
+  project_manager?: string;
+  phases?: ProjectPhase[];
+  team_members?: TeamMember[];
 }
 
 export interface ProjectListResponse {

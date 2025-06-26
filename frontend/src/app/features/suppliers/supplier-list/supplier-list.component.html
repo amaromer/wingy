@@ -1,39 +1,92 @@
 <div class="supplier-list-container">
   <div class="list-header">
     <div class="header-content">
-      <h2>{{ 'SUPPLIER.LIST_TITLE' | translate }}</h2>
-      <p class="subtitle">{{ 'SUPPLIER.LIST_SUBTITLE' | translate }}</p>
+      <h2>{{ 'SUPPLIERS.LIST_TITLE' | translate }}</h2>
+      <p class="subtitle">{{ 'SUPPLIERS.LIST_SUBTITLE' | translate }}</p>
     </div>
     <button class="btn btn-primary create-btn" (click)="onCreateSupplier()">
       <span class="icon">➕</span>
-      {{ 'SUPPLIER.CREATE_NEW' | translate }}
+      {{ 'SUPPLIERS.CREATE_NEW' | translate }}
     </button>
+  </div>
+
+  <!-- Search and Filters Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearch()"
+          placeholder="{{ 'SUPPLIERS.SEARCH_PLACEHOLDER' | translate }}"
+          class="search-input"
+        >
+      </div>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>{{ 'SUPPLIERS.FILTERS.STATUS' | translate }}</label>
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label | translate }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'SUPPLIERS.SORT.BY' | translate }}</label>
+        <select [(ngModel)]="sortBy" (change)="onSortChange()">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label | translate }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'SUPPLIERS.SORT.ORDER' | translate }}</label>
+        <button 
+          class="btn btn-icon sort-btn" 
+          (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; onSortChange()"
+          [title]="(sortOrder === 'asc' ? 'SUPPLIERS.SORT.DESC' : 'SUPPLIERS.SORT.ASC') | translate"
+        >
+          {{ sortOrder === 'asc' ? '↑' : '↓' }}
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="error-message" *ngIf="error">
     <span>{{ error | translate }}</span>
   </div>
 
-  <div class="suppliers-grid" *ngIf="suppliers.length > 0 && !loading">
-    <div class="supplier-card" *ngFor="let supplier of suppliers">
+  <!-- Suppliers Grid -->
+  <div class="suppliers-grid" *ngIf="filteredSuppliers.length > 0 && !loading">
+    <div class="supplier-card" *ngFor="let supplier of filteredSuppliers">
       <div class="supplier-header">
         <div class="supplier-title">
           <h3>{{ supplier.name }}</h3>
-          <span class="contact-person">{{ supplier.contact_person }}</span>
+          <div class="supplier-meta">
+            <span class="contact-person">👤 {{ supplier.contact_person }}</span>
+            <span class="status-badge" [ngClass]="getStatusClass(supplier.is_active)">
+              {{ getStatusIcon(supplier.is_active) }} {{ supplier.is_active ? ('SUPPLIERS.FILTERS.ACTIVE' | translate) : ('SUPPLIERS.FILTERS.INACTIVE' | translate) }}
+            </span>
+          </div>
         </div>
         <div class="supplier-actions">
           <button 
             class="btn btn-icon btn-edit" 
-            (click)="onEditSupplier(supplier._id)"
-            title="{{ 'COMMON.EDIT' | translate }}"
+            (click)="onEditSupplier(supplier._id || '')"
+            title="{{ 'SUPPLIERS.ACTIONS.EDIT' | translate }}"
           >
             ✏️
           </button>
           <button 
             class="btn btn-icon btn-delete" 
-            (click)="onDeleteSupplier(supplier._id)"
+            (click)="onDeleteSupplier(supplier._id || '')"
             [disabled]="deletingSupplierId === supplier._id"
-            title="{{ 'COMMON.DELETE' | translate }}"
+            title="{{ 'SUPPLIERS.ACTIONS.DELETE' | translate }}"
           >
             <span class="spinner-small" *ngIf="deletingSupplierId === supplier._id"></span>
             🗑️
@@ -43,44 +96,54 @@
       
       <div class="supplier-details">
         <div class="detail-item">
-          <span class="detail-label">{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}:</span>
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.EMAIL' | translate }}:</span>
           <span class="detail-value">
             <a href="mailto:{{ supplier.email }}" class="email-link">📧 {{ supplier.email }}</a>
           </span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">{{ 'SUPPLIER.FIELDS.PHONE' | translate }}:</span>
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.PHONE' | translate }}:</span>
           <span class="detail-value">
             <a href="tel:{{ supplier.phone }}" class="phone-link">📞 {{ supplier.phone }}</a>
           </span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}:</span>
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.ADDRESS' | translate }}:</span>
           <span class="detail-value">📍 {{ supplier.address }}</span>
         </div>
-        <div class="detail-item" *ngIf="supplier.tax_number">
-          <span class="detail-label">{{ 'SUPPLIER.FIELDS.TAX_NUMBER' | translate }}:</span>
-          <span class="detail-value tax-number">{{ supplier.tax_number }}</span>
+        <div class="detail-item" *ngIf="supplier.vat_enabled && supplier.vat_no">
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.VAT_NO' | translate }}:</span>
+          <span class="detail-value vat-no">🧾 {{ supplier.vat_no }}</span>
+        </div>
+        <div class="detail-item" *ngIf="supplier.payment_terms">
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.PAYMENT_TERMS' | translate }}:</span>
+          <span class="detail-value payment-terms">{{ supplier.payment_terms }}</span>
+        </div>
+        <div class="detail-item" *ngIf="supplier.notes">
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.NOTES' | translate }}:</span>
+          <span class="detail-value notes">{{ supplier.notes }}</span>
         </div>
       </div>
       
       <div class="supplier-footer">
         <span class="created-date">
-          {{ 'COMMON.CREATED' | translate }}: {{ supplier.created_at | date:'short' }}
+          {{ 'COMMON.CREATED' | translate }}: {{ supplier.createdAt | date:'short' }}
         </span>
       </div>
     </div>
   </div>
 
-  <div class="empty-state" *ngIf="!loading && suppliers.length === 0">
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredSuppliers.length === 0">
     <div class="empty-icon">🏢</div>
-    <h3>{{ 'SUPPLIER.EMPTY_TITLE' | translate }}</h3>
-    <p>{{ 'SUPPLIER.EMPTY_MESSAGE' | translate }}</p>
-    <button class="btn btn-primary" (click)="onCreateSupplier()">
-      {{ 'SUPPLIER.CREATE_FIRST' | translate }}
+    <h3>{{ suppliers.length === 0 ? ('SUPPLIERS.EMPTY_TITLE' | translate) : ('SUPPLIERS.NO_RESULTS_TITLE' | translate) }}</h3>
+    <p>{{ suppliers.length === 0 ? ('SUPPLIERS.EMPTY_MESSAGE' | translate) : ('SUPPLIERS.NO_RESULTS_MESSAGE' | translate) }}</p>
+    <button class="btn btn-primary" (click)="onCreateSupplier()" *ngIf="suppliers.length === 0">
+      {{ 'SUPPLIERS.CREATE_FIRST' | translate }}
     </button>
   </div>
 
+  <!-- Loading State -->
   <div class="loading-state" *ngIf="loading">
     <div class="spinner"></div>
     <p>{{ 'COMMON.LOADING' | translate }}</p>

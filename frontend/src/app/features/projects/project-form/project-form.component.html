@@ -25,7 +25,7 @@
         
         <div class="form-grid">
           <div class="form-group">
-            <label for="name">{{ 'PROJECT.FIELDS.NAME' | translate }} *</label>
+            <label for="name">{{ 'PROJECT.FIELDS.NAME' | translate }}</label>
             <input 
               id="name"
               type="text" 
@@ -40,7 +40,7 @@
           </div>
 
           <div class="form-group">
-            <label for="client_name">{{ 'PROJECT.FIELDS.CLIENT_NAME' | translate }} *</label>
+            <label for="client_name">{{ 'PROJECT.FIELDS.CLIENT_NAME' | translate }}</label>
             <input 
               id="client_name"
               type="text" 
@@ -55,7 +55,7 @@
           </div>
 
           <div class="form-group">
-            <label for="project_manager">{{ 'PROJECT.FIELDS.PROJECT_MANAGER' | translate }} *</label>
+            <label for="project_manager">{{ 'PROJECT.FIELDS.PROJECT_MANAGER' | translate }}</label>
             <input 
               id="project_manager"
               type="text" 
@@ -70,7 +70,7 @@
           </div>
 
           <div class="form-group">
-            <label for="priority">{{ 'PROJECT.FIELDS.PRIORITY' | translate }} *</label>
+            <label for="priority">{{ 'PROJECT.FIELDS.PRIORITY' | translate }}</label>
             <select 
               id="priority"
               formControlName="priority"
@@ -87,7 +87,7 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="description">{{ 'PROJECT.FIELDS.DESCRIPTION' | translate }} *</label>
+            <label for="description">{{ 'PROJECT.FIELDS.DESCRIPTION' | translate }}</label>
             <textarea 
               id="description"
               formControlName="description"
@@ -102,7 +102,7 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="location">{{ 'PROJECT.FIELDS.LOCATION' | translate }} *</label>
+            <label for="location">{{ 'PROJECT.FIELDS.LOCATION' | translate }}</label>
             <input 
               id="location"
               type="text" 
@@ -124,7 +124,7 @@
         
         <div class="form-grid">
           <div class="form-group">
-            <label for="start_date">{{ 'PROJECT.FIELDS.START_DATE' | translate }} *</label>
+            <label for="start_date">{{ 'PROJECT.FIELDS.START_DATE' | translate }}</label>
             <input 
               id="start_date"
               type="date" 
@@ -152,7 +152,7 @@
           </div>
 
           <div class="form-group">
-            <label for="budget">{{ 'PROJECT.FIELDS.BUDGET' | translate }} *</label>
+            <label for="budget">{{ 'PROJECT.FIELDS.BUDGET' | translate }}</label>
             <div class="input-with-icon">
               <span class="currency-icon">$</span>
               <input 
@@ -172,7 +172,7 @@
           </div>
 
           <div class="form-group">
-            <label for="status">{{ 'PROJECT.FIELDS.STATUS' | translate }} *</label>
+            <label for="status">{{ 'PROJECT.FIELDS.STATUS' | translate }}</label>
             <select 
               id="status"
               formControlName="status"
@@ -191,7 +191,7 @@
       </div>
 
       <!-- Project Phases Section -->
-      <div class="form-section">
+      <div class="form-section" *ngIf="phases.length > 0">
         <div class="section-header">
           <h3 class="section-title">🏗️ {{ 'PROJECT.SECTIONS.PHASES' | translate }}</h3>
           <button type="button" class="btn btn-secondary btn-sm" (click)="addPhase()">
@@ -222,7 +222,6 @@
                 type="button" 
                 class="btn btn-icon btn-danger" 
                 (click)="removePhase(i)"
-                *ngIf="phases.length > 1"
                 title="{{ 'PROJECT.ACTIONS.REMOVE_PHASE' | translate }}"
               >
                 🗑️
@@ -231,7 +230,7 @@
 
             <div class="form-grid">
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.PHASE_NAME' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_NAME' | translate }}</label>
                 <input 
                   type="text" 
                   formControlName="name"
@@ -245,7 +244,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.PHASE_STATUS' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_STATUS' | translate }}</label>
                 <select 
                   formControlName="status"
                   class="form-control"
@@ -261,7 +260,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.PHASE_START_DATE' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_START_DATE' | translate }}</label>
                 <input 
                   type="date" 
                   formControlName="start_date"
@@ -274,7 +273,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.PHASE_END_DATE' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_END_DATE' | translate }}</label>
                 <input 
                   type="date" 
                   formControlName="end_date"
@@ -287,7 +286,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.PHASE_BUDGET' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_BUDGET' | translate }}</label>
                 <div class="input-with-icon">
                   <span class="currency-icon">$</span>
                   <input 
@@ -306,7 +305,7 @@
               </div>
 
               <div class="form-group full-width">
-                <label>{{ 'PROJECT.FIELDS.PHASE_DESCRIPTION' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.PHASE_DESCRIPTION' | translate }}</label>
                 <textarea 
                   formControlName="description"
                   [placeholder]="'PROJECT.FIELDS.PHASE_DESCRIPTION_PLACEHOLDER' | translate"
@@ -323,8 +322,19 @@
         </div>
       </div>
 
+      <!-- Add Phase Button (when no phases exist) -->
+      <div class="form-section" *ngIf="phases.length === 0">
+        <div class="section-header">
+          <h3 class="section-title">🏗️ {{ 'PROJECT.SECTIONS.PHASES' | translate }}</h3>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="addPhase()">
+            ➕ {{ 'PROJECT.ACTIONS.ADD_PHASE' | translate }}
+          </button>
+        </div>
+        <p class="section-description">{{ 'PROJECT.SECTIONS.PHASES_DESCRIPTION' | translate }}</p>
+      </div>
+
       <!-- Team Members Section -->
-      <div class="form-section">
+      <div class="form-section" *ngIf="teamMembers.length > 0">
         <div class="section-header">
           <h3 class="section-title">👥 {{ 'PROJECT.SECTIONS.TEAM' | translate }}</h3>
           <button type="button" class="btn btn-secondary btn-sm" (click)="addTeamMember()">
@@ -348,7 +358,7 @@
 
             <div class="form-grid">
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.MEMBER_NAME' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.MEMBER_NAME' | translate }}</label>
                 <input 
                   type="text" 
                   formControlName="name"
@@ -362,7 +372,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.MEMBER_ROLE' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.MEMBER_ROLE' | translate }}</label>
                 <select 
                   formControlName="role"
                   class="form-control"
@@ -379,7 +389,7 @@
               </div>
 
               <div class="form-group">
-                <label>{{ 'PROJECT.FIELDS.MEMBER_EMAIL' | translate }} *</label>
+                <label>{{ 'PROJECT.FIELDS.MEMBER_EMAIL' | translate }}</label>
                 <input 
                   type="email" 
                   formControlName="email"
@@ -409,6 +419,17 @@
           </div>
         </div>
       </div>
+
+      <!-- Add Team Member Button (when no team members exist) -->
+      <div class="form-section" *ngIf="teamMembers.length === 0">
+        <div class="section-header">
+          <h3 class="section-title">👥 {{ 'PROJECT.SECTIONS.TEAM' | translate }}</h3>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="addTeamMember()">
+            ➕ {{ 'PROJECT.ACTIONS.ADD_MEMBER' | translate }}
+          </button>
+        </div>
+        <p class="section-description">{{ 'PROJECT.SECTIONS.TEAM_DESCRIPTION' | translate }}</p>
+      </div>
     </div>
 
     <!-- Form Actions -->
@@ -428,7 +449,7 @@
         <button 
           type="submit" 
           class="btn btn-primary" 
-          [disabled]="submitting || projectForm.invalid"
+          [disabled]="submitting"
         >
           <span class="spinner-small" *ngIf="submitting"></span>
           {{ submitting ? ('COMMON.SAVING' | translate) : (isEditMode ? ('COMMON.UPDATE' | translate) : ('COMMON.CREATE' | translate)) }}

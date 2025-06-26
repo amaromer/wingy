@@ -1,23 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
-interface Project {
-  _id: string;
-  name: string;
-  description: string;
-  status: 'Active' | 'Completed' | 'On Hold';
-  start_date: string;
-  end_date?: string;
-  budget: number;
-  location: string;
-  created_at: string;
-  progress?: number;
-  expenses?: number;
-}
+import { Project } from '../../../core/models/project.model';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-project-list',
@@ -26,7 +14,7 @@ interface Project {
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss']
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, OnDestroy {
   projects: Project[] = [];
   filteredProjects: Project[] = [];
   loading = true;
@@ -39,6 +27,10 @@ export class ProjectListComponent implements OnInit {
   selectedLocation = '';
   sortBy = 'name';
   sortOrder: 'asc' | 'desc' = 'asc';
+
+  // Debounce for search
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   // Filter options
   statusOptions = [
@@ -59,10 +51,23 @@ export class ProjectListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) {
+    // Set up debounced search
+    this.searchSubject.pipe(
+      debounceTime(300),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.applyFilters();
+    });
+  }
 
   ngOnInit() {
     this.loadProjects();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadProjects() {
@@ -93,7 +98,9 @@ export class ProjectListComponent implements OnInit {
               start_date: '2024-01-15',
               budget: 5000000,
               location: 'Downtown, City Center',
-              created_at: '2024-01-10',
+              client_name: 'ABC Corporation',
+              manager: 'John Smith',
+              createdAt: '2024-01-10',
               progress: 65,
               expenses: 3250000
             },
@@ -105,7 +112,9 @@ export class ProjectListComponent implements OnInit {
               start_date: '2024-02-01',
               budget: 3500000,
               location: 'Riverside District',
-              created_at: '2024-01-20',
+              client_name: 'XYZ Developers',
+              manager: 'Sarah Johnson',
+              createdAt: '2024-01-20',
               progress: 45,
               expenses: 1575000
             }
@@ -117,7 +126,7 @@ export class ProjectListComponent implements OnInit {
 
   // Filter and search methods
   onSearch() {
-    this.applyFilters();
+    this.searchSubject.next(this.searchTerm);
   }
 
   onFilterChange() {
@@ -145,8 +154,10 @@ export class ProjectListComponent implements OnInit {
       const search = this.searchTerm.toLowerCase();
       filtered = filtered.filter(project =>
         project.name.toLowerCase().includes(search) ||
-        project.description.toLowerCase().includes(search) ||
-        project.location.toLowerCase().includes(search)
+        (project.description?.toLowerCase().includes(search) || false) ||
+        (project.location?.toLowerCase().includes(search) || false) ||
+        (project.client_name?.toLowerCase().includes(search) || false) ||
+        (project.manager?.toLowerCase().includes(search) || false)
       );
     }
 
@@ -159,7 +170,7 @@ export class ProjectListComponent implements OnInit {
     if (this.selectedLocation.trim()) {
       const location = this.selectedLocation.toLowerCase();
       filtered = filtered.filter(project =>
-        project.location.toLowerCase().includes(location)
+        project.location?.toLowerCase().includes(location) || false
       );
     }
 

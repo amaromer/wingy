@@ -63,7 +63,7 @@
     "EXPENSES": "المصروفات",
     "USERS": "المستخدمون",
     "PROFILE": "الملف الشخصي",
-    "CONSTRUCTION_ERP": "نظام إدارة مشاريع البناء"
+    "CONSTRUCTION_ERP": "ونجي"
   },
   "PROJECT": {
     "LIST_TITLE": "إدارة المشاريع",
@@ -120,7 +120,9 @@
       "BASIC_INFO": "المعلومات الأساسية",
       "TIMELINE": "الجدول الزمني والميزانية",
       "PHASES": "مراحل المشروع",
-      "TEAM": "أعضاء الفريق"
+      "TEAM": "أعضاء الفريق",
+      "PHASES_DESCRIPTION": "أضف مراحل المشروع لتقسيم أعمال البناء إلى مراحل قابلة للإدارة. يمكن أن يكون لكل مرحلة جدولها الزمني وميزانيتها وحالتها الخاصة.",
+      "TEAM_DESCRIPTION": "أضف أعضاء الفريق الذين سيعملون على هذا المشروع. شمل أدوارهم ومعلومات الاتصال ومسؤولياتهم."
     },
     "FIELDS": {
       "NAME": "اسم المشروع",
@@ -226,13 +228,79 @@
   },
   "SUPPLIERS": {
     "TITLE": "الموردون",
-    "ADD_SUPPLIER": "إضافة مورد",
-    "EDIT_SUPPLIER": "تعديل المورد",
-    "SUPPLIER_NAME": "اسم المورد",
-    "SUPPLIER_EMAIL": "البريد الإلكتروني",
-    "SUPPLIER_PHONE": "الهاتف",
-    "SUPPLIER_ADDRESS": "العنوان",
-    "SUPPLIER_CONTACT_PERSON": "الشخص المسؤول"
+    "LIST_TITLE": "الموردون",
+    "LIST_SUBTITLE": "إدارة موردي ومتعاملي البناء",
+    "CREATE_NEW": "إضافة مورد",
+    "CREATE_FIRST": "أضف أول مورد لك",
+    "EMPTY_TITLE": "لا يوجد موردون بعد",
+    "EMPTY_MESSAGE": "ابدأ بإضافة أول مورد لإدارة مواد وخدمات البناء.",
+    "NO_RESULTS_TITLE": "لم يتم العثور على موردين",
+    "NO_RESULTS_MESSAGE": "جرب تعديل معايير البحث أو المرشحات.",
+    "SEARCH_PLACEHOLDER": "البحث في الموردين بالاسم أو الشخص المسؤول أو البريد الإلكتروني...",
+    "ERROR": {
+      "LOAD_FAILED": "فشل في تحميل الموردين",
+      "CREATE_FAILED": "فشل في إنشاء المورد",
+      "UPDATE_FAILED": "فشل في تحديث المورد",
+      "DELETE_FAILED": "فشل في حذف المورد",
+      "NOT_FOUND": "المورد غير موجود"
+    },
+    "FIELDS": {
+      "NAME": "اسم المورد",
+      "NAME_PLACEHOLDER": "أدخل اسم المورد",
+      "CONTACT_PERSON": "الشخص المسؤول",
+      "CONTACT_PERSON_PLACEHOLDER": "أدخل اسم الشخص المسؤول",
+      "EMAIL": "البريد الإلكتروني",
+      "EMAIL_PLACEHOLDER": "أدخل البريد الإلكتروني",
+      "PHONE": "رقم الهاتف",
+      "PHONE_PLACEHOLDER": "أدخل رقم الهاتف",
+      "ADDRESS": "العنوان",
+      "ADDRESS_PLACEHOLDER": "أدخل العنوان الكامل",
+      "VAT_ENABLED": "مسجل ضريبة القيمة المضافة",
+      "VAT_ENABLED_DESCRIPTION": "حدد إذا كان هذا المورد مسجل ضريبة القيمة المضافة",
+      "VAT_NO": "رقم ضريبة القيمة المضافة",
+      "VAT_NO_PLACEHOLDER": "أدخل رقم تسجيل ضريبة القيمة المضافة",
+      "PAYMENT_TERMS": "شروط الدفع",
+      "PAYMENT_TERNS_PLACEHOLDER": "مثل: صافي 30، صافي 60",
+      "NOTES": "ملاحظات",
+      "NOTES_PLACEHOLDER": "أدخل أي ملاحظات إضافية",
+      "IS_ACTIVE": "الحالة النشطة"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "المعلومات الأساسية",
+      "CONTACT_INFO": "معلومات الاتصال",
+      "ADDITIONAL_INFO": "معلومات إضافية"
+    },
+    "FILTERS": {
+      "STATUS": "تصفية حسب الحالة",
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط",
+      "ALL": "جميع الموردين"
+    },
+    "SORT": {
+      "BY": "ترتيب حسب",
+      "ORDER": "ترتيب",
+      "ASC": "تصاعدي",
+      "DESC": "تنازلي",
+      "NAME": "الاسم",
+      "CONTACT_PERSON": "الشخص المسؤول",
+      "EMAIL": "البريد الإلكتروني",
+      "CREATED_DATE": "تاريخ الإنشاء"
+    },
+    "ACTIONS": {
+      "VIEW": "عرض التفاصيل",
+      "EDIT": "تعديل المورد",
+      "DELETE": "حذف المورد",
+      "SAVE": "حفظ المورد",
+      "CANCEL": "إلغاء",
+      "BACK": "العودة للقائمة"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "تم إنشاء المورد بنجاح",
+      "UPDATE_SUCCESS": "تم تحديث المورد بنجاح",
+      "DELETE_SUCCESS": "تم حذف المورد بنجاح",
+      "DELETE_CONFIRM": "هل أنت متأكد من حذف هذا المورد؟",
+      "DELETE_WARNING": "لا يمكن التراجع عن هذا الإجراء."
+    }
   },
   "CATEGORIES": {
     "TITLE": "الفئات",

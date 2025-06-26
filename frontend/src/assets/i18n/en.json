@@ -65,7 +65,7 @@
     "EXPENSES": "Expenses",
     "USERS": "Users",
     "PROFILE": "Profile",
-    "CONSTRUCTION_ERP": "Construction ERP"
+    "CONSTRUCTION_ERP": "Wingy"
   },
   "PROJECT": {
     "LIST_TITLE": "Project Management",
@@ -122,7 +122,9 @@
       "BASIC_INFO": "Basic Information",
       "TIMELINE": "Timeline & Budget",
       "PHASES": "Project Phases",
-      "TEAM": "Team Members"
+      "TEAM": "Team Members",
+      "PHASES_DESCRIPTION": "Add project phases to break down your construction work into manageable stages. Each phase can have its own timeline, budget, and status.",
+      "TEAM_DESCRIPTION": "Add team members who will be working on this project. Include their roles, contact information, and responsibilities."
     },
     "FIELDS": {
       "NAME": "Project Name",
@@ -229,13 +231,79 @@
   },
   "SUPPLIERS": {
     "TITLE": "Suppliers",
-    "ADD_SUPPLIER": "Add Supplier",
-    "EDIT_SUPPLIER": "Edit Supplier",
-    "SUPPLIER_NAME": "Supplier Name",
-    "SUPPLIER_EMAIL": "Email",
-    "SUPPLIER_PHONE": "Phone",
-    "SUPPLIER_ADDRESS": "Address",
-    "SUPPLIER_CONTACT_PERSON": "Contact Person"
+    "LIST_TITLE": "Suppliers",
+    "LIST_SUBTITLE": "Manage your construction suppliers and vendors",
+    "CREATE_NEW": "Add Supplier",
+    "CREATE_FIRST": "Add Your First Supplier",
+    "EMPTY_TITLE": "No Suppliers Yet",
+    "EMPTY_MESSAGE": "Start by adding your first supplier to manage your construction materials and services.",
+    "NO_RESULTS_TITLE": "No Suppliers Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search criteria or filters.",
+    "SEARCH_PLACEHOLDER": "Search suppliers by name, contact person, or email...",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load suppliers",
+      "CREATE_FAILED": "Failed to create supplier",
+      "UPDATE_FAILED": "Failed to update supplier",
+      "DELETE_FAILED": "Failed to delete supplier",
+      "NOT_FOUND": "Supplier not found"
+    },
+    "FIELDS": {
+      "NAME": "Supplier Name",
+      "NAME_PLACEHOLDER": "Enter supplier name",
+      "CONTACT_PERSON": "Contact Person",
+      "CONTACT_PERSON_PLACEHOLDER": "Enter contact person name",
+      "EMAIL": "Email Address",
+      "EMAIL_PLACEHOLDER": "Enter email address",
+      "PHONE": "Phone Number",
+      "PHONE_PLACEHOLDER": "Enter phone number",
+      "ADDRESS": "Address",
+      "ADDRESS_PLACEHOLDER": "Enter complete address",
+      "VAT_ENABLED": "VAT Registered",
+      "VAT_ENABLED_DESCRIPTION": "Check if this supplier is VAT registered",
+      "VAT_NO": "VAT Number",
+      "VAT_NO_PLACEHOLDER": "Enter VAT registration number",
+      "PAYMENT_TERMS": "Payment Terms",
+      "PAYMENT_TERNS_PLACEHOLDER": "e.g., Net 30, Net 60",
+      "NOTES": "Notes",
+      "NOTES_PLACEHOLDER": "Enter any additional notes",
+      "IS_ACTIVE": "Active Status"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "CONTACT_INFO": "Contact Information",
+      "ADDITIONAL_INFO": "Additional Information"
+    },
+    "FILTERS": {
+      "STATUS": "Filter by Status",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "ALL": "All Suppliers"
+    },
+    "SORT": {
+      "BY": "Sort By",
+      "ORDER": "Sort Order",
+      "ASC": "Ascending",
+      "DESC": "Descending",
+      "NAME": "Name",
+      "CONTACT_PERSON": "Contact Person",
+      "EMAIL": "Email",
+      "CREATED_DATE": "Created Date"
+    },
+    "ACTIONS": {
+      "VIEW": "View Details",
+      "EDIT": "Edit Supplier",
+      "DELETE": "Delete Supplier",
+      "SAVE": "Save Supplier",
+      "CANCEL": "Cancel",
+      "BACK": "Back to List"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "Supplier created successfully",
+      "UPDATE_SUCCESS": "Supplier updated successfully",
+      "DELETE_SUCCESS": "Supplier deleted successfully",
+      "DELETE_CONFIRM": "Are you sure you want to delete this supplier?",
+      "DELETE_WARNING": "This action cannot be undone."
+    }
   },
   "CATEGORIES": {
     "TITLE": "Categories",

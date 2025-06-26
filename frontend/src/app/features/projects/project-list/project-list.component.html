@@ -14,19 +14,15 @@
   <div class="filters-section">
     <div class="filters-row">
       <div class="search-box">
+        <span class="search-icon">🔍</span>
         <input 
           type="text" 
           [(ngModel)]="searchTerm" 
-          (keyup.enter)="onSearch()"
+          (input)="onSearch()"
           placeholder="{{ 'PROJECT.SEARCH_PLACEHOLDER' | translate }}"
           class="search-input"
         >
-        <button class="search-btn" (click)="onSearch()">🔍</button>
       </div>
-      
-      <button class="btn btn-outline" (click)="onClearFilters()">
-        🗑️ {{ 'COMMON.CLEAR_FILTERS' | translate }}
-      </button>
     </div>
 
     <div class="filters-grid">
@@ -88,21 +84,21 @@
         <div class="project-actions">
           <button 
             class="btn btn-icon btn-view" 
-            (click)="onViewProject(project._id)"
+            (click)="onViewProject(project._id!)"
             title="{{ 'COMMON.VIEW' | translate }}"
           >
             👁️
           </button>
           <button 
             class="btn btn-icon btn-edit" 
-            (click)="onEditProject(project._id)"
+            (click)="onEditProject(project._id!)"
             title="{{ 'COMMON.EDIT' | translate }}"
           >
             ✏️
           </button>
           <button 
             class="btn btn-icon btn-delete" 
-            (click)="onDeleteProject(project._id)"
+            (click)="onDeleteProject(project._id!)"
             [disabled]="deletingProjectId === project._id"
             title="{{ 'COMMON.DELETE' | translate }}"
           >
@@ -130,6 +126,14 @@
       </div>
       
       <div class="project-details">
+        <div class="detail-item" *ngIf="project.client_name">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.CLIENT_NAME' | translate }}:</span>
+          <span class="detail-value">👤 {{ project.client_name }}</span>
+        </div>
+        <div class="detail-item" *ngIf="project.manager">
+          <span class="detail-label">{{ 'PROJECT.FIELDS.PROJECT_MANAGER' | translate }}:</span>
+          <span class="detail-value">👨‍💼 {{ project.manager }}</span>
+        </div>
         <div class="detail-item">
           <span class="detail-label">{{ 'PROJECT.FIELDS.BUDGET' | translate }}:</span>
           <span class="detail-value budget">${{ project.budget | number:'1.0-0' }}</span>
@@ -157,7 +161,7 @@
       
       <div class="project-footer">
         <span class="created-date">
-          {{ 'COMMON.CREATED' | translate }}: {{ project.created_at | date:'short' }}
+          {{ 'COMMON.CREATED' | translate }}: {{ project.createdAt | date:'short' }}
         </span>
       </div>
     </div>
@@ -170,9 +174,6 @@
     <p>{{ projects.length === 0 ? ('PROJECT.EMPTY_MESSAGE' | translate) : ('PROJECT.NO_RESULTS_MESSAGE' | translate) }}</p>
     <button class="btn btn-primary" (click)="onCreateProject()" *ngIf="projects.length === 0">
       {{ 'PROJECT.CREATE_FIRST' | translate }}
-    </button>
-    <button class="btn btn-secondary" (click)="onClearFilters()" *ngIf="projects.length > 0">
-      {{ 'COMMON.CLEAR_FILTERS' | translate }}
     </button>
   </div>
 

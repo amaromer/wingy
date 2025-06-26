@@ -102,18 +102,24 @@ html body div.app-container.rtl > main.main-content {
   left: 1rem;
   z-index: 1001;
   background: var(--primary-color);
-  color: white;
+  color: var(--text-on-primary);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 0.5rem;
   cursor: pointer;
   display: none;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-primary);
   height: 40px;
   width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+  }
 }
 
 .hamburger {
@@ -137,7 +143,7 @@ html body div.app-container.rtl > main.main-content {
 
 .sidebar {
   width: 280px;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -149,18 +155,45 @@ html body div.app-container.rtl > main.main-content {
 }
 
 .sidebar-header {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  background: var(--bg-accent);
   
-  h2 {
-    color: var(--primary-color);
-    font-weight: 700;
-    margin: 0;
-    font-size: 1.25rem;
+  .sidebar-header-content {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+    
+    .logo-container {
+      margin: 0 !important;
+      padding: 0 !important;
+      
+      .logo {
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 50% !important;
+        object-fit: cover !important;
+        border: 2px solid var(--primary-color) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+    
+    h2 {
+      color: var(--primary-color) !important;
+      font-weight: 700 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 0.9rem !important;
+      line-height: 1.2 !important;
+    }
   }
 }
 
@@ -174,7 +207,7 @@ html body div.app-container.rtl > main.main-content {
   border-radius: 4px;
   
   &:hover {
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
     color: var(--text-primary);
   }
 }
@@ -200,15 +233,20 @@ html body div.app-container.rtl > main.main-content {
   font-size: 14px;
   cursor: pointer;
   min-height: 48px; /* Touch-friendly height */
+  border-radius: 0;
+  margin: 0;
   
   &:hover {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
+    background-color: var(--bg-accent);
+    color: var(--primary-color);
+    border-right: 3px solid var(--primary-color);
   }
   
   &.active {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--text-on-primary);
+    border-right: 3px solid var(--primary-dark);
+    box-shadow: var(--shadow-primary);
   }
   
   .nav-icon {
@@ -223,14 +261,14 @@ html body div.app-container.rtl > main.main-content {
   padding: var(--spacing-md) 0;
   border-top: 1px solid var(--border-color);
   flex-shrink: 0;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 .logout-btn {
   color: var(--danger-color) !important;
   
   &:hover {
-    background-color: #fee2e2 !important;
+    background-color: rgba(239, 68, 68, 0.1) !important;
     color: var(--danger-color) !important;
   }
 }
@@ -239,14 +277,14 @@ html body div.app-container.rtl > main.main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   min-width: 0; /* Prevent flex item from overflowing */
   margin-left: 0; /* Remove default margin */
   transition: margin 0.3s ease;
 }
 
 .main-header {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
@@ -267,6 +305,8 @@ html body div.app-container.rtl > main.main-content {
     margin: 0;
     white-space: nowrap !important;
     order: 1;
+    color: var(--primary-color);
+    font-weight: 600;
   }
 }
 
@@ -289,9 +329,10 @@ html body div.app-container.rtl > main.main-content {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   background-color: var(--primary-color);
-  color: white;
-  border: 1px solid var(--border-color);
+  color: var(--text-on-primary);
+  border: 1px solid var(--primary-hover);
   font-weight: 500;
+  box-shadow: var(--shadow-primary);
 }
 
 .user-info {
@@ -302,16 +343,16 @@ html body div.app-container.rtl > main.main-content {
 }
 
 .user-role {
-  background: linear-gradient(135deg, var(--success-color), #059669);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  color: var(--text-on-primary);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid #059669;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--accent-hover);
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
   position: relative;
   overflow: hidden;
 }

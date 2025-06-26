@@ -7,12 +7,28 @@ const router = express.Router();
 
 // Validation middleware
 const projectValidation = [
-  body('name').trim().isLength({ min: 1, max: 100 }).withMessage('Project name is required and must be less than 100 characters'),
-  body('code').trim().isLength({ min: 1, max: 20 }).withMessage('Project code is required and must be less than 20 characters'),
-  body('start_date').isISO8601().withMessage('Start date must be a valid date'),
-  body('end_date').isISO8601().withMessage('End date must be a valid date'),
-  body('status').isIn(['Planning', 'In Progress', 'On Hold', 'Completed', 'Cancelled']).withMessage('Invalid status'),
-  body('notes').optional().trim().isLength({ max: 1000 }).withMessage('Notes must be less than 1000 characters')
+  body('name').optional().trim().isLength({ min: 1, max: 200 }).withMessage('Project name must be less than 200 characters'),
+  body('description').optional().trim().isLength({ max: 1000 }).withMessage('Description must be less than 1000 characters'),
+  body('start_date').optional().custom((value) => {
+    if (value && !Date.parse(value)) {
+      throw new Error('Start date must be a valid date');
+    }
+    return true;
+  }),
+  body('end_date').optional().custom((value) => {
+    if (value && !Date.parse(value)) {
+      throw new Error('End date must be a valid date');
+    }
+    return true;
+  }),
+  body('budget').optional().isFloat({ min: 0 }).withMessage('Budget must be a positive number'),
+  body('status').optional().isIn(['Active', 'Completed', 'On Hold']).withMessage('Invalid status'),
+  body('priority').optional().isIn(['Low', 'Medium', 'High', 'Critical']).withMessage('Invalid priority'),
+  body('location').optional().trim().isLength({ max: 200 }).withMessage('Location must be less than 200 characters'),
+  body('client_name').optional().trim().isLength({ max: 200 }).withMessage('Client name must be less than 200 characters'),
+  body('project_manager').optional().trim().isLength({ max: 100 }).withMessage('Project manager name must be less than 100 characters'),
+  body('phases').optional().isArray().withMessage('Phases must be an array'),
+  body('team_members').optional().isArray().withMessage('Team members must be an array')
 ];
 
 // @route   GET /api/projects
@@ -29,11 +45,13 @@ router.get('/', auth, async (req, res) => {
       query.status = status;
     }
     
-    // Search by name or code
+    // Search by name, description, location, or client name
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { code: { $regex: search, $options: 'i' } }
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+        { client_name: { $regex: search, $options: 'i' } }
       ];
     }
     
@@ -87,41 +105,61 @@ router.get('/:id', auth, async (req, res) => {
 // @access  Private (Admin)
 router.post('/', auth, requireAdmin, projectValidation, async (req, res) => {
   try {
+    console.log('Received project data:', req.body);
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, code, start_date, end_date, status, notes } = req.body;
+    const { 
+      name, 
+      description, 
+      start_date, 
+      end_date, 
+      budget, 
+      status, 
+      priority, 
+      location, 
+      client_name, 
+      project_manager, 
+      phases, 
+      team_members 
+    } = req.body;
     
-    // Check if project code already exists
-    const existingProject = await Project.findOne({ code });
-    if (existingProject) {
-      return res.status(400).json({ message: 'Project code already exists' });
-    }
-    
-    // Validate dates
-    if (new Date(start_date) >= new Date(end_date)) {
+    // Validate dates if both are provided
+    if (start_date && end_date && new Date(start_date) >= new Date(end_date)) {
       return res.status(400).json({ message: 'End date must be after start date' });
     }
     
-    const project = new Project({
-      name,
-      code: code.toUpperCase(),
-      start_date,
-      end_date,
-      status,
-      notes
-    });
+    const projectData = {
+      name: name || 'Untitled Project',
+      description: description || '',
+      start_date: start_date ? new Date(start_date) : new Date(),
+      budget: budget || 0,
+      status: status || 'Active',
+      location: location || '',
+      client_name: client_name || '',
+      manager: project_manager || ''
+    };
+
+    // Add optional fields if provided
+    if (end_date) projectData.end_date = new Date(end_date);
+    if (priority) projectData.priority = priority;
+    if (phases) projectData.phases = phases;
+    if (team_members) projectData.team_members = team_members;
+    
+    console.log('Creating project with data:', projectData);
+    
+    const project = new Project(projectData);
     
     await project.save();
     
+    console.log('Project created successfully:', project);
     res.status(201).json(project);
   } catch (error) {
     console.error('Create project error:', error);
-    if (error.code === 11000) {
-      return res.status(400).json({ message: 'Project code already exists' });
-    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -136,33 +174,44 @@ router.put('/:id', auth, requireAdmin, projectValidation, async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, code, start_date, end_date, status, notes } = req.body;
+    const { 
+      name, 
+      description, 
+      start_date, 
+      end_date, 
+      budget, 
+      status, 
+      priority, 
+      location, 
+      client_name, 
+      project_manager, 
+      phases, 
+      team_members 
+    } = req.body;
     
     const project = await Project.findById(req.params.id);
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
     
-    // Check if project code already exists (excluding current project)
-    if (code && code !== project.code) {
-      const existingProject = await Project.findOne({ code });
-      if (existingProject) {
-        return res.status(400).json({ message: 'Project code already exists' });
-      }
-    }
-    
-    // Validate dates
+    // Validate dates if both are provided
     if (start_date && end_date && new Date(start_date) >= new Date(end_date)) {
       return res.status(400).json({ message: 'End date must be after start date' });
     }
     
-    // Update fields
-    if (name) project.name = name;
-    if (code) project.code = code.toUpperCase();
-    if (start_date) project.start_date = start_date;
-    if (end_date) project.end_date = end_date;
-    if (status) project.status = status;
-    if (notes !== undefined) project.notes = notes;
+    // Update fields if provided
+    if (name !== undefined) project.name = name;
+    if (description !== undefined) project.description = description;
+    if (start_date !== undefined) project.start_date = new Date(start_date);
+    if (end_date !== undefined) project.end_date = end_date ? new Date(end_date) : null;
+    if (budget !== undefined) project.budget = budget;
+    if (status !== undefined) project.status = status;
+    if (priority !== undefined) project.priority = priority;
+    if (location !== undefined) project.location = location;
+    if (client_name !== undefined) project.client_name = client_name;
+    if (project_manager !== undefined) project.manager = project_manager;
+    if (phases !== undefined) project.phases = phases;
+    if (team_members !== undefined) project.team_members = team_members;
     
     await project.save();
     
@@ -171,9 +220,6 @@ router.put('/:id', auth, requireAdmin, projectValidation, async (req, res) => {
     console.error('Update project error:', error);
     if (error.kind === 'ObjectId') {
       return res.status(404).json({ message: 'Project not found' });
-    }
-    if (error.code === 11000) {
-      return res.status(400).json({ message: 'Project code already exists' });
     }
     res.status(500).json({ message: 'Server error' });
   }

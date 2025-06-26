@@ -1,0 +1,206 @@
+<div class="supplier-form-container">
+  <div class="form-header">
+    <div class="header-content">
+      <h2>{{ isEditMode ? ('SUPPLIERS.EDIT_SUPPLIER' | translate) : ('SUPPLIERS.ADD_SUPPLIER' | translate) }}</h2>
+      <p class="subtitle">{{ isEditMode ? 'Update supplier information' : 'Add a new supplier to your construction network' }}</p>
+    </div>
+    <button class="btn btn-secondary back-btn" (click)="onCancel()">
+      <span class="icon">←</span>
+      {{ 'SUPPLIERS.ACTIONS.BACK' | translate }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" *ngIf="!loading" class="supplier-form">
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <h3>{{ 'SUPPLIERS.SECTIONS.BASIC_INFO' | translate }}</h3>
+      
+      <div class="form-group">
+        <label for="name">{{ 'SUPPLIERS.FIELDS.NAME' | translate }} *</label>
+        <input 
+          type="text" 
+          id="name"
+          formControlName="name"
+          [placeholder]="'SUPPLIERS.FIELDS.NAME_PLACEHOLDER' | translate"
+          [class.invalid]="isFieldInvalid('name')"
+        >
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') | translate }}
+        </div>
+      </div>
+
+      <!-- VAT Section -->
+      <div class="form-row">
+        <div class="form-group vat-checkbox-group">
+          <div class="custom-checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              id="vat_enabled"
+              formControlName="vat_enabled"
+              class="custom-checkbox"
+            >
+            <label for="vat_enabled" class="custom-checkbox-label">
+              {{ 'SUPPLIERS.FIELDS.VAT_ENABLED' | translate }}
+            </label>
+          </div>
+          <small class="field-description">{{ 'SUPPLIERS.FIELDS.VAT_ENABLED_DESCRIPTION' | translate }}</small>
+        </div>
+
+        <div class="form-group" *ngIf="supplierForm.get('vat_enabled')?.value">
+          <label for="vat_no">{{ 'SUPPLIERS.FIELDS.VAT_NO' | translate }} *</label>
+          <input 
+            type="text" 
+            id="vat_no"
+            formControlName="vat_no"
+            [placeholder]="'SUPPLIERS.FIELDS.VAT_NO_PLACEHOLDER' | translate"
+            [class.invalid]="isFieldInvalid('vat_no')"
+          >
+          <div class="error-message" *ngIf="getFieldError('vat_no')">
+            {{ getFieldError('vat_no') | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <div class="form-section">
+      <h3>{{ 'SUPPLIERS.SECTIONS.CONTACT_INFO' | translate }}</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="contact_person">{{ 'SUPPLIERS.FIELDS.CONTACT_PERSON' | translate }}</label>
+          <input 
+            type="text" 
+            id="contact_person"
+            formControlName="contact_person"
+            [placeholder]="'SUPPLIERS.FIELDS.CONTACT_PERSON_PLACEHOLDER' | translate"
+            [class.invalid]="isFieldInvalid('contact_person')"
+          >
+          <div class="error-message" *ngIf="getFieldError('contact_person')">
+            {{ getFieldError('contact_person') | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">{{ 'SUPPLIERS.FIELDS.EMAIL' | translate }}</label>
+          <input 
+            type="email" 
+            id="email"
+            formControlName="email"
+            [placeholder]="'SUPPLIERS.FIELDS.EMAIL_PLACEHOLDER' | translate"
+            [class.invalid]="isFieldInvalid('email')"
+          >
+          <div class="error-message" *ngIf="getFieldError('email')">
+            {{ getFieldError('email') | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">{{ 'SUPPLIERS.FIELDS.PHONE' | translate }}</label>
+          <input 
+            type="tel" 
+            id="phone"
+            formControlName="phone"
+            [placeholder]="'SUPPLIERS.FIELDS.PHONE_PLACEHOLDER' | translate"
+            [class.invalid]="isFieldInvalid('phone')"
+          >
+          <div class="error-message" *ngIf="getFieldError('phone')">
+            {{ getFieldError('phone') | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">{{ 'SUPPLIERS.FIELDS.ADDRESS' | translate }}</label>
+          <input 
+            type="text" 
+            id="address"
+            formControlName="address"
+            [placeholder]="'SUPPLIERS.FIELDS.ADDRESS_PLACEHOLDER' | translate"
+            [class.invalid]="isFieldInvalid('address')"
+          >
+          <div class="error-message" *ngIf="getFieldError('address')">
+            {{ getFieldError('address') | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="form-section">
+      <h3>{{ 'SUPPLIERS.SECTIONS.ADDITIONAL_INFO' | translate }}</h3>
+      
+      <div class="form-group">
+        <label for="payment_terms">{{ 'SUPPLIERS.FIELDS.PAYMENT_TERMS' | translate }}</label>
+        <input 
+          type="text" 
+          id="payment_terms"
+          formControlName="payment_terms"
+          [placeholder]="'SUPPLIERS.FIELDS.PAYMENT_TERNS_PLACEHOLDER' | translate"
+          [class.invalid]="isFieldInvalid('payment_terms')"
+        >
+        <div class="error-message" *ngIf="getFieldError('payment_terms')">
+          {{ getFieldError('payment_terms') | translate }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">{{ 'SUPPLIERS.FIELDS.NOTES' | translate }}</label>
+        <textarea 
+          id="notes"
+          formControlName="notes"
+          rows="4"
+          [placeholder]="'SUPPLIERS.FIELDS.NOTES_PLACEHOLDER' | translate"
+          [class.invalid]="isFieldInvalid('notes')"
+        ></textarea>
+        <div class="error-message" *ngIf="getFieldError('notes')">
+          {{ getFieldError('notes') | translate }}
+        </div>
+      </div>
+
+      <div class="form-group vat-checkbox-group">
+        <div class="custom-checkbox-wrapper">
+          <input 
+            type="checkbox" 
+            id="is_active"
+            formControlName="is_active"
+            class="custom-checkbox"
+          >
+          <label for="is_active" class="custom-checkbox-label">
+            {{ 'SUPPLIERS.FIELDS.IS_ACTIVE' | translate }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="saving"
+      >
+        {{ 'SUPPLIERS.ACTIONS.CANCEL' | translate }}
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="supplierForm.invalid || saving"
+      >
+        <span class="spinner-small" *ngIf="saving"></span>
+        {{ saving ? ('COMMON.SAVING' | translate) : ('SUPPLIERS.ACTIONS.SAVE' | translate) }}
+      </button>
+    </div>
+  </form>
+</div> 

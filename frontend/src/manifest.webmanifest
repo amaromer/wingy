@@ -1,11 +1,11 @@
 {
-  "name": "Construction ERP",
-  "short_name": "Construction ERP",
+  "name": "Wingy - Construction ERP",
+  "short_name": "Wingy",
   "description": "Manage your construction projects, expenses, and suppliers efficiently",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f9fafb",
-  "theme_color": "#2563eb",
+  "background_color": "#111827",
+  "theme_color": "#fbbf24",
   "orientation": "portrait-primary",
   "icons": [
     {

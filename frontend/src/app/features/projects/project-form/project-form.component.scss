@@ -76,6 +76,17 @@
         margin: 0;
       }
     }
+
+    .section-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin: 0;
+      text-align: center;
+      padding: 1rem;
+      background: var(--surface-hover);
+      border-radius: 8px;
+      border: 1px dashed var(--border-color);
+    }
   }
 
   .form-grid {
