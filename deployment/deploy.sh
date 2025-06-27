@@ -6,7 +6,7 @@
 set -e  # Exit on any error
 
 # Configuration
-PROJECT_NAME="construction-erp"
+PROJECT_NAME="wingy-erp"
 PROJECT_PATH="/var/www/$PROJECT_NAME"
 BACKUP_PATH="/var/backups/$PROJECT_NAME"
 LOG_FILE="/var/log/deployment.log"
