@@ -34,7 +34,11 @@
     "REQUIRED": "This field is required",
     "MIN_LENGTH": "Minimum length not met",
     "MAX_LENGTH": "Maximum length exceeded",
-    "INVALID": "Invalid value"
+    "INVALID": "Invalid value",
+    "METADATA": "Metadata",
+    "CREATED_AT": "Created At",
+    "UPDATED_AT": "Updated At",
+    "BACK_TO_LIST": "Back to List"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -294,7 +298,10 @@
       "TOOLS": "Tools",
       "LABOR": "Labor",
       "SUBMIT": "Save Expense"
-    }
+    },
+    "VIEW_TITLE": "Expense Details",
+    "NOT_FOUND": "Expense Not Found",
+    "NOT_FOUND_DESC": "The expense you're looking for doesn't exist or has been removed."
   },
   "ALL_STATUSES": "All Statuses",
   "FORM": {

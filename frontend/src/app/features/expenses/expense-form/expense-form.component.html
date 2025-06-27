@@ -229,7 +229,8 @@
               
               <div class="file-preview" *ngIf="filePreview">
                 <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
-                <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
+                <img *ngIf="!filePreview.startsWith('data:image') && filePreview" [src]="getAttachmentUrl(filePreview)" alt="File preview" class="preview-image">
+                <div *ngIf="!filePreview.startsWith('data:image') && !filePreview" class="preview-pdf">
                   📄 PDF Document
                 </div>
               </div>

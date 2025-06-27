@@ -187,10 +187,25 @@ export class ExpenseFormComponent implements OnInit {
   removeFile() {
     this.selectedFile = null;
     this.filePreview = null;
-    const fileInput = document.getElementById('file-input') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
+  }
+
+  getAttachmentUrl(attachmentUrl: string): string {
+    if (!attachmentUrl) return '';
+    
+    // Get the backend base URL based on current hostname
+    const hostname = window.location.hostname;
+    let backendBaseUrl: string;
+    
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      backendBaseUrl = 'http://localhost:3000';
+    } else if (hostname === 'wingyerp.com' || hostname === 'www.wingyerp.com') {
+      backendBaseUrl = `https://${hostname}`;
+    } else {
+      // For mobile/network access, use the same protocol and hostname
+      backendBaseUrl = `${window.location.protocol}//${hostname}`;
     }
+    
+    return `${backendBaseUrl}${attachmentUrl}`;
   }
 
   onSubmit() {

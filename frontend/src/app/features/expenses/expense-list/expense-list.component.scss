@@ -726,6 +726,48 @@
   }
 }
 
+/* Attachment Styles */
+.attachment-cell {
+  text-align: center;
+  
+  .btn-view {
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(79, 140, 255, 0.1);
+      transform: scale(1.1);
+    }
+  }
+  
+  .no-attachment {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+  
+  &:hover {
+    color: var(--primary-hover);
+    text-decoration: none;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .expense-list-container {

@@ -1,0 +1,128 @@
+<div class="expense-view-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <button class="btn btn-secondary back-btn" (click)="onBack()">
+        ← {{ 'COMMON.BACK' | translate }}
+      </button>
+      <h1>{{ 'EXPENSE.VIEW_TITLE' | translate }}</h1>
+    </div>
+    <div class="header-actions" *ngIf="expense">
+      <button class="btn btn-primary" (click)="onEdit()">
+        ✏️ {{ 'COMMON.EDIT' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Expense Details -->
+  <div class="expense-details" *ngIf="expense && !loading">
+    <div class="details-grid">
+      <!-- Basic Information -->
+      <div class="detail-section">
+        <h3>{{ 'EXPENSE.SECTIONS.BASIC_INFO' | translate }}</h3>
+        <div class="detail-row">
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }}</label>
+            <span class="value">{{ expense.description }}</span>
+          </div>
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.AMOUNT' | translate }}</label>
+            <span class="value amount">{{ formatAmount(expense.amount, expense.currency) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.DATE' | translate }}</label>
+            <span class="value">{{ formatDate(expense.date) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="expense.invoice_number">
+            <label>{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
+            <span class="value">{{ expense.invoice_number }}</span>
+          </div>
+          <div class="detail-item" *ngIf="expense.is_vat">
+            <label>{{ 'EXPENSE.FIELDS.IS_VAT' | translate }}</label>
+            <span class="value">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Entities -->
+      <div class="detail-section">
+        <h3>{{ 'EXPENSE.SECTIONS.RELATED_ENTITIES' | translate }}</h3>
+        <div class="detail-row">
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.PROJECT' | translate }}</label>
+            <span class="value">{{ getProjectName(expense.project_id) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.CATEGORY' | translate }}</label>
+            <span class="value">{{ getCategoryName(expense.category_id) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}</label>
+            <span class="value">{{ getSupplierName(expense.supplier_id) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <div class="detail-section" *ngIf="expense.attachment_url">
+        <h3>{{ 'EXPENSE.SECTIONS.ATTACHMENTS' | translate }}</h3>
+        <div class="attachment-container">
+          <div class="attachment-preview">
+            <div class="attachment-icon" *ngIf="getFileType(expense.attachment_url) === 'image'">
+              <img [src]="getAttachmentUrl(expense.attachment_url)" alt="Attachment preview" class="preview-image">
+            </div>
+            <div class="attachment-icon" *ngIf="getFileType(expense.attachment_url) === 'pdf'">
+              📄
+            </div>
+            <div class="attachment-icon" *ngIf="getFileType(expense.attachment_url) === 'document'">
+              📎
+            </div>
+            <div class="attachment-info">
+              <span class="attachment-name">{{ expense.attachment_url.split('/').pop() }}</span>
+              <span class="attachment-type">{{ getFileType(expense.attachment_url).toUpperCase() }}</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" (click)="viewAttachment(expense.attachment_url)">
+            👁️ {{ 'EXPENSE.ACTIONS.VIEW' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="detail-section">
+        <h3>{{ 'COMMON.METADATA' | translate }}</h3>
+        <div class="detail-row">
+          <div class="detail-item" *ngIf="expense.created_at">
+            <label>{{ 'COMMON.CREATED_AT' | translate }}</label>
+            <span class="value">{{ formatDate(expense.created_at) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="expense.updated_at">
+            <label>{{ 'COMMON.UPDATED_AT' | translate }}</label>
+            <span class="value">{{ formatDate(expense.updated_at) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!expense && !loading && !error">
+    <div class="empty-icon">📄</div>
+    <h3>{{ 'EXPENSE.NOT_FOUND' | translate }}</h3>
+    <p>{{ 'EXPENSE.NOT_FOUND_DESC' | translate }}</p>
+    <button class="btn btn-primary" (click)="onBack()">
+      {{ 'COMMON.BACK_TO_LIST' | translate }}
+    </button>
+  </div>
+</div> 

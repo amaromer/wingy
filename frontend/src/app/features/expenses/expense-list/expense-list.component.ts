@@ -246,6 +246,50 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/expenses', expenseId]);
   }
 
+  viewAttachment(attachmentUrl: string) {
+    if (attachmentUrl) {
+      // Get the backend base URL based on current hostname
+      const hostname = window.location.hostname;
+      let backendBaseUrl: string;
+      
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        backendBaseUrl = 'http://localhost:3000';
+      } else if (hostname === 'wingyerp.com' || hostname === 'www.wingyerp.com') {
+        backendBaseUrl = `https://${hostname}`;
+      } else {
+        // For mobile/network access, use the same protocol and hostname
+        backendBaseUrl = `${window.location.protocol}//${hostname}`;
+      }
+      
+      const fullUrl = `${backendBaseUrl}${attachmentUrl}`;
+      
+      console.log('Viewing attachment:', {
+        originalUrl: attachmentUrl,
+        hostname: hostname,
+        backendBaseUrl: backendBaseUrl,
+        fullUrl: fullUrl
+      });
+      
+      // Test if the file exists before opening
+      fetch(fullUrl, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            // File exists, open it
+            window.open(fullUrl, '_blank');
+          } else {
+            console.error('Attachment not found:', fullUrl);
+            alert('Attachment not found. The file may have been deleted or moved.');
+          }
+        })
+        .catch(error => {
+          console.error('Error checking attachment:', error);
+          alert('Unable to access attachment. Please check your connection and try again.');
+        });
+    } else {
+      console.log('No attachment URL provided');
+    }
+  }
+
   onDeleteExpense(expenseId: string) {
     if (confirm(this.translateService.instant('EXPENSE.CONFIRM.DELETE_SINGLE'))) {
       this.submitting = true;

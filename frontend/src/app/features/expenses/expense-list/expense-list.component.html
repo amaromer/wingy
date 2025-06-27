@@ -175,6 +175,9 @@
             <span class="amount">{{ expense.currency }} {{ expense.amount | number:'1.2-2' }}</span>
           </div>
           <div class="card-actions">
+            <button class="btn-icon" (click)="onViewExpense(expense.id)" title="View">
+              👁️
+            </button>
             <button class="btn-icon" (click)="onEditExpense(expense.id)" title="Edit">
               ✏️
             </button>
@@ -206,6 +209,14 @@
             <div class="detail-item" *ngIf="expense.invoice_number">
               <span class="detail-label">Invoice:</span>
               <span class="detail-value">{{ expense.invoice_number }}</span>
+            </div>
+            <div class="detail-item" *ngIf="expense.attachment_url">
+              <span class="detail-label">Attachment:</span>
+              <span class="detail-value">
+                <button class="btn-link" (click)="viewAttachment(expense.attachment_url)" title="View Attachment">
+                  📎 View Attachment
+                </button>
+              </span>
             </div>
           </div>
         </div>
@@ -256,6 +267,7 @@
             <th>{{ 'EXPENSE.FIELDS.CATEGORY' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</th>
+            <th>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</th>
             <th class="actions-header">{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr>
         </thead>
@@ -293,8 +305,26 @@
             <td class="invoice-cell">
               {{ expense.invoice_number || '-' }}
             </td>
+            <td class="attachment-cell">
+              <button 
+                *ngIf="expense.attachment_url"
+                class="btn btn-icon btn-view" 
+                (click)="viewAttachment(expense.attachment_url)"
+                title="View Attachment"
+              >
+                📎
+              </button>
+              <span *ngIf="!expense.attachment_url" class="no-attachment">-</span>
+            </td>
             <td class="actions-cell">
               <div class="action-buttons">
+                <button 
+                  class="btn btn-icon btn-view" 
+                  (click)="onViewExpense(expense.id)"
+                  title="View"
+                >
+                  👁️
+                </button>
                 <button 
                   class="btn btn-icon btn-edit" 
                   (click)="onEditExpense(expense.id)"
