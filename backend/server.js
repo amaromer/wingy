@@ -31,7 +31,7 @@ app.use('/api/', limiter);
 // CORS configuration - Allow local network access
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
+    ? ['https://wingyerp.com', 'https://www.wingyerp.com'] 
     : [
         'http://localhost:4200',
         'http://127.0.0.1:4200',
