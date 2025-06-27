@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Construction ERP Monitoring Script
-# This script monitors the health of the Construction ERP system
+# Wingy ERP Monitoring Script
+# This script monitors the health of the Wingy ERP system
 
 # Configuration
-PROJECT_NAME="construction-erp"
+PROJECT_NAME="wingy-erp"
 PROJECT_PATH="/var/www/$PROJECT_NAME"
 LOG_FILE="/var/log/monitoring.log"
 ALERT_EMAIL="admin@your-domain.com"
@@ -102,8 +102,8 @@ check_nginx() {
 check_pm2() {
     log "Checking PM2 application status..."
     
-    if pm2 list | grep -q "construction-erp-backend"; then
-        PM2_STATUS=$(pm2 jlist | jq -r '.[] | select(.name=="construction-erp-backend") | .pm2_env.status')
+    if pm2 list | grep -q "wingy-erp-backend"; then
+        PM2_STATUS=$(pm2 jlist | jq -r '.[] | select(.name=="wingy-erp-backend") | .pm2_env.status')
         
         if [ "$PM2_STATUS" = "online" ]; then
             info "PM2 application is online"
@@ -112,7 +112,7 @@ check_pm2() {
         fi
         
         # Check PM2 logs for errors
-        ERROR_COUNT=$(pm2 logs construction-erp-backend --lines 100 | grep -c "ERROR" || echo "0")
+        ERROR_COUNT=$(pm2 logs wingy-erp-backend --lines 100 | grep -c "ERROR" || echo "0")
         if [ "$ERROR_COUNT" -gt 0 ]; then
             warning "Found $ERROR_COUNT errors in PM2 logs"
         fi
@@ -173,8 +173,8 @@ check_logs() {
     fi
     
     # Check application logs
-    if [ -f "/var/log/pm2/construction-erp-error.log" ]; then
-        APP_ERRORS=$(tail -n 100 /var/log/pm2/construction-erp-error.log | grep -c "ERROR" || echo "0")
+    if [ -f "/var/log/pm2/wingy-erp-error.log" ]; then
+        APP_ERRORS=$(tail -n 100 /var/log/pm2/wingy-erp-error.log | grep -c "ERROR" || echo "0")
         if [ "$APP_ERRORS" -gt 0 ]; then
             warning "Found $APP_ERRORS errors in application logs"
         fi
@@ -214,7 +214,7 @@ generate_report() {
     REPORT_FILE="/tmp/monitoring-report-$(date +%Y%m%d-%H%M%S).txt"
     
     {
-        echo "=== Construction ERP Monitoring Report ==="
+        echo "=== Wingy ERP Monitoring Report ==="
         echo "Generated: $(date)"
         echo ""
         
@@ -227,7 +227,7 @@ generate_report() {
         echo "=== Services Status ==="
         echo "MongoDB: $(systemctl is-active mongod)"
         echo "Nginx: $(systemctl is-active nginx)"
-        echo "PM2 App: $(pm2 list | grep construction-erp-backend | awk '{print $10}' || echo 'not found')"
+        echo "PM2 App: $(pm2 list | grep wingy-erp-backend | awk '{print $10}' || echo 'not found')"
         echo ""
         
         echo "=== Application Health ==="

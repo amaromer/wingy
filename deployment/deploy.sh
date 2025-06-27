@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Construction ERP Deployment Script
-# This script automates the deployment process for the Construction ERP system
+# Wingy ERP Deployment Script
+# This script automates the deployment process for the Wingy ERP system
 
 set -e  # Exit on any error
 
@@ -132,7 +132,7 @@ restart_services() {
     log "Restarting services..."
     
     # Restart PM2 application
-    pm2 reload construction-erp-backend || pm2 start construction-erp-backend
+    pm2 reload wingy-erp-backend || pm2 start wingy-erp-backend
     
     # Save PM2 configuration
     pm2 save
@@ -209,7 +209,7 @@ rollback() {
     log "Rolling back to: $LATEST_BACKUP"
     
     # Stop services
-    pm2 stop construction-erp-backend || true
+    pm2 stop wingy-erp-backend || true
     
     # Restore from backup
     rm -rf "$PROJECT_PATH"/*
