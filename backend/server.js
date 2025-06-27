@@ -17,6 +17,9 @@ const dashboardRoutes = require('./routes/dashboard');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for rate limiting behind Nginx
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 
@@ -78,7 +81,7 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/construction_erp')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/wingy_erp')
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, '0.0.0.0', () => {
