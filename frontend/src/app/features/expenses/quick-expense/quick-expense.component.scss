@@ -1,0 +1,693 @@
+.quick-expense-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    margin: 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h2 {
+    color: #1f2937;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .form-subtitle {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+// Quick Actions Section
+.quick-actions {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+
+  h3 {
+    color: #374151;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .quick-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+  }
+
+  .quick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 80px;
+
+    &:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .quick-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .quick-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      text-align: center;
+    }
+
+    // Specific button styles
+    &.fuel {
+      border-color: #f59e0b;
+      &:hover { border-color: #d97706; background: #fef3c7; }
+    }
+
+    &.meals {
+      border-color: #10b981;
+      &:hover { border-color: #059669; background: #d1fae5; }
+    }
+
+    &.materials {
+      border-color: #6366f1;
+      &:hover { border-color: #4f46e5; background: #e0e7ff; }
+    }
+
+    &.tools {
+      border-color: #f97316;
+      &:hover { border-color: #ea580c; background: #fed7aa; }
+    }
+
+    &.labor {
+      border-color: #8b5cf6;
+      &:hover { border-color: #7c3aed; background: #ede9fe; }
+    }
+  }
+}
+
+// Form Sections
+.form-section {
+  margin-bottom: 2rem;
+
+  &.amount-section {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 3px solid #f59e0b;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+
+    @media (max-width: 768px) {
+      padding: 1.5rem;
+    }
+
+    .amount-group {
+      margin-bottom: 0;
+    }
+  }
+
+  &.essential-fields {
+    background: #f0f9ff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #0ea5e9;
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+
+  &.required-selections {
+    background: #fefce8;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #eab308;
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+
+  &.file-upload-section {
+    background: #fef2f2;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #ef4444;
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+}
+
+.form-row {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  input, select, textarea {
+    padding: 0.75rem;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.error {
+      border-color: #ef4444;
+    }
+
+    @media (max-width: 768px) {
+      padding: 0.875rem;
+      font-size: 16px; // Prevents zoom on iOS
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+}
+
+// Amount Input Styling
+.amount-input-container {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 3px solid #f59e0b;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: #d97706;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .currency-selector {
+    background: #f59e0b;
+    padding: 0.5rem;
+    border-right: 2px solid #d97706;
+
+    .currency-select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.5rem;
+      min-width: 60px;
+      text-align: center;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+
+      option {
+        background: #fff;
+        color: #374151;
+      }
+    }
+  }
+
+  .amount-input-wrapper {
+    position: relative;
+    flex: 1;
+    background: #fff;
+
+    .amount-input {
+      width: 100%;
+      border: none;
+      border-radius: 0;
+      padding: 1rem 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: right;
+      background: transparent;
+      color: #1f2937;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+        border: none;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 1.25rem;
+        padding: 1rem;
+      }
+    }
+
+    .amount-placeholder {
+      position: absolute;
+      top: 50%;
+      right: 1.5rem;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 1.5rem;
+      font-weight: 600;
+      pointer-events: none;
+
+      @media (max-width: 768px) {
+        font-size: 1.25rem;
+        right: 1rem;
+      }
+    }
+  }
+}
+
+// File Upload Styling
+.file-upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  background: #f9fafb;
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: #3b82f6;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+
+  .file-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .file-input-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #f3f4f6;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      color: #6b7280;
+    }
+
+    .upload-text {
+      color: #374151;
+      font-weight: 500;
+    }
+  }
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+
+  .file-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .file-name {
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .file-size {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+
+  .btn-remove {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #fef2f2;
+    }
+  }
+}
+
+.file-preview {
+  margin-bottom: 1rem;
+
+  .preview-image {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .preview-pdf {
+    color: #3b82f6;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 1rem;
+    background: #eff6ff;
+    border-radius: 8px;
+    border: 1px solid #dbeafe;
+  }
+}
+
+.file-help {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+// Error Messages
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+// Alerts
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+
+  &.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+  }
+
+  &.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+  }
+}
+
+// Loading Overlay
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: #6b7280;
+    font-weight: 500;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Form Actions
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 2px solid #e5e7eb;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+
+  .btn {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &.btn-primary {
+      background: #3b82f6;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+
+    &.btn-secondary {
+      background: #6b7280;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #4b5563;
+      }
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .quick-expense-container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .quick-actions {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+  }
+
+  .form-actions {
+    padding-top: 0.75rem;
+  }
+}
+
+// Touch-friendly improvements
+@media (hover: none) and (pointer: coarse) {
+  .quick-btn {
+    min-height: 90px;
+    padding: 1.25rem 0.75rem;
+
+    .quick-icon {
+      font-size: 1.75rem;
+    }
+
+    .quick-text {
+      font-size: 1rem;
+    }
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    min-height: 48px;
+  }
+
+  input, select, textarea {
+    min-height: 48px;
+  }
+
+  .file-input-label {
+    min-height: 80px;
+    justify-content: center;
+  }
+
+  .amount-input-container {
+    .amount-input {
+      min-height: 60px;
+    }
+  }
+}
+
+// VAT Checkbox Styles
+.vat-group {
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f0fdf4;
+    border: 2px solid #22c55e;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+  }
+
+  .vat-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: #22c55e;
+    cursor: pointer;
+    margin: 0;
+
+    &:checked {
+      background-color: #22c55e;
+      border-color: #22c55e;
+    }
+  }
+
+  .vat-label {
+    font-weight: 600;
+    color: #166534;
+    cursor: pointer;
+    margin: 0;
+    font-size: 1rem;
+    user-select: none;
+
+    &:hover {
+      color: #15803d;
+    }
+  }
+}
+
+// Mobile responsive adjustments for VAT checkbox
+@media (max-width: 768px) {
+  .vat-group {
+    .checkbox-wrapper {
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .vat-checkbox {
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+
+    .vat-label {
+      font-size: 0.875rem;
+    }
+  }
+} 

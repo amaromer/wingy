@@ -1,0 +1,261 @@
+<div class="quick-expense-container">
+  <div class="form-header">
+    <h2>{{ 'EXPENSE.QUICK_TITLE' | translate }}</h2>
+    <p class="form-subtitle">{{ 'EXPENSE.QUICK_SUBTITLE' | translate }}</p>
+  </div>
+
+  <!-- Quick Action Buttons -->
+  <div class="quick-actions">
+    <h3>{{ 'EXPENSE.QUICK_ACTIONS' | translate }}</h3>
+    <div class="quick-buttons">
+      <button type="button" class="quick-btn fuel" (click)="setQuickExpense('fuel')">
+        <span class="quick-icon">⛽</span>
+        <span class="quick-text">{{ 'EXPENSE.QUICK.FUEL' | translate }}</span>
+      </button>
+      <button type="button" class="quick-btn meals" (click)="setQuickExpense('meals')">
+        <span class="quick-icon">🍽️</span>
+        <span class="quick-text">{{ 'EXPENSE.QUICK.MEALS' | translate }}</span>
+      </button>
+      <button type="button" class="quick-btn materials" (click)="setQuickExpense('materials')">
+        <span class="quick-icon">🧱</span>
+        <span class="quick-text">{{ 'EXPENSE.QUICK.MATERIALS' | translate }}</span>
+      </button>
+      <button type="button" class="quick-btn tools" (click)="setQuickExpense('tools')">
+        <span class="quick-icon">🔧</span>
+        <span class="quick-text">{{ 'EXPENSE.QUICK.TOOLS' | translate }}</span>
+      </button>
+      <button type="button" class="quick-btn labor" (click)="setQuickExpense('labor')">
+        <span class="quick-icon">👷</span>
+        <span class="quick-text">{{ 'EXPENSE.QUICK.LABOR' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <form [formGroup]="quickExpenseForm" (ngSubmit)="onSubmit()" class="quick-expense-form" *ngIf="!loading">
+    <!-- Amount Section - Prominent -->
+    <div class="form-section amount-section">
+      <div class="form-group amount-group">
+        <label for="amount">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }} *</label>
+        <div class="amount-input-container">
+          <div class="currency-selector">
+            <select formControlName="currency" class="currency-select">
+              <option *ngFor="let currency of currencies" [value]="currency.code">
+                {{ currency.symbol }}
+              </option>
+            </select>
+          </div>
+          <div class="amount-input-wrapper">
+            <input 
+              type="number" 
+              id="amount" 
+              formControlName="amount"
+              [class.error]="quickExpenseForm.get('amount')?.invalid && quickExpenseForm.get('amount')?.touched"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              class="amount-input"
+              autocomplete="off"
+            >
+          </div>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('amount')">
+          {{ getFieldError('amount')! | translate }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Essential Fields -->
+    <div class="form-section essential-fields">
+      <div class="form-row">
+        <div class="form-group description-group">
+          <label for="description">{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }} *</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            rows="2"
+            [class.error]="quickExpenseForm.get('description')?.invalid && quickExpenseForm.get('description')?.touched"
+            [placeholder]="'EXPENSE.PLACEHOLDERS.DESCRIPTION' | translate"
+          ></textarea>
+          <div class="error-message" *ngIf="getFieldError('description')">
+            {{ getFieldError('description')! | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group date-group">
+          <label for="date">{{ 'EXPENSE.FIELDS.DATE' | translate }} *</label>
+          <input 
+            type="date" 
+            id="date" 
+            formControlName="date"
+            [class.error]="quickExpenseForm.get('date')?.invalid && quickExpenseForm.get('date')?.touched"
+          >
+          <div class="error-message" *ngIf="getFieldError('date')">
+            {{ getFieldError('date')! | translate }}
+          </div>
+        </div>
+
+        <div class="form-group invoice-group">
+          <label for="invoice_number">{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
+          <input 
+            type="text" 
+            id="invoice_number" 
+            formControlName="invoice_number"
+            [placeholder]="'EXPENSE.PLACEHOLDERS.INVOICE' | translate"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group vat-group">
+          <div class="checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              id="is_vat" 
+              formControlName="is_vat"
+              class="vat-checkbox"
+            >
+            <label for="is_vat" class="vat-label">
+              {{ 'EXPENSE.FIELDS.IS_VAT' | translate }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Required Selections -->
+    <div class="form-section required-selections">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="project_id">{{ 'EXPENSE.FIELDS.PROJECT' | translate }} *</label>
+          <select 
+            id="project_id" 
+            formControlName="project_id"
+            [class.error]="quickExpenseForm.get('project_id')?.invalid && quickExpenseForm.get('project_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_PROJECT' | translate }}</option>
+            <option *ngFor="let project of projects" [value]="project._id">
+              {{ project.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('project_id')">
+            {{ getFieldError('project_id')! | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="category_id">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
+          <select 
+            id="category_id" 
+            formControlName="category_id"
+            [class.error]="quickExpenseForm.get('category_id')?.invalid && quickExpenseForm.get('category_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_CATEGORY' | translate }}</option>
+            <option *ngFor="let category of categories" [value]="category._id">
+              {{ category.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('category_id')">
+            {{ getFieldError('category_id')! | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
+          <select 
+            id="supplier_id" 
+            formControlName="supplier_id"
+            [class.error]="quickExpenseForm.get('supplier_id')?.invalid && quickExpenseForm.get('supplier_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_SUPPLIER' | translate }}</option>
+            <option *ngFor="let supplier of suppliers" [value]="supplier._id">
+              {{ supplier.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('supplier_id')">
+            {{ getFieldError('supplier_id')! | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Upload Section -->
+    <div class="form-section file-upload-section">
+      <div class="form-group">
+        <label>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</label>
+        <div class="file-upload-area">
+          <div class="file-input-wrapper">
+            <input 
+              type="file" 
+              id="file-input"
+              (change)="onFileSelected($event)"
+              accept="image/*,.pdf"
+              class="file-input"
+            >
+            <label for="file-input" class="file-input-label">
+              <span class="upload-icon">📎</span>
+              <span class="upload-text">{{ 'EXPENSE.UPLOAD_FILE' | translate }}</span>
+            </label>
+          </div>
+          
+          <div class="file-info" *ngIf="selectedFile">
+            <div class="file-details">
+              <span class="file-name">{{ selectedFile.name }}</span>
+              <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+            </div>
+            <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
+              🗑️
+            </button>
+          </div>
+          
+          <div class="file-preview" *ngIf="filePreview">
+            <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
+            <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
+              📄 PDF Document
+            </div>
+          </div>
+          
+          <p class="file-help">
+            {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="quickExpenseForm.invalid || submitting"
+      >
+        <span class="spinner" *ngIf="submitting"></span>
+        {{ 'EXPENSE.QUICK.SUBMIT' | translate }}
+      </button>
+    </div>
+  </form>
+</div> 

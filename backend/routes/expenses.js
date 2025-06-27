@@ -18,7 +18,7 @@ const expenseValidation = [
   body('supplier_id').isMongoId().withMessage('Valid supplier ID is required'),
   body('category_id').isMongoId().withMessage('Valid category ID is required'),
   body('amount').isFloat({ min: 0 }).withMessage('Amount must be a positive number'),
-  body('currency').isIn(['USD', 'EUR', 'GBP', 'CAD', 'AUD']).withMessage('Invalid currency'),
+  body('currency').isIn(['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'AED', 'SAR', 'QAR', 'KWD', 'BHD', 'OMR', 'JOD']).withMessage('Invalid currency'),
   body('date').isISO8601().withMessage('Date must be a valid date'),
   body('description').trim().isLength({ min: 1, max: 500 }).withMessage('Description is required and must be less than 500 characters'),
   body('invoice_number').optional().trim().isLength({ max: 50 }).withMessage('Invoice number must be less than 50 characters')

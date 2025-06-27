@@ -200,77 +200,98 @@ html body div.app-container.rtl > main.main-content {
 .close-sidebar {
   background: none;
   border: none;
-  font-size: 1.5rem;
   color: var(--text-secondary);
+  font-size: 1.2rem;
   cursor: pointer;
   padding: 0.25rem;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
   
   &:hover {
-    background: var(--bg-tertiary);
+    background: var(--bg-hover);
     color: var(--text-primary);
   }
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-md);
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    &.active {
+      background: var(--primary-color);
+      color: var(--text-on-primary);
+    }
+    
+    .nav-icon {
+      margin-right: var(--spacing-md);
+      font-size: 1.1rem;
+    }
+  }
+  
+  // Quick Expense Button - Prominent styling
+  .quick-expense-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: 2px solid #ff6b6b !important;
+    margin-bottom: var(--spacing-md) !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, #ee5a24, #ff6b6b) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4) !important;
+    }
+    
+    &:active {
+      transform: translateY(0) !important;
+    }
+    
+    .nav-icon {
+      font-size: 1.2rem !important;
+      animation: pulse 2s infinite !important;
+    }
+  }
+  
+  // Master Data Section
+  .nav-section {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+    
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-sm);
+      padding: 0 var(--spacing-md);
+    }
+  }
 }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg);
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  font-size: 14px;
-  cursor: pointer;
-  min-height: 48px; /* Touch-friendly height */
-  border-radius: 0;
-  margin: 0;
-  
-  &:hover {
-    background-color: var(--bg-accent);
-    color: var(--primary-color);
-    border-right: 3px solid var(--primary-color);
-  }
-  
-  &.active {
-    background-color: var(--primary-color);
-    color: var(--text-on-primary);
-    border-right: 3px solid var(--primary-dark);
-    box-shadow: var(--shadow-primary);
-  }
-  
-  .nav-icon {
-    margin-right: var(--spacing-md);
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
-  }
-}
-
-.sidebar-footer {
-  padding: var(--spacing-md) 0;
-  border-top: 1px solid var(--border-color);
-  flex-shrink: 0;
-  background: var(--bg-secondary);
-}
-
-.logout-btn {
-  color: var(--danger-color) !important;
-  
-  &:hover {
-    background-color: rgba(239, 68, 68, 0.1) !important;
-    color: var(--danger-color) !important;
-  }
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .main-content {

@@ -24,6 +24,7 @@ export class ExpenseFormComponent implements OnInit {
   error = '';
   success = '';
   isEditMode = false;
+  activeSection = 'basic'; // Default active section
   
   categories: Category[] = [];
   projects: Project[] = [];
@@ -36,6 +37,7 @@ export class ExpenseFormComponent implements OnInit {
 
   // Currency options
   currencies = [
+    { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham' },
     { code: 'USD', symbol: '$', name: 'US Dollar' },
     { code: 'EUR', symbol: '€', name: 'Euro' },
     { code: 'GBP', symbol: '£', name: 'British Pound' },
@@ -58,10 +60,11 @@ export class ExpenseFormComponent implements OnInit {
       supplier_id: ['', [Validators.required]],
       category_id: ['', [Validators.required]],
       amount: [0, [Validators.required, Validators.min(0)]],
-      currency: ['USD', [Validators.required]],
+      currency: ['AED', [Validators.required]],
       date: [today, [Validators.required, this.futureDateValidator()]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
-      invoice_number: ['']
+      invoice_number: [''],
+      is_vat: [false]
     });
   }
 
@@ -131,7 +134,8 @@ export class ExpenseFormComponent implements OnInit {
           currency: expense.currency,
           date: this.formatDateForInput(expense.date),
           description: expense.description,
-          invoice_number: expense.invoice_number || ''
+          invoice_number: expense.invoice_number || '',
+          is_vat: expense.is_vat
         });
         
         if (expense.attachment_url) {
@@ -405,5 +409,10 @@ export class ExpenseFormComponent implements OnInit {
   // Get maximum date (today) for date input
   getMaxDate(): string {
     return new Date().toISOString().split('T')[0];
+  }
+
+  // Accordion functionality
+  toggleSection(section: string): void {
+    this.activeSection = this.activeSection === section ? '' : section;
   }
 } 

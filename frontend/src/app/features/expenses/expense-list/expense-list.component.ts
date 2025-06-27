@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -26,6 +26,10 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   submitting = false;
   error = '';
   success = '';
+  
+  // Mobile support
+  isMobile = false;
+  showFilters = false;
   
   // Pagination
   currentPage = 1;
@@ -64,6 +68,17 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       amount_max: [''],
       currency: ['']
     });
+    
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobile = window.innerWidth < 768;
   }
 
   ngOnInit() {
@@ -75,6 +90,16 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // Mobile filter toggle
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
+  // Quick expense navigation
+  onQuickExpense() {
+    this.router.navigate(['/expenses/quick']);
   }
 
   setupSearch() {

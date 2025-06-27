@@ -5,11 +5,12 @@ export interface Expense {
   supplier_id: string | Supplier;
   category_id: string | Category;
   amount: number;
-  currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD';
+  currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
   date: string;
   description: string;
   invoice_number?: string;
   attachment_url?: string;
+  is_vat?: boolean;
   formattedAmount?: string;
   created_at?: string;
   updated_at?: string;
@@ -20,10 +21,11 @@ export interface CreateExpenseRequest {
   supplier_id: string;
   category_id: string;
   amount: number;
-  currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD';
+  currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
   date: string;
   description: string;
   invoice_number?: string;
+  is_vat?: boolean;
   attachment?: File;
 }
 
@@ -32,10 +34,11 @@ export interface UpdateExpenseRequest {
   supplier_id?: string;
   category_id?: string;
   amount?: number;
-  currency?: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD';
+  currency?: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
   date?: string;
   description?: string;
   invoice_number?: string;
+  is_vat?: boolean;
   attachment?: File;
 }
 

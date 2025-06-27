@@ -28,180 +28,217 @@
   </div>
 
   <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="expense-form" *ngIf="!loading">
-    <!-- Basic Information -->
-    <div class="form-section">
-      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.BASIC_INFO' | translate }}</h3>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="description">{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }} *</label>
-          <textarea 
-            id="description" 
-            formControlName="description" 
-            rows="3"
-            [class.error]="expenseForm.get('description')?.invalid && expenseForm.get('description')?.touched"
-            [placeholder]="'EXPENSE.PLACEHOLDERS.DESCRIPTION' | translate"
-          ></textarea>
-          <div class="error-message" *ngIf="getFieldError('description')">
-            {{ getFieldError('description') | translate }}
-          </div>
+    <!-- Accordion Sections -->
+    <div class="accordion">
+      <!-- Basic Information Section -->
+      <div class="accordion-item" [class.active]="activeSection === 'basic'">
+        <div class="accordion-header" (click)="toggleSection('basic')">
+          <h3 class="section-title">
+            <span class="accordion-icon">{{ activeSection === 'basic' ? '▼' : '▶' }}</span>
+            {{ 'EXPENSE.SECTIONS.BASIC_INFO' | translate }}
+          </h3>
         </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="amount">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }} *</label>
-          <div class="amount-input-group">
-            <select formControlName="currency" class="currency-select">
-              <option *ngFor="let currency of currencies" [value]="currency.code">
-                {{ currency.code }} ({{ currency.symbol }})
-              </option>
-            </select>
-            <input 
-              type="number" 
-              id="amount" 
-              formControlName="amount"
-              [class.error]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
-              placeholder="0.00"
-              min="0"
-              step="0.01"
-              class="amount-input"
-            >
-          </div>
-          <div class="error-message" *ngIf="getFieldError('amount')">
-            {{ getFieldError('amount') | translate }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="date">{{ 'EXPENSE.FIELDS.DATE' | translate }} *</label>
-          <input 
-            type="date" 
-            id="date" 
-            formControlName="date"
-            [max]="getMaxDate()"
-            [class.error]="expenseForm.get('date')?.invalid && expenseForm.get('date')?.touched"
-          >
-          <div class="error-message" *ngIf="getFieldError('date')">
-            {{ getFieldError('date') | translate }}
-          </div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="invoice_number">{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
-          <input 
-            type="text" 
-            id="invoice_number" 
-            formControlName="invoice_number"
-            [placeholder]="'EXPENSE.PLACEHOLDERS.INVOICE' | translate"
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- Related Entities -->
-    <div class="form-section">
-      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.RELATED_ENTITIES' | translate }}</h3>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="project_id">{{ 'EXPENSE.FIELDS.PROJECT' | translate }} *</label>
-          <select 
-            id="project_id" 
-            formControlName="project_id"
-            [class.error]="expenseForm.get('project_id')?.invalid && expenseForm.get('project_id')?.touched"
-          >
-            <option value="">{{ 'EXPENSE.SELECT_PROJECT' | translate }}</option>
-            <option *ngFor="let project of projects" [value]="project._id">
-              {{ project.name }} ({{ project.code }})
-            </option>
-          </select>
-          <div class="error-message" *ngIf="getFieldError('project_id')">
-            {{ getFieldError('project_id') | translate }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="category_id">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
-          <select 
-            id="category_id" 
-            formControlName="category_id"
-            [class.error]="expenseForm.get('category_id')?.invalid && expenseForm.get('category_id')?.touched"
-          >
-            <option value="">{{ 'EXPENSE.SELECT_CATEGORY' | translate }}</option>
-            <option *ngFor="let category of categories" [value]="category._id">
-              {{ category.name }}
-            </option>
-          </select>
-          <div class="error-message" *ngIf="getFieldError('category_id')">
-            {{ getFieldError('category_id') | translate }}
-          </div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
-          <select 
-            id="supplier_id" 
-            formControlName="supplier_id"
-            [class.error]="expenseForm.get('supplier_id')?.invalid && expenseForm.get('supplier_id')?.touched"
-          >
-            <option value="">{{ 'EXPENSE.SELECT_SUPPLIER' | translate }}</option>
-            <option *ngFor="let supplier of suppliers" [value]="supplier._id">
-              {{ supplier.name }}
-            </option>
-          </select>
-          <div class="error-message" *ngIf="getFieldError('supplier_id')">
-            {{ getFieldError('supplier_id') | translate }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- File Upload Section -->
-    <div class="form-section">
-      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.ATTACHMENTS' | translate }}</h3>
-      
-      <div class="form-group">
-        <label>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</label>
-        <div class="file-upload-section">
-          <div class="file-input-wrapper">
-            <input 
-              type="file" 
-              id="file-input"
-              (change)="onFileSelected($event)"
-              accept="image/*,.pdf"
-              class="file-input"
-            >
-            <label for="file-input" class="file-input-label">
-              <span class="upload-icon">📎</span>
-              <span class="upload-text">{{ 'EXPENSE.UPLOAD_FILE' | translate }}</span>
-            </label>
-          </div>
-          
-          <div class="file-info" *ngIf="selectedFile">
-            <div class="file-details">
-              <span class="file-name">{{ selectedFile.name }}</span>
-              <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
-            </div>
-            <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
-              🗑️
-            </button>
-          </div>
-          
-          <div class="file-preview" *ngIf="filePreview">
-            <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
-            <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
-              📄 PDF Document
+        <div class="accordion-content" [class.show]="activeSection === 'basic'">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="description">{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }} *</label>
+              <textarea 
+                id="description" 
+                formControlName="description" 
+                rows="3"
+                [class.error]="expenseForm.get('description')?.invalid && expenseForm.get('description')?.touched"
+                [placeholder]="'EXPENSE.PLACEHOLDERS.DESCRIPTION' | translate"
+              ></textarea>
+              <div class="error-message" *ngIf="getFieldError('description')">
+                {{ getFieldError('description') | translate }}
+              </div>
             </div>
           </div>
-          
-          <p class="file-help">
-            {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
-          </p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="amount">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }} *</label>
+              <div class="amount-input-group">
+                <select formControlName="currency" class="currency-select">
+                  <option *ngFor="let currency of currencies" [value]="currency.code">
+                    {{ currency.code }} ({{ currency.symbol }})
+                  </option>
+                </select>
+                <input 
+                  type="number" 
+                  id="amount" 
+                  formControlName="amount"
+                  [class.error]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  class="amount-input"
+                >
+              </div>
+              <div class="error-message" *ngIf="getFieldError('amount')">
+                {{ getFieldError('amount') | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="date">{{ 'EXPENSE.FIELDS.DATE' | translate }} *</label>
+              <input 
+                type="date" 
+                id="date" 
+                formControlName="date"
+                [max]="getMaxDate()"
+                [class.error]="expenseForm.get('date')?.invalid && expenseForm.get('date')?.touched"
+              >
+              <div class="error-message" *ngIf="getFieldError('date')">
+                {{ getFieldError('date') | translate }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="invoice_number">{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
+              <input 
+                type="text" 
+                id="invoice_number" 
+                formControlName="invoice_number"
+                [placeholder]="'EXPENSE.PLACEHOLDERS.INVOICE' | translate"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <div class="checkbox-wrapper">
+                <input 
+                  type="checkbox" 
+                  id="is_vat" 
+                  formControlName="is_vat"
+                  class="vat-checkbox"
+                >
+                <label for="is_vat" class="vat-label">
+                  {{ 'EXPENSE.FIELDS.IS_VAT' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Entities Section -->
+      <div class="accordion-item" [class.active]="activeSection === 'entities'">
+        <div class="accordion-header" (click)="toggleSection('entities')">
+          <h3 class="section-title">
+            <span class="accordion-icon">{{ activeSection === 'entities' ? '▼' : '▶' }}</span>
+            {{ 'EXPENSE.SECTIONS.RELATED_ENTITIES' | translate }}
+          </h3>
+        </div>
+        <div class="accordion-content" [class.show]="activeSection === 'entities'">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="project_id">{{ 'EXPENSE.FIELDS.PROJECT' | translate }} *</label>
+              <select 
+                id="project_id" 
+                formControlName="project_id"
+                [class.error]="expenseForm.get('project_id')?.invalid && expenseForm.get('project_id')?.touched"
+              >
+                <option value="">{{ 'EXPENSE.SELECT_PROJECT' | translate }}</option>
+                <option *ngFor="let project of projects" [value]="project._id">
+                  {{ project.name }} ({{ project.code }})
+                </option>
+              </select>
+              <div class="error-message" *ngIf="getFieldError('project_id')">
+                {{ getFieldError('project_id') | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="category_id">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
+              <select 
+                id="category_id" 
+                formControlName="category_id"
+                [class.error]="expenseForm.get('category_id')?.invalid && expenseForm.get('category_id')?.touched"
+              >
+                <option value="">{{ 'EXPENSE.SELECT_CATEGORY' | translate }}</option>
+                <option *ngFor="let category of categories" [value]="category._id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <div class="error-message" *ngIf="getFieldError('category_id')">
+                {{ getFieldError('category_id') | translate }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
+              <select 
+                id="supplier_id" 
+                formControlName="supplier_id"
+                [class.error]="expenseForm.get('supplier_id')?.invalid && expenseForm.get('supplier_id')?.touched"
+              >
+                <option value="">{{ 'EXPENSE.SELECT_SUPPLIER' | translate }}</option>
+                <option *ngFor="let supplier of suppliers" [value]="supplier._id">
+                  {{ supplier.name }}
+                </option>
+              </select>
+              <div class="error-message" *ngIf="getFieldError('supplier_id')">
+                {{ getFieldError('supplier_id') | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Upload Section -->
+      <div class="accordion-item" [class.active]="activeSection === 'attachments'">
+        <div class="accordion-header" (click)="toggleSection('attachments')">
+          <h3 class="section-title">
+            <span class="accordion-icon">{{ activeSection === 'attachments' ? '▼' : '▶' }}</span>
+            {{ 'EXPENSE.SECTIONS.ATTACHMENTS' | translate }}
+          </h3>
+        </div>
+        <div class="accordion-content" [class.show]="activeSection === 'attachments'">
+          <div class="form-group">
+            <label>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</label>
+            <div class="file-upload-section">
+              <div class="file-input-wrapper">
+                <input 
+                  type="file" 
+                  id="file-input"
+                  (change)="onFileSelected($event)"
+                  accept="image/*,.pdf"
+                  class="file-input"
+                >
+                <label for="file-input" class="file-input-label">
+                  <span class="upload-icon">📎</span>
+                  <span class="upload-text">{{ 'EXPENSE.UPLOAD_FILE' | translate }}</span>
+                </label>
+              </div>
+              
+              <div class="file-info" *ngIf="selectedFile">
+                <div class="file-details">
+                  <span class="file-name">{{ selectedFile.name }}</span>
+                  <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+                </div>
+                <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
+                  🗑️
+                </button>
+              </div>
+              
+              <div class="file-preview" *ngIf="filePreview">
+                <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
+                <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
+                  📄 PDF Document
+                </div>
+              </div>
+              
+              <p class="file-help">
+                {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/expenses',
     pathMatch: 'full'
   },
   {
@@ -15,6 +15,26 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [authGuard],
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+  },
+  {
+    path: 'expenses',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/expense-list/expense-list.component').then(m => m.ExpenseListComponent)
+  },
+  {
+    path: 'expenses/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
+  },
+  {
+    path: 'expenses/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
+  },
+  {
+    path: 'expenses/quick',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/quick-expense/quick-expense.component').then(m => m.QuickExpenseComponent)
   },
   {
     path: 'projects',
@@ -62,21 +82,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
   },
   {
-    path: 'expenses',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/expenses/expense-list/expense-list.component').then(m => m.ExpenseListComponent)
-  },
-  {
-    path: 'expenses/create',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
-  },
-  {
-    path: 'expenses/:id/edit',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
-  },
-  {
     path: 'users',
     canActivate: [authGuard],
     loadComponent: () => import('./features/users/user-list/user-list.component').then(m => m.UserListComponent)
@@ -98,6 +103,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/dashboard'
+    redirectTo: '/expenses'
   }
 ]; 

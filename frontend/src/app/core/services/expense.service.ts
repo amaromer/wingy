@@ -63,19 +63,49 @@ export class ExpenseService {
       catchError((error) => {
         console.error('Expense creation error:', error);
         
-        // Log detailed error information for debugging
-        if (error.error) {
-          console.error('Error response:', error.error);
-        }
-        if (error.status) {
-          console.error('HTTP status:', error.status);
-        }
-        if (error.message) {
-          console.error('Error message:', error.message);
+        // Create a more detailed error message
+        let errorMessage = 'Failed to create expense. Please try again.';
+        
+        if (error.status === 0) {
+          errorMessage = 'Network error: Unable to connect to server. Please check your internet connection and try again.';
+        } else if (error.status === 400) {
+          errorMessage = error.error?.message || 'Invalid data provided. Please check your input and try again.';
+        } else if (error.status === 401) {
+          errorMessage = 'Authentication required. Please log in again.';
+        } else if (error.status === 403) {
+          errorMessage = 'Access denied. You do not have permission to create expenses.';
+        } else if (error.status === 404) {
+          errorMessage = 'Service not found. Please contact support.';
+        } else if (error.status === 429) {
+          errorMessage = 'Too many requests. Please wait a moment and try again.';
+        } else if (error.status === 500) {
+          errorMessage = 'Server error. Please try again later or contact support.';
+        } else if (error.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (error.status >= 400) {
+          errorMessage = error.error?.message || 'Request failed. Please try again.';
         }
         
-        // Re-throw the error to be handled by the component
-        return throwError(() => error);
+        // Log detailed error information for debugging
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url,
+          message: error.message,
+          error: error.error
+        });
+        
+        // Create a new error with the improved message
+        const enhancedError = {
+          ...error,
+          error: {
+            ...error.error,
+            message: errorMessage
+          }
+        };
+        
+        // Re-throw the enhanced error
+        return throwError(() => enhancedError);
       })
     );
   }

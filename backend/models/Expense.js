@@ -24,8 +24,8 @@ const expenseSchema = new mongoose.Schema({
   currency: {
     type: String,
     required: [true, 'Currency is required'],
-    enum: ['USD', 'EUR', 'GBP', 'CAD', 'AUD'],
-    default: 'USD'
+    enum: ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'AED', 'SAR', 'QAR', 'KWD', 'BHD', 'OMR', 'JOD'],
+    default: 'AED'
   },
   date: {
     type: Date,
@@ -46,6 +46,10 @@ const expenseSchema = new mongoose.Schema({
   attachment_url: {
     type: String,
     trim: true
+  },
+  is_vat: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
