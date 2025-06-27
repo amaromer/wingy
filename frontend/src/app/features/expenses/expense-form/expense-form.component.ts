@@ -31,6 +31,8 @@ export class ExpenseFormComponent implements OnInit {
   
   selectedFile: File | null = null;
   filePreview: string | null = null;
+  showErrorDetails = false;
+  errorDetails: any = null;
 
   // Currency options
   currencies = [
@@ -190,6 +192,7 @@ export class ExpenseFormComponent implements OnInit {
   onSubmit() {
     if (this.expenseForm.invalid) {
       this.markFormGroupTouched();
+      console.log('Form validation errors:', this.expenseForm.errors);
       return;
     }
 
@@ -204,12 +207,17 @@ export class ExpenseFormComponent implements OnInit {
       expenseData.attachment = this.selectedFile;
     }
 
+    console.log('Submitting expense data:', expenseData);
+    console.log('Form valid:', this.expenseForm.valid);
+    console.log('Form dirty:', this.expenseForm.dirty);
+
     const request = this.isEditMode
       ? this.expenseService.updateExpense(this.expenseId!, expenseData)
       : this.expenseService.createExpense(expenseData);
 
     request.subscribe({
       next: (expense) => {
+        console.log('Expense saved successfully:', expense);
         this.success = this.isEditMode ? 'EXPENSE.SUCCESS.UPDATED' : 'EXPENSE.SUCCESS.CREATED';
         this.submitting = false;
         
@@ -219,20 +227,75 @@ export class ExpenseFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error saving expense:', err);
+        console.error('Error status:', err.status);
+        console.error('Error message:', err.message);
+        console.error('Error response:', err.error);
         
-        // Handle specific backend validation errors
-        if (err.status === 500 && err.error && err.error.message) {
-          if (err.error.message.includes('future')) {
-            this.error = 'EXPENSE.ERRORS.FUTURE_DATE';
-          } else {
-            this.error = 'EXPENSE.ERROR.CREATE_FAILED';
+        // Handle specific backend error messages
+        if (err.error && err.error.message) {
+          const errorMessage = err.error.message;
+          
+          // Store error details for debugging
+          this.errorDetails = err.error;
+          
+          // Handle validation errors
+          if (errorMessage === 'Validation failed' && err.error.errors) {
+            const validationErrors = err.error.errors;
+            if (Array.isArray(validationErrors)) {
+              // Handle express-validator errors
+              this.error = `Validation errors: ${this.formatValidationErrors(validationErrors)}`;
+            } else {
+              // Handle mongoose validation errors
+              this.error = `Validation errors: ${validationErrors.join(', ')}`;
+            }
           }
-        } else {
+          // Handle specific error messages
+          else if (errorMessage.includes('not found')) {
+            this.error = errorMessage;
+          }
+          else if (errorMessage.includes('future')) {
+            this.error = 'EXPENSE.ERRORS.FUTURE_DATE';
+          }
+          else if (errorMessage.includes('Duplicate')) {
+            this.error = 'EXPENSE.ERRORS.DUPLICATE_ENTRY';
+          }
+          else if (errorMessage.includes('Database connection')) {
+            this.error = 'EXPENSE.ERRORS.DATABASE_CONNECTION';
+          }
+          else if (errorMessage.includes('File too large')) {
+            this.error = 'EXPENSE.ERRORS.FILE_TOO_LARGE';
+          }
+          else if (errorMessage.includes('Invalid file type')) {
+            this.error = 'EXPENSE.ERRORS.INVALID_FILE_TYPE';
+          }
+          else {
+            // Use the specific error message from backend
+            this.error = errorMessage;
+          }
+        }
+        // Handle HTTP status errors
+        else if (err.status === 400) {
+          this.error = 'EXPENSE.ERRORS.BAD_REQUEST';
+        }
+        else if (err.status === 401) {
+          this.error = 'EXPENSE.ERRORS.UNAUTHORIZED';
+        }
+        else if (err.status === 403) {
+          this.error = 'EXPENSE.ERRORS.FORBIDDEN';
+        }
+        else if (err.status === 404) {
+          this.error = 'EXPENSE.ERRORS.NOT_FOUND';
+        }
+        else if (err.status === 503) {
+          this.error = 'EXPENSE.ERRORS.SERVICE_UNAVAILABLE';
+        }
+        else {
+          // Fallback to generic error
           this.error = this.isEditMode ? 'EXPENSE.ERROR.UPDATE_FAILED' : 'EXPENSE.ERROR.CREATE_FAILED';
         }
         
         this.submitting = false;
-        setTimeout(() => this.error = '', 5000);
+        setTimeout(() => this.error = '', 8000); // Show error for 8 seconds
       }
     });
   }
@@ -277,6 +340,23 @@ export class ExpenseFormComponent implements OnInit {
     }
 
     return 'COMMON.INVALID';
+  }
+
+  // Format validation errors from backend
+  formatValidationErrors(errors: any[]): string {
+    if (!Array.isArray(errors)) {
+      return '';
+    }
+    
+    return errors.map(error => {
+      if (typeof error === 'string') {
+        return error;
+      }
+      if (error.param && error.msg) {
+        return `${error.param}: ${error.msg}`;
+      }
+      return error;
+    }).join(', ');
   }
 
   formatDateForInput(dateString: string): string {

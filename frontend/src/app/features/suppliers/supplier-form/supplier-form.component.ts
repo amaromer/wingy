@@ -32,8 +32,9 @@ function optionalPhoneValidator(control: AbstractControl): ValidationErrors | nu
 export class SupplierFormComponent implements OnInit {
   supplierForm: FormGroup;
   loading = false;
-  saving = false;
+  submitting = false;
   error = '';
+  success = '';
   isEditMode = false;
   supplierId: string | null = null;
 
@@ -136,8 +137,9 @@ export class SupplierFormComponent implements OnInit {
       return;
     }
 
-    this.saving = true;
+    this.submitting = true;
     this.error = '';
+    this.success = '';
 
     const formData: SupplierFormData = this.supplierForm.value;
     console.log('Form data before cleanup:', formData);
@@ -158,16 +160,19 @@ export class SupplierFormComponent implements OnInit {
 
     request.subscribe({
       next: (supplier) => {
-        this.saving = false;
-        const message = this.isEditMode ? 'SUPPLIERS.MESSAGES.UPDATE_SUCCESS' : 'SUPPLIERS.MESSAGES.CREATE_SUCCESS';
-        alert(message);
-        this.router.navigate(['/suppliers']);
+        this.submitting = false;
+        this.success = this.isEditMode ? 'SUPPLIERS.MESSAGES.UPDATE_SUCCESS' : 'SUPPLIERS.MESSAGES.CREATE_SUCCESS';
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          this.router.navigate(['/suppliers']);
+        }, 1500);
       },
       error: (err) => {
         console.error('Error saving supplier:', err);
         console.error('Error response:', err.error);
         this.error = this.isEditMode ? 'SUPPLIERS.ERROR.UPDATE_FAILED' : 'SUPPLIERS.ERROR.CREATE_FAILED';
-        this.saving = false;
+        this.submitting = false;
       }
     });
   }
@@ -198,11 +203,7 @@ export class SupplierFormComponent implements OnInit {
       }
       if (field.errors?.['maxlength']) {
         const maxLength = field.errors['maxlength'].requiredLength;
-        if (maxLength === 50) return 'FORM.ERROR.MAX_LENGTH_50';
-        if (maxLength === 100) return 'FORM.ERROR.MAX_LENGTH_100';
-        if (maxLength === 200) return 'FORM.ERROR.MAX_LENGTH_200';
-        if (maxLength === 500) return 'FORM.ERROR.MAX_LENGTH_500';
-        return 'FORM.ERROR.MAX_LENGTH_100';
+        return `FORM.ERROR.MAX_LENGTH_${maxLength}`;
       }
       if (field.errors?.['pattern']) {
         return 'FORM.ERROR.INVALID_PHONE';
@@ -213,6 +214,10 @@ export class SupplierFormComponent implements OnInit {
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.supplierForm.get(fieldName);
-    return !!(field?.invalid && field?.touched);
+    return field ? field.invalid && field.touched : false;
+  }
+
+  get pageTitle(): string {
+    return this.isEditMode ? 'SUPPLIERS.EDIT_TITLE' : 'SUPPLIERS.CREATE_TITLE';
   }
 } 

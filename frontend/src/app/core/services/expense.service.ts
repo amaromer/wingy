@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 
 import { 
   Expense, 
@@ -56,7 +56,28 @@ export class ExpenseService {
       }
     });
 
-    return this.http.post<Expense>(this.apiUrl, formData);
+    console.log('Creating expense with data:', expenseData);
+    
+    return this.http.post<Expense>(this.apiUrl, formData).pipe(
+      // Add error handling with detailed logging
+      catchError((error) => {
+        console.error('Expense creation error:', error);
+        
+        // Log detailed error information for debugging
+        if (error.error) {
+          console.error('Error response:', error.error);
+        }
+        if (error.status) {
+          console.error('HTTP status:', error.status);
+        }
+        if (error.message) {
+          console.error('Error message:', error.message);
+        }
+        
+        // Re-throw the error to be handled by the component
+        return throwError(() => error);
+      })
+    );
   }
 
   // Update an existing expense
@@ -75,7 +96,28 @@ export class ExpenseService {
       }
     });
 
-    return this.http.put<Expense>(`${this.apiUrl}/${id}`, formData);
+    console.log('Updating expense with data:', expenseData);
+    
+    return this.http.put<Expense>(`${this.apiUrl}/${id}`, formData).pipe(
+      // Add error handling with detailed logging
+      catchError((error) => {
+        console.error('Expense update error:', error);
+        
+        // Log detailed error information for debugging
+        if (error.error) {
+          console.error('Error response:', error.error);
+        }
+        if (error.status) {
+          console.error('HTTP status:', error.status);
+        }
+        if (error.message) {
+          console.error('Error message:', error.message);
+        }
+        
+        // Re-throw the error to be handled by the component
+        return throwError(() => error);
+      })
+    );
   }
 
   // Delete an expense

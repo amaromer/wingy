@@ -15,6 +15,16 @@
 
   <div class="alert alert-error" *ngIf="error">
     <span>{{ error | translate }}</span>
+    <button 
+      *ngIf="error.includes('Validation errors')" 
+      class="error-details-btn" 
+      (click)="showErrorDetails = !showErrorDetails"
+    >
+      {{ showErrorDetails ? 'Hide Details' : 'Show Details' }}
+    </button>
+    <div *ngIf="showErrorDetails && errorDetails" class="error-details">
+      <pre>{{ errorDetails | json }}</pre>
+    </div>
   </div>
 
   <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="expense-form" *ngIf="!loading">

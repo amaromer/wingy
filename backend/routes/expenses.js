@@ -143,9 +143,17 @@ router.get('/:id', auth, async (req, res) => {
 // @access  Private (Accountant)
 router.post('/', auth, requireAccountant, upload, handleUploadError, expenseValidation, async (req, res) => {
   try {
+    console.log('Creating expense - Request body:', req.body);
+    console.log('Creating expense - Request file:', req.file);
+    console.log('Creating expense - User:', req.user);
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.log('Validation errors:', errors.array());
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: errors.array() 
+      });
     }
 
     const { 
@@ -159,12 +167,22 @@ router.post('/', auth, requireAccountant, upload, handleUploadError, expenseVali
       invoice_number 
     } = req.body;
     
+    console.log('Creating expense - Parsed data:', {
+      project_id, supplier_id, category_id, amount, currency, date, description, invoice_number
+    });
+    
     // Validate that referenced entities exist
     const [project, supplier, category] = await Promise.all([
       Project.findById(project_id),
       Supplier.findById(supplier_id),
       Category.findById(category_id)
     ]);
+    
+    console.log('Creating expense - Found entities:', {
+      project: project ? project.name : null,
+      supplier: supplier ? supplier.name : null,
+      category: category ? category.name : null
+    });
     
     if (!project) {
       return res.status(400).json({ message: 'Project not found' });
@@ -194,7 +212,11 @@ router.post('/', auth, requireAccountant, upload, handleUploadError, expenseVali
       attachment_url
     });
     
+    console.log('Creating expense - Expense object:', expense);
+    
     await expense.save();
+    
+    console.log('Creating expense - Expense saved successfully');
     
     // Populate references for response
     await expense.populate('project_id', 'name code');
@@ -204,7 +226,45 @@ router.post('/', auth, requireAccountant, upload, handleUploadError, expenseVali
     res.status(201).json(expense);
   } catch (error) {
     console.error('Create expense error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Create expense error name:', error.name);
+    console.error('Create expense error message:', error.message);
+    console.error('Create expense error stack:', error.stack);
+    
+    // Handle specific validation errors from mongoose
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: validationErrors 
+      });
+    }
+    
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        message: 'Duplicate expense entry. Please check your data.' 
+      });
+    }
+    
+    // Handle date validation errors
+    if (error.message && error.message.includes('future')) {
+      return res.status(400).json({ 
+        message: 'Expense date cannot be in the future' 
+      });
+    }
+    
+    // Handle database connection errors
+    if (error.name === 'MongoNetworkError' || error.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        message: 'Database connection error. Please try again later.' 
+      });
+    }
+    
+    // Generic server error with more context
+    res.status(500).json({ 
+      message: 'Failed to create expense. Please check your data and try again.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
@@ -279,10 +339,46 @@ router.put('/:id', auth, requireAccountant, upload, handleUploadError, expenseVa
     res.json(expense);
   } catch (error) {
     console.error('Update expense error:', error);
+    
+    // Handle specific validation errors from mongoose
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: validationErrors 
+      });
+    }
+    
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        message: 'Duplicate expense entry. Please check your data.' 
+      });
+    }
+    
+    // Handle date validation errors
+    if (error.message && error.message.includes('future')) {
+      return res.status(400).json({ 
+        message: 'Expense date cannot be in the future' 
+      });
+    }
+    
     if (error.kind === 'ObjectId') {
       return res.status(404).json({ message: 'Expense not found' });
     }
-    res.status(500).json({ message: 'Server error' });
+    
+    // Handle database connection errors
+    if (error.name === 'MongoNetworkError' || error.name === 'MongoServerSelectionError') {
+      return res.status(503).json({ 
+        message: 'Database connection error. Please try again later.' 
+      });
+    }
+    
+    // Generic server error with more context
+    res.status(500).json({ 
+      message: 'Failed to update expense. Please check your data and try again.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 

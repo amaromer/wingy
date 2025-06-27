@@ -43,7 +43,7 @@ import { TranslationService, Language } from '../../../core/services/translation
     .language-label {
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: black;
       margin-right: 0.25rem;
     }
 

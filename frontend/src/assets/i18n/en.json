@@ -282,7 +282,16 @@
     },
     "ERRORS": {
       "AMOUNT_MIN": "Amount must be greater than 0",
-      "FUTURE_DATE": "Expense date cannot be in the future"
+      "FUTURE_DATE": "Expense date cannot be in the future",
+      "DUPLICATE_ENTRY": "This expense already exists. Please check your data.",
+      "DATABASE_CONNECTION": "Database connection error. Please try again later.",
+      "BAD_REQUEST": "Invalid request data. Please check your input.",
+      "UNAUTHORIZED": "You are not authorized to perform this action.",
+      "FORBIDDEN": "Access denied. You don't have permission for this action.",
+      "NOT_FOUND": "The requested resource was not found.",
+      "SERVICE_UNAVAILABLE": "Service temporarily unavailable. Please try again later.",
+      "FILE_TOO_LARGE": "File size too large. Maximum size is 10MB.",
+      "INVALID_FILE_TYPE": "Invalid file type. Please upload supported file types only."
     },
     "CONFIRM": {
       "DELETE_SINGLE": "Are you sure you want to delete this expense?",
@@ -335,6 +344,10 @@
     "TITLE": "Suppliers",
     "LIST_TITLE": "Suppliers",
     "LIST_SUBTITLE": "Manage your construction suppliers and vendors",
+    "CREATE_TITLE": "Create New Supplier",
+    "CREATE_SUBTITLE": "Add a new supplier to your construction network",
+    "EDIT_TITLE": "Edit Supplier",
+    "EDIT_SUBTITLE": "Update supplier information and details",
     "CREATE_NEW": "Add Supplier",
     "CREATE_FIRST": "Add Your First Supplier",
     "EMPTY_TITLE": "No Suppliers Yet",
