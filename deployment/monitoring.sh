@@ -39,7 +39,7 @@ check_system_resources() {
     
     # CPU usage
     CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
-    if [ "$CPU_USAGE" -gt 80 ]; then
+    if (( $(echo "$CPU_USAGE > 80" | bc -l 2>/dev/null || echo "0") )); then
         warning "High CPU usage: ${CPU_USAGE}%"
     else
         info "CPU usage: ${CPU_USAGE}%"
@@ -69,8 +69,8 @@ check_mongodb() {
     if systemctl is-active --quiet mongod; then
         info "MongoDB is running"
         
-        # Check MongoDB connection
-        if mongo --eval "db.adminCommand('ping')" > /dev/null 2>&1; then
+        # Check MongoDB connection using mongosh
+        if mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; then
             info "MongoDB connection is healthy"
         else
             error "MongoDB connection failed"
