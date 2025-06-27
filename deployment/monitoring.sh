@@ -6,7 +6,7 @@
 # Configuration
 PROJECT_NAME="wingy-erp"
 PROJECT_PATH="/var/www/$PROJECT_NAME"
-LOG_FILE="/var/log/monitoring.log"
+LOG_FILE="/var/www/wingy-erp/monitoring.log"
 ALERT_EMAIL="admin@your-domain.com"
 
 # Colors for output
@@ -39,7 +39,7 @@ check_system_resources() {
     
     # CPU usage
     CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
-    if (( $(echo "$CPU_USAGE > 80" | bc -l) )); then
+    if [ "$CPU_USAGE" -gt 80 ]; then
         warning "High CPU usage: ${CPU_USAGE}%"
     else
         info "CPU usage: ${CPU_USAGE}%"
@@ -47,7 +47,7 @@ check_system_resources() {
     
     # Memory usage
     MEMORY_USAGE=$(free | grep Mem | awk '{printf "%.2f", $3/$2 * 100.0}')
-    if (( $(echo "$MEMORY_USAGE > 85" | bc -l) )); then
+    if (( $(echo "$MEMORY_USAGE > 85" | bc -l 2>/dev/null || echo "0") )); then
         warning "High memory usage: ${MEMORY_USAGE}%"
     else
         info "Memory usage: ${MEMORY_USAGE}%"
@@ -103,16 +103,18 @@ check_pm2() {
     log "Checking PM2 application status..."
     
     if pm2 list | grep -q "wingy-erp-backend"; then
-        PM2_STATUS=$(pm2 jlist | jq -r '.[] | select(.name=="wingy-erp-backend") | .pm2_env.status')
+        # Get PM2 status - check if all instances are online
+        ONLINE_COUNT=$(pm2 list | grep "wingy-erp-backend" | grep -c "online")
+        TOTAL_COUNT=$(pm2 list | grep "wingy-erp-backend" | wc -l)
         
-        if [ "$PM2_STATUS" = "online" ]; then
-            info "PM2 application is online"
+        if [ "$ONLINE_COUNT" -eq "$TOTAL_COUNT" ] && [ "$TOTAL_COUNT" -gt 0 ]; then
+            info "PM2 application is online ($ONLINE_COUNT/$TOTAL_COUNT instances)"
         else
-            error "PM2 application is not online (status: $PM2_STATUS)"
+            error "PM2 application is not fully online ($ONLINE_COUNT/$TOTAL_COUNT instances)"
         fi
         
         # Check PM2 logs for errors
-        ERROR_COUNT=$(pm2 logs wingy-erp-backend --lines 100 | grep -c "ERROR" || echo "0")
+        ERROR_COUNT=$(pm2 logs wingy-erp-backend --lines 100 2>/dev/null | grep -c "ERROR" || echo "0")
         if [ "$ERROR_COUNT" -gt 0 ]; then
             warning "Found $ERROR_COUNT errors in PM2 logs"
         fi
@@ -140,8 +142,8 @@ check_endpoints() {
     fi
     
     # Check SSL certificate
-    if [ -f "/etc/letsencrypt/live/your-domain.com/fullchain.pem" ]; then
-        CERT_EXPIRY=$(openssl x509 -enddate -noout -in /etc/letsencrypt/live/your-domain.com/fullchain.pem | cut -d= -f2)
+    if [ -f "/etc/letsencrypt/live/wingyerp.com/fullchain.pem" ]; then
+        CERT_EXPIRY=$(openssl x509 -enddate -noout -in /etc/letsencrypt/live/wingyerp.com/fullchain.pem | cut -d= -f2)
         DAYS_LEFT=$(( ($(date -d "$CERT_EXPIRY" +%s) - $(date +%s)) / 86400 ))
         
         if [ "$DAYS_LEFT" -lt 30 ]; then
