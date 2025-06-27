@@ -29,7 +29,11 @@
     "ALL": "All",
     "ACTIONS": "Actions",
     "SHOWING": "Showing",
-    "OF": "of"
+    "OF": "of",
+    "REQUIRED": "This field is required",
+    "MIN_LENGTH": "Minimum length not met",
+    "MAX_LENGTH": "Maximum length exceeded",
+    "INVALID": "Invalid value"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -195,6 +199,100 @@
     },
     "PHASE": "Phase",
     "TEAM_MEMBER": "Team Member"
+  },
+  "EXPENSE": {
+    "LIST_TITLE": "Expense Management",
+    "LIST_SUBTITLE": "Track and manage all your construction expenses",
+    "CREATE_TITLE": "Create New Expense",
+    "CREATE_SUBTITLE": "Add a new expense to your project",
+    "EDIT_TITLE": "Edit Expense",
+    "EDIT_SUBTITLE": "Update expense information and details",
+    "CREATE_NEW": "Create New Expense",
+    "CREATE_FIRST": "Create Your First Expense",
+    "EMPTY_TITLE": "No Expenses Yet",
+    "EMPTY_MESSAGE": "Get started by creating your first expense record.",
+    "NO_RESULTS_TITLE": "No Expenses Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search or filter criteria.",
+    "SEARCH_PLACEHOLDER": "Search expenses by description, invoice number, or supplier...",
+    "SELECT_PROJECT": "Select Project",
+    "SELECT_CATEGORY": "Select Category",
+    "SELECT_SUPPLIER": "Select Supplier",
+    "UPLOAD_FILE": "Upload File",
+    "FILE_HELP": "Supported file types",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load expenses. Please try again.",
+      "CREATE_FAILED": "Failed to create expense. Please try again.",
+      "UPDATE_FAILED": "Failed to update expense. Please try again.",
+      "DELETE_FAILED": "Failed to delete expense. Please try again.",
+      "BULK_DELETE_FAILED": "Failed to delete selected expenses. Please try again.",
+      "INVALID_FILE_TYPE": "Invalid file type. Please upload JPEG, PNG, GIF, or PDF files only.",
+      "FILE_TOO_LARGE": "File size too large. Maximum size is 10MB.",
+      "FUTURE_DATE": "Expense date cannot be in the future"
+    },
+    "SUCCESS": {
+      "CREATED": "Expense created successfully!",
+      "UPDATED": "Expense updated successfully!",
+      "DELETED": "Expense deleted successfully!",
+      "BULK_DELETED": "Selected expenses deleted successfully!"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "RELATED_ENTITIES": "Related Entities",
+      "ATTACHMENTS": "Attachments"
+    },
+    "FIELDS": {
+      "DESCRIPTION": "Description",
+      "AMOUNT": "Amount",
+      "CURRENCY": "Currency",
+      "DATE": "Date",
+      "PROJECT": "Project",
+      "CATEGORY": "Category",
+      "SUPPLIER": "Supplier",
+      "INVOICE": "Invoice Number",
+      "ATTACHMENT": "Attachment"
+    },
+    "PLACEHOLDERS": {
+      "DESCRIPTION": "Enter expense description",
+      "INVOICE": "Enter invoice number (optional)"
+    },
+    "ACTIONS": {
+      "CREATE": "Create Expense",
+      "VIEW": "View Details",
+      "EDIT": "Edit Expense",
+      "DELETE": "Delete Expense"
+    },
+    "FILTERS": {
+      "PROJECT": "Filter by Project",
+      "CATEGORY": "Filter by Category",
+      "SUPPLIER": "Filter by Supplier",
+      "CURRENCY": "Filter by Currency",
+      "DATE_FROM": "Date From",
+      "DATE_TO": "Date To",
+      "AMOUNT_MIN": "Minimum Amount",
+      "AMOUNT_MAX": "Maximum Amount",
+      "ALL_PROJECTS": "All Projects",
+      "ALL_CATEGORIES": "All Categories",
+      "ALL_SUPPLIERS": "All Suppliers",
+      "ALL_CURRENCIES": "All Currencies",
+      "CLEAR": "Clear Filters"
+    },
+    "BULK": {
+      "SELECTED": "{{count}} expense(s) selected",
+      "DELETE": "Delete Selected"
+    },
+    "ERRORS": {
+      "AMOUNT_MIN": "Amount must be greater than 0",
+      "FUTURE_DATE": "Expense date cannot be in the future"
+    },
+    "CONFIRM": {
+      "DELETE_SINGLE": "Are you sure you want to delete this expense?",
+      "DELETE_MULTIPLE": "Are you sure you want to delete {{count}} expense(s)?"
+    },
+    "UNKNOWN": {
+      "PROJECT": "Unknown Project",
+      "CATEGORY": "Unknown Category",
+      "SUPPLIER": "Unknown Supplier"
+    }
   },
   "ALL_STATUSES": "All Statuses",
   "FORM": {
@@ -401,17 +499,165 @@
   },
   "USERS": {
     "TITLE": "Users",
-    "ADD_USER": "Add User",
-    "EDIT_USER": "Edit User",
-    "USER_NAME": "Name",
-    "USER_EMAIL": "Email",
-    "USER_ROLE": "Role",
-    "USER_STATUS": "Status",
-    "ADMIN": "Admin",
-    "MANAGER": "Manager",
-    "USER": "User",
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive"
+    "LIST_TITLE": "User Management",
+    "LIST_SUBTITLE": "Manage system users and their permissions",
+    "CREATE_TITLE": "Create New User",
+    "CREATE_SUBTITLE": "Add a new user to the system",
+    "EDIT_TITLE": "Edit User",
+    "EDIT_SUBTITLE": "Update user information and permissions",
+    "CREATE_NEW": "Add New User",
+    "CREATE_FIRST": "Add Your First User",
+    "EMPTY_TITLE": "No Users Yet",
+    "EMPTY_MESSAGE": "Start by adding your first user to manage the system.",
+    "NO_RESULTS_TITLE": "No Users Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search or filter criteria.",
+    "SEARCH_PLACEHOLDER": "Search users by name or email...",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load users. Please try again.",
+      "CREATE_FAILED": "Failed to create user. Please try again.",
+      "UPDATE_FAILED": "Failed to update user. Please try again.",
+      "DELETE_FAILED": "Failed to delete user. Please try again.",
+      "TOGGLE_STATUS_FAILED": "Failed to change user status. Please try again.",
+      "NOT_FOUND": "User not found",
+      "EMAIL_EXISTS": "Email is already in use",
+      "INVALID_PASSWORD": "Password must be at least 6 characters",
+      "CANNOT_DEACTIVATE_SELF": "You cannot deactivate your own account",
+      "CANNOT_DELETE_SELF": "You cannot delete your own account"
+    },
+    "SUCCESS": {
+      "CREATED": "User created successfully!",
+      "UPDATED": "User updated successfully!",
+      "DELETED": "User deleted successfully!",
+      "STATUS_TOGGLED": "User status changed successfully!"
+    },
+    "STATS": {
+      "TOTAL_USERS": "Total Users",
+      "ACTIVE_USERS": "Active Users",
+      "RECENT_LOGINS": "Recent Logins (7 days)",
+      "ADMINISTRATORS": "Administrators"
+    },
+    "ROLES": {
+      "ADMIN": "Admin",
+      "ACCOUNTANT": "Accountant",
+      "ADMIN_DESCRIPTION": "Full system permissions",
+      "ACCOUNTANT_DESCRIPTION": "Manage expenses and budgets"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "ACTIVE_DESCRIPTION": "User can log in and use the system",
+      "INACTIVE_DESCRIPTION": "User cannot log in"
+    },
+    "FIELDS": {
+      "NAME": "Full Name",
+      "NAME_PLACEHOLDER": "Enter full name",
+      "NAME_HELP": "Enter the user's full name",
+      "EMAIL": "Email Address",
+      "EMAIL_PLACEHOLDER": "Enter email address",
+      "EMAIL_HELP": "This email will be used for login",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "Enter password",
+      "PASSWORD_HELP": "Password must be at least 6 characters",
+      "CONFIRM_PASSWORD": "Confirm Password",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter password",
+      "CONFIRM_PASSWORD_HELP": "Re-enter the password for confirmation",
+      "ROLE": "Role",
+      "ROLE_PLACEHOLDER": "Select user role",
+      "ROLE_HELP": "Set the user's permissions in the system",
+      "IS_ACTIVE": "Active Status",
+      "IS_ACTIVE_HELP": "Specify if the user can log in",
+      "LAST_LOGIN": "Last Login",
+      "CREATED_AT": "Created At",
+      "UPDATED_AT": "Updated At"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "SECURITY": "Security & Permissions",
+      "STATUS": "Account Status"
+    },
+    "FILTERS": {
+      "ROLE": "Filter by Role",
+      "STATUS": "Filter by Status",
+      "ALL_ROLES": "All Roles",
+      "ALL_STATUS": "All Status",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "SORT": {
+      "BY": "Sort By",
+      "ORDER": "Sort Order",
+      "ASC": "Ascending",
+      "DESC": "Descending",
+      "NAME": "Name",
+      "EMAIL": "Email",
+      "ROLE": "Role",
+      "STATUS": "Status",
+      "LAST_LOGIN": "Last Login",
+      "CREATED_DATE": "Created Date"
+    },
+    "ACTIONS": {
+      "VIEW": "View Details",
+      "EDIT": "Edit User",
+      "DELETE": "Delete User",
+      "SAVE": "Save User",
+      "CANCEL": "Cancel",
+      "BACK": "Back to List",
+      "ACTIVATE": "Activate User",
+      "DEACTIVATE": "Deactivate User",
+      "RESET_PASSWORD": "Reset Password",
+      "SEND_INVITATION": "Send Invitation"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "User created successfully",
+      "UPDATE_SUCCESS": "User updated successfully",
+      "DELETE_SUCCESS": "User deleted successfully",
+      "DELETE_CONFIRM": "Are you sure you want to delete this user?",
+      "DELETE_WARNING": "This action cannot be undone. All user data will be deleted.",
+      "ACTIVATE_CONFIRM": "Are you sure you want to activate this user?",
+      "DEACTIVATE_CONFIRM": "Are you sure you want to deactivate this user?",
+      "DEACTIVATE_WARNING": "User will not be able to log in after deactivation.",
+      "PASSWORD_MISMATCH": "Passwords do not match",
+      "EMAIL_EXISTS": "Email is already used by another user",
+      "CURRENT_USER": "(You)",
+      "NEVER_LOGGED_IN": "Never logged in"
+    },
+    "PAGINATION": {
+      "SHOWING": "Showing",
+      "TO": "to",
+      "OF": "of",
+      "USERS": "users",
+      "PREVIOUS": "Previous",
+      "NEXT": "Next"
+    },
+    "VALIDATION": {
+      "NAME_REQUIRED": "Name is required",
+      "NAME_MIN_LENGTH": "Name must be at least 2 characters",
+      "NAME_MAX_LENGTH": "Name cannot exceed 100 characters",
+      "EMAIL_REQUIRED": "Email is required",
+      "EMAIL_INVALID": "Please enter a valid email address",
+      "EMAIL_EXISTS": "Email is already in use",
+      "PASSWORD_REQUIRED": "Password is required",
+      "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters",
+      "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
+      "PASSWORD_MISMATCH": "Passwords do not match",
+      "ROLE_REQUIRED": "Role is required",
+      "ROLE_INVALID": "Please select a valid role"
+    },
+    "BULK_ACTIONS": {
+      "SELECT_ALL": "Select All",
+      "SELECTED": "Selected",
+      "BULK_ACTIVATE": "Activate Selected",
+      "BULK_DEACTIVATE": "Deactivate Selected",
+      "BULK_DELETE": "Delete Selected",
+      "NO_SELECTION": "No users selected"
+    },
+    "IMPORT_EXPORT": {
+      "IMPORT_USERS": "Import Users",
+      "EXPORT_USERS": "Export Users",
+      "IMPORT_TEMPLATE": "Download Import Template",
+      "IMPORT_HELP": "You can import users from an Excel or CSV file",
+      "EXPORT_HELP": "Export the user list to an Excel file"
+    }
   },
   "PROFILE": {
     "TITLE": "Profile",

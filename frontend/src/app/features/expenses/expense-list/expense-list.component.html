@@ -1,0 +1,298 @@
+<div class="expense-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ 'EXPENSE.LIST_TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'EXPENSE.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="onCreateExpense()"
+        [disabled]="submitting"
+      >
+        <span class="icon">+</span>
+        {{ 'EXPENSE.ACTIONS.CREATE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [placeholder]="'EXPENSE.SEARCH_PLACEHOLDER' | translate"
+        (input)="onSearchChange($event)"
+        class="search-input"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <form [formGroup]="filterForm" (ngModelChange)="onFilterChange()" class="filters-form">
+      <div class="filters-row">
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.PROJECT' | translate }}</label>
+          <select formControlName="project_id" class="filter-select">
+            <option value="">{{ 'EXPENSE.FILTERS.ALL_PROJECTS' | translate }}</option>
+            <option *ngFor="let project of projects || []" [value]="project._id">
+              {{ project.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.CATEGORY' | translate }}</label>
+          <select formControlName="category_id" class="filter-select">
+            <option value="">{{ 'EXPENSE.FILTERS.ALL_CATEGORIES' | translate }}</option>
+            <option *ngFor="let category of categories || []" [value]="category._id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.SUPPLIER' | translate }}</label>
+          <select formControlName="supplier_id" class="filter-select">
+            <option value="">{{ 'EXPENSE.FILTERS.ALL_SUPPLIERS' | translate }}</option>
+            <option *ngFor="let supplier of suppliers || []" [value]="supplier._id">
+              {{ supplier.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.CURRENCY' | translate }}</label>
+          <select formControlName="currency" class="filter-select">
+            <option value="">{{ 'EXPENSE.FILTERS.ALL_CURRENCIES' | translate }}</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="CAD">CAD</option>
+            <option value="AUD">AUD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.DATE_FROM' | translate }}</label>
+          <input type="date" formControlName="date_from" class="filter-input">
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.DATE_TO' | translate }}</label>
+          <input type="date" formControlName="date_to" class="filter-input">
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.AMOUNT_MIN' | translate }}</label>
+          <input type="number" formControlName="amount_min" class="filter-input" min="0" step="0.01">
+        </div>
+
+        <div class="filter-group">
+          <label>{{ 'EXPENSE.FILTERS.AMOUNT_MAX' | translate }}</label>
+          <input type="number" formControlName="amount_max" class="filter-input" min="0" step="0.01">
+        </div>
+
+        <div class="filter-actions">
+          <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+            {{ 'EXPENSE.FILTERS.CLEAR' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Bulk Actions -->
+  <div class="bulk-actions" *ngIf="selectedExpenses.length > 0">
+    <div class="bulk-info">
+      <span>{{ 'EXPENSE.BULK.SELECTED' | translate: { count: selectedExpenses.length } }}</span>
+    </div>
+    <div class="bulk-buttons">
+      <button 
+        class="btn btn-danger" 
+        (click)="onBulkDelete()"
+        [disabled]="submitting"
+      >
+        {{ 'EXPENSE.BULK.DELETE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Expenses Table -->
+  <div class="table-container" *ngIf="!loading">
+    <table class="expenses-table">
+      <thead>
+        <tr>
+          <th class="checkbox-cell">
+            <input 
+              type="checkbox" 
+              [checked]="selectAll"
+              (change)="onSelectAll()"
+              class="select-all-checkbox"
+            >
+          </th>
+          <th 
+            class="sortable-header"
+            (click)="onSort('description')"
+          >
+            {{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }}
+            <span class="sort-icon" *ngIf="sortField === 'description'">
+              {{ sortOrder === 'asc' ? '↑' : '↓' }}
+            </span>
+          </th>
+          <th 
+            class="sortable-header"
+            (click)="onSort('amount')"
+          >
+            {{ 'EXPENSE.FIELDS.AMOUNT' | translate }}
+            <span class="sort-icon" *ngIf="sortField === 'amount'">
+              {{ sortOrder === 'asc' ? '↑' : '↓' }}
+            </span>
+          </th>
+          <th 
+            class="sortable-header"
+            (click)="onSort('date')"
+          >
+            {{ 'EXPENSE.FIELDS.DATE' | translate }}
+            <span class="sort-icon" *ngIf="sortField === 'date'">
+              {{ sortOrder === 'asc' ? '↑' : '↓' }}
+            </span>
+          </th>
+          <th>{{ 'EXPENSE.FIELDS.PROJECT' | translate }}</th>
+          <th>{{ 'EXPENSE.FIELDS.CATEGORY' | translate }}</th>
+          <th>{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}</th>
+          <th>{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</th>
+          <th class="actions-header">{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let expense of expenses || []" class="expense-row" [class.selected]="selectedExpenses.includes(expense.id)">
+          <td class="checkbox-cell">
+            <input 
+              type="checkbox" 
+              [checked]="selectedExpenses.includes(expense.id)"
+              (change)="onSelectExpense(expense.id)"
+              class="expense-checkbox"
+            >
+          </td>
+          <td class="description-cell">
+            <div class="expense-description">
+              <span class="description-text">{{ expense.description }}</span>
+              <span class="currency-badge">{{ expense.currency }}</span>
+            </div>
+          </td>
+          <td class="amount-cell">
+            <span class="amount-value" [class.negative]="expense.amount < 0">
+              {{ formatCurrency(expense.amount, expense.currency) }}
+            </span>
+          </td>
+          <td class="date-cell">
+            <span class="date-value">{{ formatDate(expense.date) }}</span>
+          </td>
+          <td class="project-cell">
+            <span class="project-name">{{ getProjectName(expense.project_id) }}</span>
+          </td>
+          <td class="category-cell">
+            <span class="category-name">{{ getCategoryName(expense.category_id) }}</span>
+          </td>
+          <td class="supplier-cell">
+            <span class="supplier-name">{{ getSupplierName(expense.supplier_id) }}</span>
+          </td>
+          <td class="invoice-cell">
+            <span class="invoice-number" *ngIf="expense.invoice_number">{{ expense.invoice_number }}</span>
+            <span class="no-invoice" *ngIf="!expense.invoice_number">-</span>
+          </td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button 
+                class="btn btn-icon btn-view" 
+                (click)="onViewExpense(expense.id)"
+                [title]="'EXPENSE.ACTIONS.VIEW' | translate"
+              >
+                👁️
+              </button>
+              <button 
+                class="btn btn-icon btn-edit" 
+                (click)="onEditExpense(expense.id)"
+                [title]="'EXPENSE.ACTIONS.EDIT' | translate"
+              >
+                ✏️
+              </button>
+              <button 
+                class="btn btn-icon btn-delete" 
+                (click)="onDeleteExpense(expense.id)"
+                [disabled]="submitting"
+                [title]="'EXPENSE.ACTIONS.DELETE' | translate"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="expenses.length === 0">
+      <div class="empty-icon">📊</div>
+      <h3>{{ 'EXPENSE.EMPTY_TITLE' | translate }}</h3>
+      <p>{{ 'EXPENSE.EMPTY_MESSAGE' | translate }}</p>
+      <button class="btn btn-primary" (click)="onCreateExpense()">
+        {{ 'EXPENSE.CREATE_FIRST' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <div class="pagination-info">
+      <span>{{ 'COMMON.SHOWING' | translate: { from: (currentPage - 1) * itemsPerPage + 1, to: getMinValue(currentPage * itemsPerPage, totalItems), total: totalItems } }}</span>
+    </div>
+    <div class="pagination-controls">
+      <button 
+        class="btn btn-secondary" 
+        (click)="onPageChange(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        {{ 'COMMON.PREVIOUS' | translate }}
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPageNumbers() || []" 
+          class="btn btn-page" 
+          [class.active]="page === currentPage"
+          [class.disabled]="page === '...'"
+          (click)="onPageClick(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="btn btn-secondary" 
+        (click)="onPageChange(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        {{ 'COMMON.NEXT' | translate }}
+      </button>
+    </div>
+  </div>
+</div> 

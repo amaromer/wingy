@@ -1,7 +1,7 @@
 <div class="expense-form-container">
   <div class="form-header">
-    <h2>{{ (isEditMode ? 'EXPENSE.EDIT_TITLE' : 'EXPENSE.CREATE_TITLE') | translate }}</h2>
-    <p class="form-subtitle">{{ (isEditMode ? 'EXPENSE.EDIT_SUBTITLE' : 'EXPENSE.CREATE_SUBTITLE') | translate }}</p>
+    <h2>{{ isEditMode ? ('EXPENSE.EDIT_TITLE' | translate) : ('EXPENSE.CREATE_TITLE' | translate) }}</h2>
+    <p class="form-subtitle">{{ isEditMode ? ('EXPENSE.EDIT_SUBTITLE' | translate) : ('EXPENSE.CREATE_SUBTITLE' | translate) }}</p>
   </div>
 
   <div class="loading-overlay" *ngIf="loading">
@@ -18,174 +18,185 @@
   </div>
 
   <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="expense-form" *ngIf="!loading">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="title">{{ 'EXPENSE.FIELDS.TITLE' | translate }} *</label>
-        <input 
-          type="text" 
-          id="title" 
-          formControlName="title" 
-          [class.error]="expenseForm.get('title')?.invalid && expenseForm.get('title')?.touched"
-          placeholder="{{ 'EXPENSE.PLACEHOLDERS.TITLE' | translate }}"
-        >
-        <div class="error-message" *ngIf="getFieldError('title')">
-          {{ getFieldError('title') | translate }}
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.BASIC_INFO' | translate }}</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="description">{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }} *</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            rows="3"
+            [class.error]="expenseForm.get('description')?.invalid && expenseForm.get('description')?.touched"
+            [placeholder]="'EXPENSE.PLACEHOLDERS.DESCRIPTION' | translate"
+          ></textarea>
+          <div class="error-message" *ngIf="getFieldError('description')">
+            {{ getFieldError('description') | translate }}
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="amount">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }} *</label>
-        <div class="input-with-prefix">
-          <span class="prefix">$</span>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="amount">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }} *</label>
+          <div class="amount-input-group">
+            <select formControlName="currency" class="currency-select">
+              <option *ngFor="let currency of currencies" [value]="currency.code">
+                {{ currency.code }} ({{ currency.symbol }})
+              </option>
+            </select>
+            <input 
+              type="number" 
+              id="amount" 
+              formControlName="amount"
+              [class.error]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              class="amount-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="getFieldError('amount')">
+            {{ getFieldError('amount') | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="date">{{ 'EXPENSE.FIELDS.DATE' | translate }} *</label>
           <input 
-            type="number" 
-            id="amount" 
-            formControlName="amount"
-            [class.error]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
-            placeholder="0.00"
-            min="0"
-            step="0.01"
+            type="date" 
+            id="date" 
+            formControlName="date"
+            [max]="getMaxDate()"
+            [class.error]="expenseForm.get('date')?.invalid && expenseForm.get('date')?.touched"
+          >
+          <div class="error-message" *ngIf="getFieldError('date')">
+            {{ getFieldError('date') | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="invoice_number">{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
+          <input 
+            type="text" 
+            id="invoice_number" 
+            formControlName="invoice_number"
+            [placeholder]="'EXPENSE.PLACEHOLDERS.INVOICE' | translate"
           >
         </div>
-        <div class="error-message" *ngIf="getFieldError('amount')">
-          {{ getFieldError('amount') | translate }}
-        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="description">{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }} *</label>
-      <textarea 
-        id="description" 
-        formControlName="description" 
-        rows="4"
-        [class.error]="expenseForm.get('description')?.invalid && expenseForm.get('description')?.touched"
-        placeholder="{{ 'EXPENSE.PLACEHOLDERS.DESCRIPTION' | translate }}"
-      ></textarea>
-      <div class="error-message" *ngIf="getFieldError('description')">
-        {{ getFieldError('description') | translate }}
-      </div>
-    </div>
+    <!-- Related Entities -->
+    <div class="form-section">
+      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.RELATED_ENTITIES' | translate }}</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="project_id">{{ 'EXPENSE.FIELDS.PROJECT' | translate }} *</label>
+          <select 
+            id="project_id" 
+            formControlName="project_id"
+            [class.error]="expenseForm.get('project_id')?.invalid && expenseForm.get('project_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_PROJECT' | translate }}</option>
+            <option *ngFor="let project of projects" [value]="project._id">
+              {{ project.name }} ({{ project.code }})
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('project_id')">
+            {{ getFieldError('project_id') | translate }}
+          </div>
+        </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="date">{{ 'EXPENSE.FIELDS.DATE' | translate }} *</label>
-        <input 
-          type="date" 
-          id="date" 
-          formControlName="date"
-          [class.error]="expenseForm.get('date')?.invalid && expenseForm.get('date')?.touched"
-        >
-        <div class="error-message" *ngIf="getFieldError('date')">
-          {{ getFieldError('date') | translate }}
+        <div class="form-group">
+          <label for="category_id">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
+          <select 
+            id="category_id" 
+            formControlName="category_id"
+            [class.error]="expenseForm.get('category_id')?.invalid && expenseForm.get('category_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_CATEGORY' | translate }}</option>
+            <option *ngFor="let category of categories" [value]="category._id">
+              {{ category.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('category_id')">
+            {{ getFieldError('category_id') | translate }}
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="invoice_number">{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</label>
-        <input 
-          type="text" 
-          id="invoice_number" 
-          formControlName="invoice_number"
-          placeholder="{{ 'EXPENSE.PLACEHOLDERS.INVOICE' | translate }}"
-        >
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="category">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
-        <select 
-          id="category" 
-          formControlName="category"
-          [class.error]="expenseForm.get('category')?.invalid && expenseForm.get('category')?.touched"
-        >
-          <option value="">{{ 'EXPENSE.SELECT_CATEGORY' | translate }}</option>
-          <option *ngFor="let category of categories" [value]="category._id">
-            {{ category.name }}
-          </option>
-        </select>
-        <div class="error-message" *ngIf="getFieldError('category')">
-          {{ getFieldError('category') | translate }}
+      <div class="form-row">
+        <div class="form-group">
+          <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
+          <select 
+            id="supplier_id" 
+            formControlName="supplier_id"
+            [class.error]="expenseForm.get('supplier_id')?.invalid && expenseForm.get('supplier_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_SUPPLIER' | translate }}</option>
+            <option *ngFor="let supplier of suppliers" [value]="supplier._id">
+              {{ supplier.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('supplier_id')">
+            {{ getFieldError('supplier_id') | translate }}
+          </div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="project">{{ 'EXPENSE.FIELDS.PROJECT' | translate }} *</label>
-        <select 
-          id="project" 
-          formControlName="project"
-          [class.error]="expenseForm.get('project')?.invalid && expenseForm.get('project')?.touched"
-        >
-          <option value="">{{ 'EXPENSE.SELECT_PROJECT' | translate }}</option>
-          <option *ngFor="let project of projects" [value]="project._id">
-            {{ project.name }}
-          </option>
-        </select>
-        <div class="error-message" *ngIf="getFieldError('project')">
-          {{ getFieldError('project') | translate }}
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="supplier">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
-      <select 
-        id="supplier" 
-        formControlName="supplier"
-        [class.error]="expenseForm.get('supplier')?.invalid && expenseForm.get('supplier')?.touched"
-      >
-        <option value="">{{ 'EXPENSE.SELECT_SUPPLIER' | translate }}</option>
-        <option *ngFor="let supplier of suppliers" [value]="supplier._id">
-          {{ supplier.name }}
-        </option>
-      </select>
-      <div class="error-message" *ngIf="getFieldError('supplier')">
-        {{ getFieldError('supplier') | translate }}
       </div>
     </div>
 
     <!-- File Upload Section -->
-    <div class="form-group">
-      <label>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</label>
-      <div class="file-upload-section">
-        <div class="file-input-wrapper">
-          <input 
-            type="file" 
-            id="file-input"
-            (change)="onFileSelected($event)"
-            accept="image/*,.pdf"
-            class="file-input"
-          >
-          <label for="file-input" class="file-input-label">
-            <span class="upload-icon">📎</span>
-            <span class="upload-text">{{ 'EXPENSE.UPLOAD_FILE' | translate }}</span>
-          </label>
-        </div>
-        
-        <div class="file-info" *ngIf="selectedFile">
-          <div class="file-details">
-            <span class="file-name">{{ selectedFile.name }}</span>
-            <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+    <div class="form-section">
+      <h3 class="section-title">{{ 'EXPENSE.SECTIONS.ATTACHMENTS' | translate }}</h3>
+      
+      <div class="form-group">
+        <label>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</label>
+        <div class="file-upload-section">
+          <div class="file-input-wrapper">
+            <input 
+              type="file" 
+              id="file-input"
+              (change)="onFileSelected($event)"
+              accept="image/*,.pdf"
+              class="file-input"
+            >
+            <label for="file-input" class="file-input-label">
+              <span class="upload-icon">📎</span>
+              <span class="upload-text">{{ 'EXPENSE.UPLOAD_FILE' | translate }}</span>
+            </label>
           </div>
-          <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
-            🗑️
-          </button>
-        </div>
-        
-        <div class="file-preview" *ngIf="filePreview">
-          <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
-          <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
-            📄 PDF Document
+          
+          <div class="file-info" *ngIf="selectedFile">
+            <div class="file-details">
+              <span class="file-name">{{ selectedFile.name }}</span>
+              <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+            </div>
+            <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
+              🗑️
+            </button>
           </div>
+          
+          <div class="file-preview" *ngIf="filePreview">
+            <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
+            <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
+              📄 PDF Document
+            </div>
+          </div>
+          
+          <p class="file-help">
+            {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
+          </p>
         </div>
-        
-        <p class="file-help">
-          {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
-        </p>
       </div>
     </div>
 
+    <!-- Form Actions -->
     <div class="form-actions">
       <button 
         type="button" 
@@ -200,7 +211,7 @@
         class="btn btn-primary" 
         [disabled]="expenseForm.invalid || submitting"
       >
-        <span class="spinner-small" *ngIf="submitting"></span>
+        <span class="spinner" *ngIf="submitting"></span>
         {{ (isEditMode ? 'COMMON.UPDATE' : 'COMMON.CREATE') | translate }}
       </button>
     </div>

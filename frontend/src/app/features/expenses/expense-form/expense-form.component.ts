@@ -5,33 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
-interface Expense {
-  _id?: string;
-  title: string;
-  amount: number;
-  description: string;
-  date: string;
-  category: string;
-  project: string;
-  supplier: string;
-  invoice_number?: string;
-  file_url?: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-}
-
-interface Project {
-  _id: string;
-  name: string;
-}
-
-interface Supplier {
-  _id: string;
-  name: string;
-}
+import { Expense, CreateExpenseRequest, UpdateExpenseRequest, Project, Category, Supplier } from '../../../core/models/expense.model';
+import { ExpenseService } from '../../../core/services/expense.service';
 
 @Component({
   selector: 'app-expense-form',
@@ -57,20 +32,33 @@ export class ExpenseFormComponent implements OnInit {
   selectedFile: File | null = null;
   filePreview: string | null = null;
 
+  // Currency options
+  currencies = [
+    { code: 'USD', symbol: '$', name: 'US Dollar' },
+    { code: 'EUR', symbol: '€', name: 'Euro' },
+    { code: 'GBP', symbol: '£', name: 'British Pound' },
+    { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+    { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private expenseService: ExpenseService
   ) {
+    // Set today's date as default
+    const today = new Date().toISOString().split('T')[0];
+    
     this.expenseForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
+      project_id: ['', [Validators.required]],
+      supplier_id: ['', [Validators.required]],
+      category_id: ['', [Validators.required]],
       amount: [0, [Validators.required, Validators.min(0)]],
-      description: ['', [Validators.required, Validators.minLength(10)]],
-      date: ['', Validators.required],
-      category: ['', Validators.required],
-      project: ['', Validators.required],
-      supplier: ['', Validators.required],
+      currency: ['USD', [Validators.required]],
+      date: [today, [Validators.required, this.futureDateValidator()]],
+      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       invoice_number: ['']
     });
   }
@@ -88,24 +76,42 @@ export class ExpenseFormComponent implements OnInit {
 
   loadFilters() {
     // Load categories
-    this.http.get<Category[]>('/api/categories')
+    this.http.get<any>('/api/categories')
       .subscribe({
-        next: (data) => this.categories = data,
-        error: (err) => console.error('Error loading categories:', err)
+        next: (response) => {
+          console.log('Categories API response:', response);
+          this.categories = Array.isArray(response.categories) ? response.categories : [];
+        },
+        error: (err) => {
+          console.error('Error loading categories:', err);
+          this.categories = [];
+        }
       });
 
     // Load projects
-    this.http.get<Project[]>('/api/projects')
+    this.http.get<any>('/api/projects')
       .subscribe({
-        next: (data) => this.projects = data,
-        error: (err) => console.error('Error loading projects:', err)
+        next: (response) => {
+          console.log('Projects API response:', response);
+          this.projects = Array.isArray(response.projects) ? response.projects : [];
+        },
+        error: (err) => {
+          console.error('Error loading projects:', err);
+          this.projects = [];
+        }
       });
 
     // Load suppliers
     this.http.get<Supplier[]>('/api/suppliers')
       .subscribe({
-        next: (data) => this.suppliers = data,
-        error: (err) => console.error('Error loading suppliers:', err)
+        next: (data) => {
+          console.log('Suppliers API response:', data);
+          this.suppliers = Array.isArray(data) ? data : [];
+        },
+        error: (err) => {
+          console.error('Error loading suppliers:', err);
+          this.suppliers = [];
+        }
       });
   }
 
@@ -113,32 +119,31 @@ export class ExpenseFormComponent implements OnInit {
     if (!this.expenseId) return;
     
     this.loading = true;
-    this.http.get<Expense>(`/api/expenses/${this.expenseId}`)
-      .subscribe({
-        next: (expense) => {
-          this.expenseForm.patchValue({
-            title: expense.title,
-            amount: expense.amount,
-            description: expense.description,
-            date: expense.date,
-            category: expense.category,
-            project: expense.project,
-            supplier: expense.supplier,
-            invoice_number: expense.invoice_number || ''
-          });
-          
-          if (expense.file_url) {
-            this.filePreview = expense.file_url;
-          }
-          
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error loading expense:', err);
-          this.error = 'EXPENSE.ERROR.LOAD_FAILED';
-          this.loading = false;
+    this.expenseService.getExpense(this.expenseId).subscribe({
+      next: (expense) => {
+        this.expenseForm.patchValue({
+          project_id: expense.project_id,
+          supplier_id: expense.supplier_id,
+          category_id: expense.category_id,
+          amount: expense.amount,
+          currency: expense.currency,
+          date: this.formatDateForInput(expense.date),
+          description: expense.description,
+          invoice_number: expense.invoice_number || ''
+        });
+        
+        if (expense.attachment_url) {
+          this.filePreview = expense.attachment_url;
         }
-      });
+        
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading expense:', err);
+        this.error = 'EXPENSE.ERROR.LOAD_FAILED';
+        this.loading = false;
+      }
+    });
   }
 
   onFileSelected(event: any) {
@@ -192,39 +197,42 @@ export class ExpenseFormComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    const formData = new FormData();
     const expenseData = this.expenseForm.value;
-    
-    // Add form fields to FormData
-    Object.keys(expenseData).forEach(key => {
-      if (expenseData[key] !== null && expenseData[key] !== undefined) {
-        formData.append(key, expenseData[key]);
-      }
-    });
     
     // Add file if selected
     if (this.selectedFile) {
-      formData.append('file', this.selectedFile);
+      expenseData.attachment = this.selectedFile;
     }
 
-    const request = this.isEditMode 
-      ? this.http.put<Expense>(`/api/expenses/${this.expenseId}`, formData)
-      : this.http.post<Expense>('/api/expenses', formData);
+    const request = this.isEditMode
+      ? this.expenseService.updateExpense(this.expenseId!, expenseData)
+      : this.expenseService.createExpense(expenseData);
 
     request.subscribe({
       next: (expense) => {
         this.success = this.isEditMode ? 'EXPENSE.SUCCESS.UPDATED' : 'EXPENSE.SUCCESS.CREATED';
         this.submitting = false;
         
-        // Redirect after a short delay
         setTimeout(() => {
           this.router.navigate(['/expenses']);
         }, 1500);
       },
       error: (err) => {
         console.error('Error saving expense:', err);
-        this.error = this.isEditMode ? 'EXPENSE.ERROR.UPDATE_FAILED' : 'EXPENSE.ERROR.CREATE_FAILED';
+        
+        // Handle specific backend validation errors
+        if (err.status === 500 && err.error && err.error.message) {
+          if (err.error.message.includes('future')) {
+            this.error = 'EXPENSE.ERRORS.FUTURE_DATE';
+          } else {
+            this.error = 'EXPENSE.ERROR.CREATE_FAILED';
+          }
+        } else {
+          this.error = this.isEditMode ? 'EXPENSE.ERROR.UPDATE_FAILED' : 'EXPENSE.ERROR.CREATE_FAILED';
+        }
+        
         this.submitting = false;
+        setTimeout(() => this.error = '', 5000);
       }
     });
   }
@@ -242,11 +250,80 @@ export class ExpenseFormComponent implements OnInit {
 
   getFieldError(fieldName: string): string {
     const field = this.expenseForm.get(fieldName);
-    if (field?.errors && field.touched) {
-      if (field.errors['required']) return 'FORM.ERROR.REQUIRED';
-      if (field.errors['minlength']) return `FORM.ERROR.MIN_LENGTH_${field.errors['minlength'].requiredLength}`;
-      if (field.errors['min']) return 'FORM.ERROR.MIN_VALUE';
+    if (!field || !field.errors || !field.touched) {
+      return '';
     }
-    return '';
+
+    const errors = field.errors;
+    
+    if (errors['required']) {
+      return 'COMMON.REQUIRED';
+    }
+    
+    if (errors['minlength']) {
+      return 'COMMON.MIN_LENGTH';
+    }
+    
+    if (errors['maxlength']) {
+      return 'COMMON.MAX_LENGTH';
+    }
+    
+    if (errors['min']) {
+      return 'EXPENSE.ERRORS.AMOUNT_MIN';
+    }
+    
+    if (errors['futureDate']) {
+      return 'EXPENSE.ERRORS.FUTURE_DATE';
+    }
+
+    return 'COMMON.INVALID';
+  }
+
+  formatDateForInput(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  }
+
+  getCurrencySymbol(currencyCode: string): string {
+    return this.expenseService.getCurrencySymbol(currencyCode);
+  }
+
+  getCategoryName(categoryId: string): string {
+    const category = this.categories.find(cat => cat.id === categoryId);
+    return category ? category.name : '';
+  }
+
+  getProjectName(projectId: string): string {
+    const project = this.projects.find(proj => proj.id === projectId);
+    return project ? project.name : '';
+  }
+
+  getSupplierName(supplierId: string): string {
+    const supplier = this.suppliers.find(sup => sup.id === supplierId);
+    return supplier ? supplier.name : '';
+  }
+
+  // Custom validator to prevent future dates
+  private futureDateValidator() {
+    return (control: any) => {
+      if (!control.value) {
+        return null;
+      }
+      
+      const selectedDate = new Date(control.value);
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // End of today
+      
+      if (selectedDate > today) {
+        return { futureDate: true };
+      }
+      
+      return null;
+    };
+  }
+
+  // Get maximum date (today) for date input
+  getMaxDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 } 

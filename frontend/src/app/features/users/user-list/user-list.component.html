@@ -1,0 +1,258 @@
+<div class="user-list-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>{{ 'USERS.LIST_TITLE' | translate }}</h1>
+      <p>{{ 'USERS.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" (click)="createUser()">
+        <i class="fas fa-plus"></i>
+        {{ 'USERS.CREATE_NEW' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalUsers }}</h3>
+        <p>{{ 'USERS.STATS.TOTAL_USERS' | translate }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <i class="fas fa-user-check"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.activeUsers }}</h3>
+        <p>{{ 'USERS.STATS.ACTIVE_USERS' | translate }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon recent">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.recentLogins }}</h3>
+        <p>{{ 'USERS.STATS.RECENT_LOGINS' | translate }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon admin">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ getAdminCount() }}</h3>
+        <p>{{ 'USERS.STATS.ADMINISTRATORS' | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-section">
+    <form [formGroup]="searchForm" class="filters-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="search">{{ 'COMMON.SEARCH' | translate }}</label>
+          <input 
+            type="text" 
+            id="search" 
+            formControlName="search" 
+            [placeholder]="'USERS.SEARCH_PLACEHOLDER' | translate"
+            class="form-control"
+          >
+        </div>
+        <div class="form-group">
+          <label for="role">{{ 'USERS.FIELDS.ROLE' | translate }}</label>
+          <select id="role" formControlName="role" class="form-control">
+            <option value="">{{ 'USERS.FILTERS.ALL_ROLES' | translate }}</option>
+            <option value="Admin">{{ 'USERS.ROLES.ADMIN' | translate }}</option>
+            <option value="Accountant">{{ 'USERS.ROLES.ACCOUNTANT' | translate }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="is_active">{{ 'USERS.FIELDS.IS_ACTIVE' | translate }}</label>
+          <select id="is_active" formControlName="is_active" class="form-control">
+            <option value="">{{ 'USERS.FILTERS.ALL_STATUS' | translate }}</option>
+            <option [value]="true">{{ 'USERS.STATUS.ACTIVE' | translate }}</option>
+            <option [value]="false">{{ 'USERS.STATUS.INACTIVE' | translate }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+            <i class="fas fa-times"></i>
+            {{ 'COMMON.CLEAR_FILTERS' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-danger" *ngIf="error">
+    {{ error | translate }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-container" *ngIf="!loading">
+    <table class="users-table" *ngIf="users.length > 0">
+      <thead>
+        <tr>
+          <th (click)="onSort('name')" class="sortable">
+            {{ 'USERS.FIELDS.NAME' | translate }}
+            <i class="fas fa-sort" *ngIf="filters.sort !== 'name'"></i>
+            <i class="fas fa-sort-up" *ngIf="filters.sort === 'name' && filters.order === 'asc'"></i>
+            <i class="fas fa-sort-down" *ngIf="filters.sort === 'name' && filters.order === 'desc'"></i>
+          </th>
+          <th (click)="onSort('email')" class="sortable">
+            {{ 'USERS.FIELDS.EMAIL' | translate }}
+            <i class="fas fa-sort" *ngIf="filters.sort !== 'email'"></i>
+            <i class="fas fa-sort-up" *ngIf="filters.sort === 'email' && filters.order === 'asc'"></i>
+            <i class="fas fa-sort-down" *ngIf="filters.sort === 'email' && filters.order === 'desc'"></i>
+          </th>
+          <th (click)="onSort('role')" class="sortable">
+            {{ 'USERS.FIELDS.ROLE' | translate }}
+            <i class="fas fa-sort" *ngIf="filters.sort !== 'role'"></i>
+            <i class="fas fa-sort-up" *ngIf="filters.sort === 'role' && filters.order === 'asc'"></i>
+            <i class="fas fa-sort-down" *ngIf="filters.sort === 'role' && filters.order === 'desc'"></i>
+          </th>
+          <th (click)="onSort('is_active')" class="sortable">
+            {{ 'USERS.FIELDS.IS_ACTIVE' | translate }}
+            <i class="fas fa-sort" *ngIf="filters.sort !== 'is_active'"></i>
+            <i class="fas fa-sort-up" *ngIf="filters.sort === 'is_active' && filters.order === 'asc'"></i>
+            <i class="fas fa-sort-down" *ngIf="filters.sort === 'is_active' && filters.order === 'desc'"></i>
+          </th>
+          <th (click)="onSort('last_login')" class="sortable">
+            {{ 'USERS.FIELDS.LAST_LOGIN' | translate }}
+            <i class="fas fa-sort" *ngIf="filters.sort !== 'last_login'"></i>
+            <i class="fas fa-sort-up" *ngIf="filters.sort === 'last_login' && filters.order === 'asc'"></i>
+            <i class="fas fa-sort-down" *ngIf="filters.sort === 'last_login' && filters.order === 'desc'"></i>
+          </th>
+          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users" [class.current-user]="user.id === currentUser?.id">
+          <td>
+            <div class="user-info">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-details">
+                <strong>{{ user.name }}</strong>
+                <small *ngIf="user.id === currentUser?.id">{{ 'USERS.MESSAGES.CURRENT_USER' | translate }}</small>
+              </div>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+              {{ user.role === 'Admin' ? ('USERS.ROLES.ADMIN' | translate) : ('USERS.ROLES.ACCOUNTANT' | translate) }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getStatusBadgeClass(user.is_active)">
+              {{ user.is_active ? ('USERS.STATUS.ACTIVE' | translate) : ('USERS.STATUS.INACTIVE' | translate) }}
+            </span>
+          </td>
+          <td>
+            <span *ngIf="user.last_login; else noLogin">
+              {{ user.last_login | date:'short' }}
+            </span>
+            <ng-template #noLogin>
+              <span class="text-muted">{{ 'USERS.MESSAGES.NEVER_LOGGED_IN' | translate }}</span>
+            </ng-template>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                (click)="editUser(user)"
+                [title]="'USERS.ACTIONS.EDIT' | translate"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button 
+                class="btn btn-sm" 
+                [ngClass]="user.is_active ? 'btn-outline-warning' : 'btn-outline-success'"
+                (click)="toggleUserStatus(user)"
+                [disabled]="user.id === currentUser?.id"
+                [title]="user.is_active ? ('USERS.ACTIONS.DEACTIVATE' | translate) : ('USERS.ACTIONS.ACTIVATE' | translate)"
+              >
+                <i class="fas" [ngClass]="user.is_active ? 'fa-user-slash' : 'fa-user-check'"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteUser(user)"
+                [disabled]="user.id === currentUser?.id"
+                [title]="'USERS.ACTIONS.DELETE' | translate"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="users.length === 0 && !loading">
+      <div class="empty-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <h3>{{ 'USERS.NO_RESULTS_TITLE' | translate }}</h3>
+      <p>{{ 'USERS.NO_RESULTS_MESSAGE' | translate }}</p>
+      <button class="btn btn-primary" (click)="clearFilters()">
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1 && !loading">
+    <div class="pagination-info">
+      {{ 'USERS.PAGINATION.SHOWING' | translate }} {{ getStartIndex() }} {{ 'USERS.PAGINATION.TO' | translate }} {{ getEndIndex() }} {{ 'COMMON.OF' | translate }} {{ totalUsers }} {{ 'USERS.PAGINATION.USERS' | translate }}
+    </div>
+    <div class="pagination">
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        <i class="fas fa-chevron-left"></i>
+        {{ 'USERS.PAGINATION.PREVIOUS' | translate }}
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPagesArray()"
+          class="btn" 
+          [ngClass]="page === currentPage ? 'btn-primary' : 'btn-outline-primary'"
+          (click)="onPageChange(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        {{ 'USERS.PAGINATION.NEXT' | translate }}
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div> 

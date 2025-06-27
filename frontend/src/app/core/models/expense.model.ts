@@ -1,5 +1,6 @@
 export interface Expense {
   id: string;
+  _id?: string;
   project_id: string | Project;
   supplier_id: string | Supplier;
   category_id: string | Category;
@@ -83,21 +84,24 @@ export interface ExpenseStats {
 
 // Related interfaces
 export interface Project {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
-  code: string;
+  code?: string;
 }
 
 export interface Supplier {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
-  contact_person: string;
+  contact_person?: string;
   email?: string;
   phone?: string;
 }
 
 export interface Category {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   description?: string;
 } 

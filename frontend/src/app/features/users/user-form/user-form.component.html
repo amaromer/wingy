@@ -1,0 +1,201 @@
+<div class="user-form-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>{{ isEditMode ? ('USERS.EDIT_TITLE' | translate) : ('USERS.CREATE_TITLE' | translate) }}</h1>
+      <p>{{ isEditMode ? ('USERS.EDIT_SUBTITLE' | translate) : ('USERS.CREATE_SUBTITLE' | translate) }}</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i>
+        {{ 'USERS.ACTIONS.BACK' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert Messages -->
+  <div class="alert alert-danger" *ngIf="error">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error | translate }}
+  </div>
+
+  <div class="alert alert-success" *ngIf="success">
+    <i class="fas fa-check-circle"></i>
+    {{ success | translate }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ isEditMode ? ('COMMON.UPDATING' | translate) : ('COMMON.CREATING' | translate) }}</p>
+  </div>
+
+  <!-- User Form -->
+  <div class="form-container" *ngIf="!loading">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      <div class="form-grid">
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="name" class="form-label">
+            {{ 'USERS.FIELDS.NAME' | translate }} <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="name" 
+            formControlName="name" 
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': isFieldInvalid('name'),
+              'is-valid': isFieldValid('name')
+            }"
+            [placeholder]="'USERS.FIELDS.NAME_PLACEHOLDER' | translate"
+          >
+          <div class="invalid-feedback" *ngIf="getFieldError('name')">
+            {{ getFieldError('name') | translate }}
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">
+            {{ 'USERS.FIELDS.EMAIL' | translate }} <span class="required">*</span>
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': isFieldInvalid('email'),
+              'is-valid': isFieldValid('email')
+            }"
+            [placeholder]="'USERS.FIELDS.EMAIL_PLACEHOLDER' | translate"
+          >
+          <div class="invalid-feedback" *ngIf="getFieldError('email')">
+            {{ getFieldError('email') | translate }}
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">
+            {{ 'USERS.FIELDS.PASSWORD' | translate }} <span class="required" *ngIf="!isEditMode">*</span>
+            <span class="optional" *ngIf="isEditMode">({{ 'USERS.FIELDS.PASSWORD_HELP' | translate }})</span>
+          </label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': isFieldInvalid('password'),
+              'is-valid': isFieldValid('password')
+            }"
+            [placeholder]="isEditMode ? ('USERS.FIELDS.PASSWORD_PLACEHOLDER' | translate) : ('USERS.FIELDS.PASSWORD_PLACEHOLDER' | translate)"
+          >
+          <div class="invalid-feedback" *ngIf="getFieldError('password')">
+            {{ getFieldError('password') | translate }}
+          </div>
+          <small class="form-text" *ngIf="!isFieldInvalid('password')">
+            {{ 'USERS.FIELDS.PASSWORD_HELP' | translate }}
+          </small>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">
+            {{ 'USERS.FIELDS.CONFIRM_PASSWORD' | translate }} <span class="required" *ngIf="!isEditMode">*</span>
+          </label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            formControlName="confirmPassword" 
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': isFieldInvalid('confirmPassword'),
+              'is-valid': isFieldValid('confirmPassword')
+            }"
+            [placeholder]="'USERS.FIELDS.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
+          >
+          <div class="invalid-feedback" *ngIf="getFieldError('confirmPassword')">
+            {{ getFieldError('confirmPassword') | translate }}
+          </div>
+        </div>
+
+        <!-- Role Field -->
+        <div class="form-group">
+          <label for="role" class="form-label">
+            {{ 'USERS.FIELDS.ROLE' | translate }} <span class="required">*</span>
+          </label>
+          <select 
+            id="role" 
+            formControlName="role" 
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': isFieldInvalid('role'),
+              'is-valid': isFieldValid('role')
+            }"
+          >
+            <option value="Accountant">{{ 'USERS.ROLES.ACCOUNTANT' | translate }}</option>
+            <option value="Admin">{{ 'USERS.ROLES.ADMIN' | translate }}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="getFieldError('role')">
+            {{ getFieldError('role') | translate }}
+          </div>
+          <small class="form-text">
+            <strong>{{ 'USERS.ROLES.ACCOUNTANT' | translate }}:</strong> {{ 'USERS.ROLES.ACCOUNTANT_DESCRIPTION' | translate }}<br>
+            <strong>{{ 'USERS.ROLES.ADMIN' | translate }}:</strong> {{ 'USERS.ROLES.ADMIN_DESCRIPTION' | translate }}
+          </small>
+        </div>
+
+        <!-- Active Status Field -->
+        <div class="form-group">
+          <label class="form-label">{{ 'USERS.FIELDS.IS_ACTIVE' | translate }}</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="is_active"
+                class="form-checkbox"
+              >
+              <span class="checkmark"></span>
+              {{ 'USERS.STATUS.ACTIVE' | translate }}
+            </label>
+            <small class="form-text">
+              {{ 'USERS.STATUS.ACTIVE_DESCRIPTION' | translate }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onCancel()"
+          [disabled]="loading"
+        >
+          <i class="fas fa-times"></i>
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="loading || userForm.invalid"
+        >
+          <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : (isEditMode ? 'fa-save' : 'fa-plus')"></i>
+          {{ loading ? (isEditMode ? ('COMMON.UPDATING' | translate) : ('COMMON.CREATING' | translate)) : (isEditMode ? ('USERS.ACTIONS.SAVE' | translate) : ('USERS.ACTIONS.SAVE' | translate)) }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Form Validation Summary -->
+  <div class="validation-summary" *ngIf="userForm.errors?.['passwordMismatch'] && userForm.touched">
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ 'USERS.MESSAGES.PASSWORD_MISMATCH' | translate }}
+    </div>
+  </div>
+</div> 

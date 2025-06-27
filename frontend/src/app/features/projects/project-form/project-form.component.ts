@@ -114,13 +114,25 @@ export class ProjectFormComponent implements OnInit {
             project.team_members.forEach(member => this.addTeamMember(member));
           }
 
+          // Format dates for HTML date inputs (YYYY-MM-DD)
+          const formatDateForInput = (dateString: string | undefined): string => {
+            if (!dateString) return '';
+            try {
+              const date = new Date(dateString);
+              return date.toISOString().split('T')[0];
+            } catch (error) {
+              console.warn('Invalid date format:', dateString);
+              return '';
+            }
+          };
+
           this.projectForm.patchValue({
             name: project.name,
             description: project.description,
             status: project.status,
             priority: project.priority || 'Medium',
-            start_date: project.start_date,
-            end_date: project.end_date || '',
+            start_date: formatDateForInput(project.start_date),
+            end_date: formatDateForInput(project.end_date),
             budget: project.budget,
             location: project.location,
             client_name: project.client_name || '',
@@ -137,11 +149,23 @@ export class ProjectFormComponent implements OnInit {
   }
 
   addPhase(phase?: ProjectPhase) {
+    // Format dates for HTML date inputs (YYYY-MM-DD)
+    const formatDateForInput = (dateString: string | undefined): string => {
+      if (!dateString) return '';
+      try {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+      } catch (error) {
+        console.warn('Invalid date format:', dateString);
+        return '';
+      }
+    };
+
     const phaseForm = this.fb.group({
       name: [phase?.name || '', [Validators.minLength(2), Validators.maxLength(50)]],
       description: [phase?.description || '', [Validators.minLength(5), Validators.maxLength(200)]],
-      start_date: [phase?.start_date || ''],
-      end_date: [phase?.end_date || ''],
+      start_date: [formatDateForInput(phase?.start_date)],
+      end_date: [formatDateForInput(phase?.end_date)],
       budget: [phase?.budget || 0, [Validators.min(0)]],
       status: [phase?.status || 'Not Started']
     });
