@@ -87,8 +87,8 @@ check_nginx() {
     if systemctl is-active --quiet nginx; then
         info "Nginx is running"
         
-        # Check Nginx configuration
-        if nginx -t > /dev/null 2>&1; then
+        # Check Nginx configuration with sudo
+        if sudo nginx -t > /dev/null 2>&1; then
             info "Nginx configuration is valid"
         else
             error "Nginx configuration is invalid"
