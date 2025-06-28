@@ -27,6 +27,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
   },
   {
+    path: 'expenses/quick',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expenses/quick-expense/quick-expense.component').then(m => m.QuickExpenseComponent)
+  },
+  {
     path: 'expenses/:id/edit',
     canActivate: [authGuard],
     loadComponent: () => import('./features/expenses/expense-form/expense-form.component').then(m => m.ExpenseFormComponent)
@@ -35,11 +40,6 @@ export const routes: Routes = [
     path: 'expenses/:id',
     canActivate: [authGuard],
     loadComponent: () => import('./features/expenses/expense-view/expense-view.component').then(m => m.ExpenseViewComponent)
-  },
-  {
-    path: 'expenses/quick',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/expenses/quick-expense/quick-expense.component').then(m => m.QuickExpenseComponent)
   },
   {
     path: 'projects',
