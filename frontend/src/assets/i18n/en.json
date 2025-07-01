@@ -231,7 +231,8 @@
       "UPDATE_FAILED": "Failed to update expense. Please try again.",
       "DELETE_FAILED": "Failed to delete expense. Please try again.",
       "INVALID_FILE_TYPE": "Invalid file type. Please upload JPEG, PNG, GIF, or PDF files only.",
-      "FILE_TOO_LARGE": "File is too large. Maximum size is 10MB."
+      "FILE_TOO_LARGE": "File is too large. Maximum size is 10MB.",
+      "FILE_OPTIMIZATION_FAILED": "Failed to optimize image. Please try again."
     },
     "SUCCESS": {
       "CREATED": "Expense created successfully!",
