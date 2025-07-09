@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+  
+  <!-- Building/Construction icon -->
+  <g fill="#1f2937">
+    <!-- Main building structure -->
+    <rect x="8" y="12" width="16" height="12" rx="1" fill="#1f2937"/>
+    
+    <!-- Windows -->
+    <rect x="10" y="14" width="3" height="3" fill="#fbbf24"/>
+    <rect x="19" y="14" width="3" height="3" fill="#fbbf24"/>
+    <rect x="10" y="18" width="3" height="3" fill="#fbbf24"/>
+    <rect x="19" y="18" width="3" height="3" fill="#fbbf24"/>
+    
+    <!-- Door -->
+    <rect x="14" y="20" width="4" height="4" fill="#fbbf24"/>
+    
+    <!-- Roof -->
+    <path d="M6 12 L16 6 L26 12 Z" fill="#1f2937"/>
+    
+    <!-- Crane arm (simplified) -->
+    <rect x="4" y="8" width="2" height="2" fill="#fbbf24"/>
+    <rect x="26" y="8" width="2" height="2" fill="#fbbf24"/>
+    
+    <!-- W letter for Wingy -->
+    <text x="16" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#1f2937">W</text>
+  </g>
+</svg> 

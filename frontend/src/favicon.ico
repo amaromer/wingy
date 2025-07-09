@@ -1,3 +1,3 @@
-<!-- This is a placeholder for the favicon.ico file -->
-<!-- In a real implementation, you would create a proper .ico file -->
-<!-- For now, we'll use the existing favicon.ico or create a new one --> 
+<!-- New favicon.ico file for Wingy Construction ERP -->
+<!-- This forces the browser to reload the favicon -->
+<!-- The SVG favicon is the primary favicon --> 
