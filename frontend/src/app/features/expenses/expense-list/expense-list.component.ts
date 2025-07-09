@@ -254,7 +254,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       
       if (hostname === 'localhost' || hostname === '127.0.0.1') {
         backendBaseUrl = 'http://localhost:3000';
-      } else if (hostname === 'wingyerp.com' || hostname === 'www.wingyerp.com') {
+      } else if (hostname === 'winjyerp.com' || hostname === 'www.winjyerp.com') {
         backendBaseUrl = `https://${hostname}`;
       } else {
         // For mobile/network access, use the same protocol and hostname

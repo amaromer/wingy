@@ -23,7 +23,7 @@
     <rect x="4" y="8" width="2" height="2" fill="#fbbf24"/>
     <rect x="26" y="8" width="2" height="2" fill="#fbbf24"/>
     
-    <!-- W letter for Wingy -->
+    <!-- W letter for Winjy -->
     <text x="16" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#1f2937">W</text>
   </g>
 </svg> 

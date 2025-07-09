@@ -45,7 +45,7 @@ app.use('/api/', limiter);
 // CORS configuration - More permissive for development
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://wingyerp.com', 'https://www.wingyerp.com'] 
+    ? ['https://winjyerp.com', 'https://www.winjyerp.com'] 
     : [
         'http://localhost:4200',
         'http://127.0.0.1:4200',
@@ -128,7 +128,7 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/wingy_erp')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/winjy_erp')
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, '0.0.0.0', () => {

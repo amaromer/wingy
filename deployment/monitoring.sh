@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Wingy ERP Monitoring Script
-# This script monitors the health of the Wingy ERP system
+# Winjy ERP Monitoring Script
+# This script monitors the health of the Winjy ERP system
 
 # Configuration
-PROJECT_NAME="wingy-erp"
+PROJECT_NAME="winjy-erp"
 PROJECT_PATH="/var/www/$PROJECT_NAME"
-LOG_FILE="/var/www/wingy-erp/monitoring.log"
+LOG_FILE="/var/www/winjy-erp/monitoring.log"
 ALERT_EMAIL="admin@your-domain.com"
 
 # Colors for output
@@ -102,10 +102,10 @@ check_nginx() {
 check_pm2() {
     log "Checking PM2 application status..."
     
-    if pm2 list | grep -q "wingy-erp-backend"; then
+    if pm2 list | grep -q "winjy-erp-backend"; then
         # Get PM2 status - check if all instances are online
-        ONLINE_COUNT=$(pm2 list | grep "wingy-erp-backend" | grep -c "online")
-        TOTAL_COUNT=$(pm2 list | grep "wingy-erp-backend" | wc -l)
+        ONLINE_COUNT=$(pm2 list | grep "winjy-erp-backend" | grep -c "online")
+TOTAL_COUNT=$(pm2 list | grep "winjy-erp-backend" | wc -l)
         
         if [ "$ONLINE_COUNT" -eq "$TOTAL_COUNT" ] && [ "$TOTAL_COUNT" -gt 0 ]; then
             info "PM2 application is online ($ONLINE_COUNT/$TOTAL_COUNT instances)"
@@ -114,7 +114,7 @@ check_pm2() {
         fi
         
         # Check PM2 logs for errors
-        ERROR_COUNT=$(pm2 logs wingy-erp-backend --lines 100 2>/dev/null | grep -c "ERROR" || echo "0")
+        ERROR_COUNT=$(pm2 logs winjy-erp-backend --lines 100 2>/dev/null | grep -c "ERROR" || echo "0")
         if [ "$ERROR_COUNT" -gt 0 ]; then
             warning "Found $ERROR_COUNT errors in PM2 logs"
         fi
@@ -142,8 +142,8 @@ check_endpoints() {
     fi
     
     # Check SSL certificate
-    if [ -f "/etc/letsencrypt/live/wingyerp.com/fullchain.pem" ]; then
-        CERT_EXPIRY=$(openssl x509 -enddate -noout -in /etc/letsencrypt/live/wingyerp.com/fullchain.pem | cut -d= -f2)
+    if [ -f "/etc/letsencrypt/live/winjyerp.com/fullchain.pem" ]; then
+CERT_EXPIRY=$(openssl x509 -enddate -noout -in /etc/letsencrypt/live/winjyerp.com/fullchain.pem | cut -d= -f2)
         DAYS_LEFT=$(( ($(date -d "$CERT_EXPIRY" +%s) - $(date +%s)) / 86400 ))
         
         if [ "$DAYS_LEFT" -lt 30 ]; then
@@ -175,8 +175,8 @@ check_logs() {
     fi
     
     # Check application logs
-    if [ -f "/var/log/pm2/wingy-erp-error.log" ]; then
-        APP_ERRORS=$(tail -n 100 /var/log/pm2/wingy-erp-error.log | grep -c "ERROR" || echo "0")
+    if [ -f "/var/log/pm2/winjy-erp-error.log" ]; then
+APP_ERRORS=$(tail -n 100 /var/log/pm2/winjy-erp-error.log | grep -c "ERROR" || echo "0")
         if [ "$APP_ERRORS" -gt 0 ]; then
             warning "Found $APP_ERRORS errors in application logs"
         fi
@@ -216,7 +216,7 @@ generate_report() {
     REPORT_FILE="/tmp/monitoring-report-$(date +%Y%m%d-%H%M%S).txt"
     
     {
-        echo "=== Wingy ERP Monitoring Report ==="
+        echo "=== Winjy ERP Monitoring Report ==="
         echo "Generated: $(date)"
         echo ""
         
@@ -229,7 +229,7 @@ generate_report() {
         echo "=== Services Status ==="
         echo "MongoDB: $(systemctl is-active mongod)"
         echo "Nginx: $(systemctl is-active nginx)"
-        echo "PM2 App: $(pm2 list | grep wingy-erp-backend | awk '{print $10}' || echo 'not found')"
+        echo "PM2 App: $(pm2 list | grep winjy-erp-backend | awk '{print $10}' || echo 'not found')"
         echo ""
         
         echo "=== Application Health ==="

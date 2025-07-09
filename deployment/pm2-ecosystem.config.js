@@ -1,8 +1,8 @@
 module.exports = {
   apps: [{
-    name: 'wingy-erp-backend',
+    name: 'winjy-erp-backend',
     script: 'server.js',
-    cwd: '/var/www/wingy-erp/backend',
+    cwd: '/var/www/winjy-erp/backend',
     instances: 'max',
     exec_mode: 'cluster',
     env: {
@@ -13,9 +13,9 @@ module.exports = {
       NODE_ENV: 'production',
       PORT: 3000
     },
-    error_file: '/var/log/pm2/wingy-erp-error.log',
-    out_file: '/var/log/pm2/wingy-erp-out.log',
-    log_file: '/var/log/pm2/wingy-erp-combined.log',
+    error_file: '/var/log/pm2/winjy-erp-error.log',
+    out_file: '/var/log/pm2/winjy-erp-out.log',
+    log_file: '/var/log/pm2/winjy-erp-combined.log',
     time: true,
     max_memory_restart: '1G',
     node_args: '--max-old-space-size=1024',

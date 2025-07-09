@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://wingyerp.com/api' // Use HTTPS for production
+  apiUrl: 'https://winjyerp.com/api' // Use HTTPS for production
 };
 
 // Function to get the correct API URL based on current hostname
@@ -15,7 +15,7 @@ export function getApiUrl(): string {
     }
     
     // If accessing from production domain, use HTTPS
-    if (hostname === 'wingyerp.com' || hostname === 'www.wingyerp.com') {
+    if (hostname === 'winjyerp.com' || hostname === 'www.winjyerp.com') {
       return `https://${hostname}/api`;
     }
     

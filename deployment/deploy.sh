@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Wingy ERP Deployment Script
-# This script automates the deployment process for the Wingy ERP system
+# Winjy ERP Deployment Script
+# This script automates the deployment process for the Winjy ERP system
 
 set -e  # Exit on any error
 
 # Configuration
-PROJECT_NAME="wingy-erp"
+PROJECT_NAME="winjy-erp"
 PROJECT_PATH="/var/www/$PROJECT_NAME"
 BACKUP_PATH="/var/backups/$PROJECT_NAME"
 LOG_FILE="/var/log/deployment.log"
@@ -132,7 +132,7 @@ restart_services() {
     log "Restarting services..."
     
     # Restart PM2 application
-    pm2 reload wingy-erp-backend || pm2 start wingy-erp-backend
+    pm2 reload winjy-erp-backend || pm2 start winjy-erp-backend
     
     # Save PM2 configuration
     pm2 save
@@ -209,7 +209,7 @@ rollback() {
     log "Rolling back to: $LATEST_BACKUP"
     
     # Stop services
-    pm2 stop wingy-erp-backend || true
+    pm2 stop winjy-erp-backend || true
     
     # Restore from backup
     rm -rf "$PROJECT_PATH"/*
