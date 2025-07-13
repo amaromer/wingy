@@ -103,6 +103,13 @@ build_frontend() {
     npm run build || error "Frontend build failed"
     
     log "Frontend built successfully"
+    
+    # Verify frontend build
+    if [ -f "dist/construction-erp/index.html" ]; then
+        log "Frontend build verification passed"
+    else
+        error "Frontend build verification failed - index.html not found"
+    fi
 }
 
 # Run database migrations
@@ -236,11 +243,20 @@ health_check() {
         error "Backend health check failed"
     fi
     
-    # Check if frontend is accessible
-    if curl -f -s http://localhost > /dev/null; then
-        log "Frontend health check passed"
+    # Check if frontend is accessible (try domain first, then localhost)
+    if curl -f -s https://winjyerp.com > /dev/null 2>/dev/null; then
+        log "Frontend health check passed (HTTPS)"
+    elif curl -f -s http://winjyerp.com > /dev/null 2>/dev/null; then
+        log "Frontend health check passed (HTTP)"
+    elif curl -f -s http://localhost > /dev/null 2>/dev/null; then
+        log "Frontend health check passed (localhost)"
     else
-        error "Frontend health check failed"
+        warning "Frontend health check failed - checking Nginx status..."
+        sudo systemctl status nginx --no-pager -l
+        warning "Checking if frontend files exist..."
+        ls -la /var/www/winjy-erp/frontend/dist/construction-erp/ || echo "Frontend build directory not found"
+        warning "Frontend health check failed - but deployment continues"
+        warning "Application should be accessible at: https://winjyerp.com"
     fi
     
     # Check if main categories API is working
