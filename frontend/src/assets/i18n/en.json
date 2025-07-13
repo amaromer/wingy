@@ -466,6 +466,9 @@
       "PARENT_CATEGORY": "Parent Category",
       "PARENT_CATEGORY_PLACEHOLDER": "Select parent category (optional)",
       "PARENT_CATEGORY_HELP": "Select a parent category to create a hierarchical structure",
+      "MAIN_CATEGORY": "Main Category",
+      "MAIN_CATEGORY_PLACEHOLDER": "Select main category (optional)",
+      "MAIN_CATEGORY_HELP": "Select a main category to group related categories together",
       "IS_ACTIVE": "Active Status",
       "IS_ACTIVE_HELP": "Inactive categories won't appear in expense forms"
     },

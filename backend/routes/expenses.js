@@ -32,6 +32,26 @@ router.get('/suppliers-by-category/:categoryId', auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/expenses/categories-by-main-category/:mainCategoryId
+// @desc    Get categories filtered by main category
+// @access  Private
+router.get('/categories-by-main-category/:mainCategoryId', auth, async (req, res) => {
+  try {
+    const { mainCategoryId } = req.params;
+    
+    // Find categories that have this main category as their main_category_id
+    const categories = await Category.find({ 
+      main_category_id: mainCategoryId,
+      is_active: true 
+    }).sort({ name: 1 });
+    
+    res.json(categories);
+  } catch (error) {
+    console.error('Get categories by main category error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Validation middleware
 const expenseValidation = [
   body('project_id').isMongoId().withMessage('Valid project ID is required'),

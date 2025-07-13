@@ -358,6 +358,9 @@
       "PARENT_CATEGORY": "الفئة الأم",
       "PARENT_CATEGORY_PLACEHOLDER": "اختر الفئة الأم (اختياري)",
       "PARENT_CATEGORY_HELP": "اختر فئة أم لإنشاء هيكل هرمي",
+      "MAIN_CATEGORY": "الفئة الرئيسية",
+      "MAIN_CATEGORY_PLACEHOLDER": "اختر الفئة الرئيسية (اختياري)",
+      "MAIN_CATEGORY_HELP": "اختر فئة رئيسية لتجميع الفئات ذات الصلة معاً",
       "IS_ACTIVE": "الحالة النشطة",
       "IS_ACTIVE_HELP": "الفئات غير النشطة لن تظهر في نماذج المصروفات"
     },

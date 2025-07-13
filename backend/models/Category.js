@@ -29,6 +29,11 @@ const categorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     default: null
+  },
+  main_category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MainCategory',
+    default: null
   }
 }, {
   timestamps: true
@@ -37,5 +42,6 @@ const categorySchema = new mongoose.Schema({
 // Indexes for better query performance
 categorySchema.index({ is_active: 1 });
 categorySchema.index({ parent_category: 1 });
+categorySchema.index({ main_category_id: 1 });
 
 module.exports = mongoose.model('Category', categorySchema); 

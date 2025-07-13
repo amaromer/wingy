@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../../../core/models/category.model';
+import { MainCategory } from '../../../core/models/main-category.model';
 
 @Component({
   selector: 'app-category-form',
@@ -24,6 +25,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   categoryId?: string;
   parentCategories: Category[] = [];
+  mainCategories: MainCategory[] = [];
 
   // Destroy subject for cleanup
   private destroy$ = new Subject<void>();
@@ -40,6 +42,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       code: ['', [Validators.minLength(2), Validators.maxLength(10), Validators.pattern(/^[A-Z0-9]*$/)]],
       description: ['', [Validators.maxLength(500)]],
       parent_category: [null],
+      main_category_id: [null],
       is_active: [true]
     });
 
@@ -59,6 +62,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadParentCategories();
+    this.loadMainCategories();
     this.checkEditMode();
   }
 
@@ -97,6 +101,20 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Error loading parent categories:', err);
           this.loading = false;
+        }
+      });
+  }
+
+  private loadMainCategories() {
+    this.http.get<{ mainCategories: MainCategory[] }>('/api/main-categories')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.mainCategories = response.mainCategories.filter(mc => mc.is_active);
+        },
+        error: (err) => {
+          console.error('Error loading main categories:', err);
+          this.mainCategories = [];
         }
       });
   }
@@ -142,6 +160,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       code: category.code,
       description: category.description || '',
       parent_category: parentCategoryId,
+      main_category_id: category.main_category_id || null,
       is_active: category.is_active
     };
 
@@ -183,6 +202,12 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       cleanedData.parent_category = formData.parent_category;
     } else {
       cleanedData.parent_category = null; // Explicitly set to null if no parent
+    }
+
+    if (formData.main_category_id) {
+      cleanedData.main_category_id = formData.main_category_id;
+    } else {
+      cleanedData.main_category_id = null; // Explicitly set to null if no main category
     }
 
     const request = this.isEditMode 

@@ -89,7 +89,7 @@ router.post('/', /* auth, requireAdmin, */ categoryValidation, async (req, res) 
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, code, description, parent_category, is_active } = req.body;
+    const { name, code, description, parent_category, is_active, main_category_id } = req.body;
     
     // Generate unique category code if not provided
     let categoryCode = null;
@@ -115,6 +115,7 @@ router.post('/', /* auth, requireAdmin, */ categoryValidation, async (req, res) 
       name: name?.trim() || 'Untitled Category',
       description: description?.trim() || '',
       parent_category: parent_category || null,
+      main_category_id: main_category_id || null,
       is_active: is_active !== undefined ? is_active : true
     };
 
@@ -150,7 +151,7 @@ router.put('/:id', /* auth, requireAdmin, */ categoryValidation, async (req, res
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, code, description, parent_category, is_active } = req.body;
+    const { name, code, description, parent_category, is_active, main_category_id } = req.body;
     
     const category = await Category.findById(req.params.id);
     if (!category) {
@@ -178,6 +179,7 @@ router.put('/:id', /* auth, requireAdmin, */ categoryValidation, async (req, res
     if (code !== undefined) category.code = code.trim().toUpperCase();
     if (description !== undefined) category.description = description?.trim() || '';
     if (parent_category !== undefined) category.parent_category = parent_category || null;
+    if (main_category_id !== undefined) category.main_category_id = main_category_id || null;
     if (is_active !== undefined) category.is_active = is_active;
     
     await category.save();

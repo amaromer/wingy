@@ -385,8 +385,9 @@ export class QuickExpenseComponent implements OnInit {
       description: mainCategory.name
     });
     
-    // Load suppliers for this main category
+    // Load suppliers and categories for this main category
     this.loadSuppliersByMainCategory(mainCategory._id!);
+    this.loadCategoriesByMainCategory(mainCategory._id!);
   }
 
   // Load suppliers filtered by main category
@@ -420,6 +421,41 @@ export class QuickExpenseComponent implements OnInit {
       error: (err) => {
         console.error('Error loading suppliers:', err);
         this.suppliers = [];
+      }
+    });
+  }
+
+  // Load categories filtered by main category
+  private loadCategoriesByMainCategory(mainCategoryId: string): void {
+    this.http.get<Category[]>(`/api/expenses/categories-by-main-category/${mainCategoryId}`).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        
+        // Auto-select first category if available
+        if (categories.length === 1) {
+          this.quickExpenseForm.patchValue({ category_id: categories[0]._id });
+        } else if (categories.length > 1) {
+          // Clear category selection to force user choice
+          this.quickExpenseForm.patchValue({ category_id: '' });
+        }
+      },
+      error: (err) => {
+        console.error('Error loading categories by main category:', err);
+        // Fallback to all categories
+        this.loadAllCategories();
+      }
+    });
+  }
+
+  // Load all categories (fallback)
+  private loadAllCategories(): void {
+    this.http.get<any>('/api/categories').subscribe({
+      next: (response) => {
+        this.categories = Array.isArray(response.categories) ? response.categories : [];
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.categories = [];
       }
     });
   }

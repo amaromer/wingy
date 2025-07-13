@@ -152,29 +152,52 @@
             </h3>
             
             <div class="form-row">
-              <!-- Parent Category -->
-              <div class="form-group">
-                <label for="parent_category" class="form-label">
-                  {{ 'CATEGORIES.FIELDS.PARENT_CATEGORY' | translate }}
-                </label>
-                <select
-                  id="parent_category"
-                  formControlName="parent_category"
-                  class="form-select"
-                  [disabled]="submitting">
-                  <option [value]="null">{{ 'CATEGORIES.FIELDS.PARENT_CATEGORY_PLACEHOLDER' | translate }}</option>
-                  <option 
-                    *ngFor="let parent of parentCategories" 
-                    [value]="parent._id"
-                    [disabled]="isEditMode && parent._id === categoryId">
-                    {{ parent.name }} ({{ parent.code }})
-                  </option>
-                </select>
-                <small class="form-help">
-                  <i class="icon-info"></i>
-                  {{ 'CATEGORIES.FIELDS.PARENT_CATEGORY_HELP' | translate }}
-                </small>
-              </div>
+                          <!-- Parent Category -->
+            <div class="form-group">
+              <label for="parent_category" class="form-label">
+                {{ 'CATEGORIES.FIELDS.PARENT_CATEGORY' | translate }}
+              </label>
+              <select
+                id="parent_category"
+                formControlName="parent_category"
+                class="form-select"
+                [disabled]="submitting">
+                <option [value]="null">{{ 'CATEGORIES.FIELDS.PARENT_CATEGORY_PLACEHOLDER' | translate }}</option>
+                <option 
+                  *ngFor="let parent of parentCategories" 
+                  [value]="parent._id"
+                  [disabled]="isEditMode && parent._id === categoryId">
+                  {{ parent.name }} ({{ parent.code }})
+                </option>
+              </select>
+              <small class="form-help">
+                <i class="icon-info"></i>
+                {{ 'CATEGORIES.FIELDS.PARENT_CATEGORY_HELP' | translate }}
+              </small>
+            </div>
+
+            <!-- Main Category -->
+            <div class="form-group">
+              <label for="main_category_id" class="form-label">
+                {{ 'CATEGORIES.FIELDS.MAIN_CATEGORY' | translate }}
+              </label>
+              <select
+                id="main_category_id"
+                formControlName="main_category_id"
+                class="form-select"
+                [disabled]="submitting">
+                <option [value]="null">{{ 'CATEGORIES.FIELDS.MAIN_CATEGORY_PLACEHOLDER' | translate }}</option>
+                <option 
+                  *ngFor="let mainCategory of mainCategories" 
+                  [value]="mainCategory._id">
+                  {{ mainCategory.name }}
+                </option>
+              </select>
+              <small class="form-help">
+                <i class="icon-info"></i>
+                {{ 'CATEGORIES.FIELDS.MAIN_CATEGORY_HELP' | translate }}
+              </small>
+            </div>
             </div>
           </div>
 

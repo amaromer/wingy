@@ -446,14 +446,16 @@ export class ExpenseFormComponent implements OnInit {
     this.activeSection = this.activeSection === section ? '' : section;
   }
 
-  // Filter suppliers by main category
+  // Filter suppliers and categories by main category
   onMainCategoryChange(mainCategoryId: string): void {
     if (!mainCategoryId) {
-      // Load all suppliers if no main category selected
+      // Load all suppliers and categories if no main category selected
       this.loadAllSuppliers();
+      this.loadAllCategories();
       return;
     }
 
+    // Load suppliers filtered by main category
     this.http.get<Supplier[]>(`/api/expenses/suppliers-by-category/${mainCategoryId}`).subscribe({
       next: (suppliers) => {
         this.suppliers = suppliers;
@@ -464,6 +466,20 @@ export class ExpenseFormComponent implements OnInit {
         console.error('Error loading suppliers by main category:', err);
         // Fallback to all suppliers
         this.loadAllSuppliers();
+      }
+    });
+
+    // Load categories filtered by main category
+    this.http.get<Category[]>(`/api/expenses/categories-by-main-category/${mainCategoryId}`).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        // Clear category selection when main category changes
+        this.expenseForm.patchValue({ category_id: '' });
+      },
+      error: (err) => {
+        console.error('Error loading categories by main category:', err);
+        // Fallback to all categories
+        this.loadAllCategories();
       }
     });
   }
@@ -477,6 +493,19 @@ export class ExpenseFormComponent implements OnInit {
       error: (err) => {
         console.error('Error loading suppliers:', err);
         this.suppliers = [];
+      }
+    });
+  }
+
+  // Load all categories (fallback)
+  private loadAllCategories(): void {
+    this.http.get<any>('/api/categories').subscribe({
+      next: (response) => {
+        this.categories = Array.isArray(response.categories) ? response.categories : [];
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.categories = [];
       }
     });
   }
