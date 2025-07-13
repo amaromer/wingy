@@ -254,12 +254,31 @@
                 border-radius: 0.25rem;
                 border: 1px solid var(--primary-color);
                 opacity: 0.8;
+                white-space: nowrap;
+                font-family: inherit;
+                line-height: 1.2;
 
                 i {
                   font-size: 0.875rem;
+                  margin-left: 0.25rem;
+                }
+
+                &.rtl-hint {
+                  right: auto;
+                  left: 0.75rem;
+                  direction: rtl;
+                  text-align: right;
+
+                  i {
+                    margin-left: 0;
+                    margin-right: 0.25rem;
+                    order: -1;
+                  }
                 }
               }
             }
+
+
 
             .form-help {
               font-size: 0.75rem;

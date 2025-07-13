@@ -82,7 +82,7 @@
                     class="form-input"
                     [class.error]="categoryForm.get('code')?.invalid && categoryForm.get('code')?.touched"
                     [disabled]="submitting">
-                  <div class="input-hint" *ngIf="!isEditMode">
+                  <div class="input-hint" *ngIf="!isEditMode" [class.rtl-hint]="isArabic">
                     <i class="icon-magic"></i>
                     {{ 'CATEGORIES.FIELDS.CODE_AUTO_GENERATED' | translate }}
                   </div>

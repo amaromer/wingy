@@ -26,6 +26,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   categoryId?: string;
   parentCategories: Category[] = [];
   mainCategories: MainCategory[] = [];
+  isArabic = false;
 
   // Destroy subject for cleanup
   private destroy$ = new Subject<void>();
@@ -61,6 +62,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isArabic = this.translate.currentLang === 'ar';
     this.loadParentCategories();
     this.loadMainCategories();
     this.checkEditMode();
@@ -289,6 +291,21 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   }
 
   private generateCodeFromName(name: string): string {
+    if (!name || name.trim().length === 0) return '';
+    
+    // Check if the name contains Arabic characters
+    const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(name);
+    
+    if (hasArabic) {
+      // For Arabic text, generate a numeric code based on character codes
+      return this.generateArabicCode(name);
+    } else {
+      // For English text, use the original logic
+      return this.generateEnglishCode(name);
+    }
+  }
+
+  private generateEnglishCode(name: string): string {
     // Remove special characters and convert to uppercase
     const cleanName = name.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
     
@@ -307,5 +324,47 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       // Multiple words: take first 2 chars of first 3 words
       return words.slice(0, 3).map(word => word.substring(0, 2)).join('');
     }
+  }
+
+  private generateArabicCode(name: string): string {
+    // Remove extra spaces and get the first few characters
+    const cleanName = name.trim().replace(/\s+/g, ' ');
+    const words = cleanName.split(' ').filter(word => word.length > 0);
+    
+    if (words.length === 0) return '';
+    
+    // Generate a numeric code based on character codes
+    let code = '';
+    
+    if (words.length === 1) {
+      // Single word: use first 3 characters' codes
+      const word = words[0];
+      for (let i = 0; i < Math.min(3, word.length); i++) {
+        const charCode = word.charCodeAt(i);
+        // Convert to a 2-digit number (0-99)
+        const num = charCode % 100;
+        code += num.toString().padStart(2, '0');
+      }
+    } else {
+      // Multiple words: use first character of each word
+      for (let i = 0; i < Math.min(3, words.length); i++) {
+        const word = words[i];
+        if (word.length > 0) {
+          const charCode = word.charCodeAt(0);
+          const num = charCode % 100;
+          code += num.toString().padStart(2, '0');
+        }
+      }
+    }
+    
+    // Ensure the code is 6 characters long
+    if (code.length < 6) {
+      // Add some padding based on the name length
+      const nameLength = cleanName.length;
+      const padding = (nameLength * 7) % 100; // Simple hash
+      code += padding.toString().padStart(2, '0');
+    }
+    
+    return code.substring(0, 6);
   }
 } 
