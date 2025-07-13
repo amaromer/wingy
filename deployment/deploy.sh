@@ -131,7 +131,7 @@ async function updateMainCategories() {
       supplier_optional: { $exists: false }
     });
     
-    console.log(\`Found \${categoriesToUpdate.length} categories to update\`);
+    console.log('Found ' + categoriesToUpdate.length + ' categories to update');
     
     if (categoriesToUpdate.length > 0) {
       // Update all categories to have supplier_optional = true (default)
@@ -140,7 +140,7 @@ async function updateMainCategories() {
         { $set: { supplier_optional: true } }
       );
       
-      console.log(\`Updated \${result.modifiedCount} categories\`);
+      console.log('Updated ' + result.modifiedCount + ' categories');
     } else {
       console.log('No categories need updating');
     }
@@ -149,7 +149,7 @@ async function updateMainCategories() {
     const allCategories = await MainCategory.find({});
     console.log('All categories after update:');
     allCategories.forEach(cat => {
-      console.log(\`- \${cat.name}: supplier_optional = \${cat.supplier_optional}\`);
+      console.log('- ' + cat.name + ': supplier_optional = ' + cat.supplier_optional);
     });
     
     console.log('Migration completed successfully!');
