@@ -23,6 +23,7 @@
     "VIEW": "View",
     "CREATE": "Create",
     "UPDATE": "Update",
+    "VIEW_ATTACHMENT": "View Attachment",
     "SAVING": "Saving...",
     "CLEAR_FILTERS": "Clear Filters",
     "CREATED": "Created",
@@ -39,7 +40,8 @@
     "METADATA": "Metadata",
     "CREATED_AT": "Created At",
     "UPDATED_AT": "Updated At",
-    "BACK_TO_LIST": "Back to List"
+    "BACK_TO_LIST": "Back to List",
+    "MB": "MB"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -68,7 +70,9 @@
     "FAILED_TO_LOAD": "Failed to load dashboard data. Please try again.",
     "UNKNOWN_PROJECT": "Unknown Project",
     "UNKNOWN_SUPPLIER": "Unknown Supplier",
-    "UNCATEGORIZED": "Uncategorized"
+    "UNCATEGORIZED": "Uncategorized",
+    "TOTAL_VAT": "Total VAT",
+    "TOTAL_PAYMENTS": "Total Payments"
   },
   "NAVIGATION": {
     "DASHBOARD": "Dashboard",
@@ -267,7 +271,7 @@
     "SELECT_SUPPLIER": "Select a supplier",
     "SELECT_MAIN_CATEGORY": "Select a main category",
     "UPLOAD_FILE": "Upload File",
-    "FILE_HELP": "Supported file types",
+    "FILE_HELP": "Supported file types (JPEG, PNG, GIF, PDF - Max 10MB)",
     "ACTIONS": {
       "CREATE": "Create Expense",
       "QUICK": "Quick Entry",
@@ -301,7 +305,11 @@
       "MATERIALS": "Materials",
       "TOOLS": "Tools",
       "LABOR": "Labor",
-      "SUBMIT": "Save Expense"
+      "SUBMIT": "Save Expense",
+      "REDIRECTING": "Redirecting to expense list...",
+      "OPTIMIZING": "Optimizing image...",
+      "SMALLER": "smaller",
+      "PDF_DOCUMENT": "PDF Document"
     },
     "NO_MAIN_CATEGORIES_TITLE": "No Main Categories",
     "NO_MAIN_CATEGORIES_MESSAGE": "Create main expense categories to enable quick expense actions. These categories will help organize your suppliers and speed up expense entry.",

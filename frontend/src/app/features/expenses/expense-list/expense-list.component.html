@@ -175,10 +175,10 @@
             <span class="amount">{{ expense.currency }} {{ expense.amount | number:'1.2-2' }}</span>
           </div>
           <div class="card-actions">
-            <button class="btn-icon" (click)="onViewExpense(expense.id)" title="View">
+            <button class="btn-icon" (click)="onViewExpense(expense.id)" [title]="'COMMON.VIEW' | translate">
               👁️
             </button>
-            <button class="btn-icon" (click)="onEditExpense(expense.id)" title="Edit">
+            <button class="btn-icon" (click)="onEditExpense(expense.id)" [title]="'COMMON.EDIT' | translate">
               ✏️
             </button>
             <button class="btn-icon" (click)="onDeleteExpense(expense.id)" title="Delete">
@@ -213,8 +213,8 @@
             <div class="detail-item" *ngIf="expense.attachment_url">
               <span class="detail-label">Attachment:</span>
               <span class="detail-value">
-                <button class="btn-link" (click)="viewAttachment(expense.attachment_url)" title="View Attachment">
-                  📎 View Attachment
+                <button class="btn-link" (click)="viewAttachment(expense.attachment_url)" [title]="'COMMON.VIEW_ATTACHMENT' | translate">
+                  📎 {{ 'COMMON.VIEW_ATTACHMENT' | translate }}
                 </button>
               </span>
             </div>
@@ -310,7 +310,7 @@
                 *ngIf="expense.attachment_url"
                 class="btn btn-icon btn-view" 
                 (click)="viewAttachment(expense.attachment_url)"
-                title="View Attachment"
+                [title]="'COMMON.VIEW_ATTACHMENT' | translate"
               >
                 📎
               </button>
@@ -321,21 +321,21 @@
                 <button 
                   class="btn btn-icon btn-view" 
                   (click)="onViewExpense(expense.id)"
-                  title="View"
+                  [title]="'COMMON.VIEW' | translate"
                 >
                   👁️
                 </button>
                 <button 
                   class="btn btn-icon btn-edit" 
                   (click)="onEditExpense(expense.id)"
-                  title="Edit"
+                  [title]="'COMMON.EDIT' | translate"
                 >
                   ✏️
                 </button>
                 <button 
                   class="btn btn-icon btn-delete" 
                   (click)="onDeleteExpense(expense.id)"
-                  title="Delete"
+                  [title]="'COMMON.DELETE' | translate"
                 >
                   🗑️
                 </button>

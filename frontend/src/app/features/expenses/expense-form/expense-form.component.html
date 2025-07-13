@@ -243,7 +243,7 @@
               <div class="file-info" *ngIf="selectedFile">
                 <div class="file-details">
                   <span class="file-name">{{ selectedFile.name }}</span>
-                  <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+                  <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} {{ 'COMMON.MB' | translate }})</span>
                 </div>
                 <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
                   🗑️
@@ -254,12 +254,12 @@
                 <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
                 <img *ngIf="!filePreview.startsWith('data:image') && filePreview" [src]="getAttachmentUrl(filePreview)" alt="File preview" class="preview-image">
                 <div *ngIf="!filePreview.startsWith('data:image') && !filePreview" class="preview-pdf">
-                  📄 PDF Document
+                  📄 {{ 'EXPENSE.QUICK.PDF_DOCUMENT' | translate }}
                 </div>
               </div>
               
               <p class="file-help">
-                {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
+                {{ 'EXPENSE.FILE_HELP' | translate }}
               </p>
             </div>
           </div>

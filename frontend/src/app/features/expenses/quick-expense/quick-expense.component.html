@@ -45,7 +45,7 @@
 
   <div class="alert alert-success" *ngIf="success">
     <span>{{ success | translate }}</span>
-    <span class="navigation-hint">Redirecting to expense list...</span>
+    <span class="navigation-hint">{{ 'EXPENSE.QUICK.REDIRECTING' | translate }}</span>
   </div>
 
   <div class="alert alert-error" *ngIf="error">
@@ -236,7 +236,7 @@
                 <span *ngIf="originalFileSize > 0 && optimizedFileSize > 0">
                   {{ formatFileSize(originalFileSize) }} → {{ formatFileSize(optimizedFileSize) }}
                   <span class="compression-ratio" *ngIf="getCompressionRatio() > 0">
-                    ({{ getCompressionRatio() }}% smaller)
+                    ({{ getCompressionRatio() }}% {{ 'EXPENSE.QUICK.SMALLER' | translate }})
                   </span>
                 </span>
                 <span *ngIf="originalFileSize === 0 || optimizedFileSize === 0">
@@ -254,18 +254,18 @@
             <div class="progress-bar">
               <div class="progress-fill" [style.width.%]="compressionProgress"></div>
             </div>
-            <span class="progress-text">Optimizing image... {{ compressionProgress }}%</span>
+            <span class="progress-text">{{ 'EXPENSE.QUICK.OPTIMIZING' | translate }} {{ compressionProgress }}%</span>
           </div>
           
           <div class="file-preview" *ngIf="filePreview">
             <img *ngIf="filePreview.startsWith('data:image')" [src]="filePreview" alt="File preview" class="preview-image">
             <div *ngIf="!filePreview.startsWith('data:image')" class="preview-pdf">
-              📄 PDF Document
+              📄 {{ 'EXPENSE.QUICK.PDF_DOCUMENT' | translate }}
             </div>
           </div>
           
           <p class="file-help">
-            {{ 'EXPENSE.FILE_HELP' | translate }} (JPEG, PNG, GIF, PDF - Max 10MB)
+            {{ 'EXPENSE.FILE_HELP' | translate }}
           </p>
         </div>
       </div>
