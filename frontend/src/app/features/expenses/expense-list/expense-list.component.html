@@ -61,7 +61,7 @@
 
     <!-- Collapsible Filters -->
     <div class="filters-panel" [class.show]="showFilters">
-      <form [formGroup]="filterForm" (ngModelChange)="onFilterChange()" class="filters-form">
+      <form [formGroup]="filterForm" class="filters-form">
         <div class="filters-grid">
           <div class="filter-group">
             <label>{{ 'EXPENSE.FILTERS.PROJECT' | translate }}</label>

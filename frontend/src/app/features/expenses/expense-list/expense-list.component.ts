@@ -85,6 +85,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     this.loadFilters();
     this.loadExpenses();
     this.setupSearch();
+    this.setupFilterListeners();
   }
 
   ngOnDestroy() {
@@ -109,6 +110,18 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(searchTerm => {
       this.searchTerm = searchTerm;
+      this.currentPage = 1;
+      this.loadExpenses();
+    });
+  }
+
+  setupFilterListeners() {
+    // Listen to form control changes with debounce
+    this.filterForm.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
       this.currentPage = 1;
       this.loadExpenses();
     });
@@ -201,10 +214,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFilterChange() {
-    this.currentPage = 1;
-    this.loadExpenses();
-  }
+
 
   clearFilters() {
     this.filterForm.reset();
