@@ -69,6 +69,24 @@
             </div>
           </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div class="checkbox-wrapper">
+              <input 
+                type="checkbox" 
+                id="supplier_optional" 
+                formControlName="supplier_optional"
+                class="supplier-optional-checkbox"
+                (change)="onSupplierOptionalChange($event)"
+              >
+              <label for="supplier_optional" class="supplier-optional-label">
+                {{ 'MAIN_CATEGORIES.FIELDS.SUPPLIER_OPTIONAL' | translate }}
+              </label>
+            </div>
+            <small class="help-text">{{ 'MAIN_CATEGORIES.FIELDS.SUPPLIER_OPTIONAL_HELP' | translate }}</small>
+          </div>
+        </div>
       </div>
 
       <!-- Visual Settings -->

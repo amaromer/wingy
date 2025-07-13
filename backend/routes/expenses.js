@@ -181,7 +181,7 @@ router.get('/:id', auth, async (req, res) => {
 // @route   POST /api/expenses
 // @desc    Create a new expense
 // @access  Private (Accountant)
-router.post('/', auth, requireRole(['Admin', 'Accountant']), upload, handleUploadError, expenseValidation, async (req, res) => {
+router.post('/', auth, requireRole(['Admin', 'Accountant']), upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
   try {
     console.log('Creating expense - Request body:', req.body);
     console.log('Creating expense - Request file:', req.file);
@@ -311,7 +311,7 @@ router.post('/', auth, requireRole(['Admin', 'Accountant']), upload, handleUploa
 // @route   PUT /api/expenses/:id
 // @desc    Update expense
 // @access  Private (Accountant)
-router.put('/:id', auth, requireRole(['Admin', 'Accountant']), upload, handleUploadError, expenseValidation, async (req, res) => {
+router.put('/:id', auth, requireRole(['Admin', 'Accountant']), upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

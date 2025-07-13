@@ -32,6 +32,10 @@ const mainCategorySchema = new mongoose.Schema({
   sort_order: {
     type: Number,
     default: 0
+  },
+  supplier_optional: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true

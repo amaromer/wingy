@@ -14,6 +14,7 @@ const mainCategoryRoutes = require('./routes/main-categories');
 const expenseRoutes = require('./routes/expenses');
 const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboard');
+const paymentRoutes = require('./routes/payments');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -77,6 +78,7 @@ app.use('/api/main-categories', mainCategoryRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

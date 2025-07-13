@@ -8,7 +8,17 @@ router.get('/', auth, async (req, res) => {
   try {
     const query = req.user.role === 'Admin' ? {} : { is_active: true };
     const mainCategories = await MainCategory.find(query).sort({ sort_order: 1, name: 1 });
-    res.json({ mainCategories });
+    
+    // Add default supplier_optional field for existing categories that don't have it
+    const processedCategories = mainCategories.map(category => {
+      const categoryObj = category.toObject();
+      if (categoryObj.supplier_optional === undefined) {
+        categoryObj.supplier_optional = true; // Default to optional for existing categories
+      }
+      return categoryObj;
+    });
+    
+    res.json({ mainCategories: processedCategories });
   } catch (error) {
     console.error('Error fetching main categories:', error);
     res.status(500).json({ message: 'Failed to fetch main categories' });
@@ -22,7 +32,14 @@ router.get('/:id', auth, async (req, res) => {
     if (!mainCategory) {
       return res.status(404).json({ message: 'Main category not found' });
     }
-    res.json({ mainCategory });
+    
+    // Add default supplier_optional field if it doesn't exist
+    const categoryObj = mainCategory.toObject();
+    if (categoryObj.supplier_optional === undefined) {
+      categoryObj.supplier_optional = true; // Default to optional for existing categories
+    }
+    
+    res.json({ mainCategory: categoryObj });
   } catch (error) {
     console.error('Error fetching main category:', error);
     res.status(500).json({ message: 'Failed to fetch main category' });
@@ -32,7 +49,7 @@ router.get('/:id', auth, async (req, res) => {
 // Create new main category (Admin only)
 router.post('/', auth, requireRole(['Admin']), async (req, res) => {
   try {
-    const { name, description, icon, color, is_active, sort_order } = req.body;
+    const { name, description, icon, color, supplier_optional, is_active, sort_order } = req.body;
 
     // Check if name already exists
     const existingCategory = await MainCategory.findOne({ name: name.trim() });
@@ -45,6 +62,7 @@ router.post('/', auth, requireRole(['Admin']), async (req, res) => {
       description: description?.trim(),
       icon: icon?.trim() || '📁',
       color: color || '#6c757d',
+      supplier_optional: supplier_optional !== undefined ? supplier_optional : true,
       is_active: is_active !== undefined ? is_active : true,
       sort_order: sort_order || 0
     });
@@ -66,7 +84,11 @@ router.post('/', auth, requireRole(['Admin']), async (req, res) => {
 // Update main category (Admin only)
 router.put('/:id', auth, requireRole(['Admin']), async (req, res) => {
   try {
-    const { name, description, icon, color, is_active, sort_order } = req.body;
+    const { name, description, icon, color, supplier_optional, is_active, sort_order } = req.body;
+
+    // Debug: Log the received data
+    console.log('Updating main category with data:', req.body);
+    console.log('supplier_optional value:', supplier_optional, 'type:', typeof supplier_optional);
 
     // Check if name already exists (excluding current category)
     if (name) {
@@ -79,22 +101,29 @@ router.put('/:id', auth, requireRole(['Admin']), async (req, res) => {
       }
     }
 
+    const updateData = {
+      name: name?.trim(),
+      description: description?.trim(),
+      icon: icon?.trim(),
+      color,
+      supplier_optional: supplier_optional !== undefined ? supplier_optional : true,
+      is_active,
+      sort_order
+    };
+
+    console.log('Update data:', updateData);
+
     const mainCategory = await MainCategory.findByIdAndUpdate(
       req.params.id,
-      {
-        name: name?.trim(),
-        description: description?.trim(),
-        icon: icon?.trim(),
-        color,
-        is_active,
-        sort_order
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 
     if (!mainCategory) {
       return res.status(404).json({ message: 'Main category not found' });
     }
+
+    console.log('Updated main category:', mainCategory);
 
     res.json({ 
       message: 'Main category updated successfully',

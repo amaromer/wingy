@@ -201,6 +201,18 @@
     color: #374151;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
+    
+    .required-asterisk {
+      color: #ef4444;
+      margin-left: 0.25rem;
+    }
+    
+    .optional-text {
+      color: #6b7280;
+      font-weight: 400;
+      font-size: 0.75rem;
+      margin-left: 0.25rem;
+    }
   }
 
   input, select, textarea {
@@ -453,6 +465,13 @@
   font-size: 0.75rem;
   margin-top: 0.25rem;
   font-weight: 500;
+}
+
+.help-text {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-style: italic;
 }
 
 // Alerts

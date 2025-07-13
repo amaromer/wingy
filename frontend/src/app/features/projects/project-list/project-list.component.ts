@@ -102,7 +102,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
               manager: 'John Smith',
               createdAt: '2024-01-10',
               progress: 65,
-              expenses: 3250000
+              total_expenses: 3250000
             },
             {
               _id: '2',
@@ -116,7 +116,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
               manager: 'Sarah Johnson',
               createdAt: '2024-01-20',
               progress: 45,
-              expenses: 1575000
+              total_expenses: 1575000
             }
           ];
           this.applyFilters();
@@ -251,8 +251,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   getBudgetUtilization(project: Project): number {
-    if (!project.expenses || !project.budget) return 0;
-    return Math.round((project.expenses / project.budget) * 100);
+    if (!project.total_expenses || !project.budget) return 0;
+    return Math.round((project.total_expenses / project.budget) * 100);
   }
 
   getBudgetClass(utilization: number): string {

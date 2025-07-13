@@ -165,6 +165,74 @@
   letter-spacing: 0.5px;
 }
 
+/* VAT Summary Section */
+.vat-section {
+  background: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.vat-summary {
+  padding: 1.5rem;
+}
+
+.vat-card {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
+    border-color: var(--accent-color);
+  }
+}
+
+.vat-icon {
+  font-size: 2.5rem;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+  color: var(--text-on-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.vat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.vat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.vat-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Recent Section */
 .recent-section {
   background: rgba(31, 41, 55, 0.95);
@@ -295,6 +363,20 @@
     font-size: 0.8rem;
   }
 
+  .vat-card {
+    padding: 1rem;
+  }
+
+  .vat-icon {
+    font-size: 2rem;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .vat-value {
+    font-size: 1.5rem;
+  }
+
   .expense-main {
     flex-direction: column;
     align-items: flex-start;
@@ -328,6 +410,20 @@
   }
 
   .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .vat-card {
+    padding: 0.75rem;
+  }
+
+  .vat-icon {
+    font-size: 1.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .vat-value {
     font-size: 1.25rem;
   }
 
@@ -378,6 +474,20 @@
   }
 
   .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .vat-card {
+    padding: 0.75rem;
+  }
+
+  .vat-icon {
+    font-size: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .vat-value {
     font-size: 1.25rem;
   }
 }

@@ -46,6 +46,7 @@ export class MainCategoryFormComponent implements OnInit {
       description: ['', [Validators.maxLength(500)]],
       icon: ['📁', [Validators.maxLength(50)]],
       color: ['#6c757d', [Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
+      supplier_optional: [true],
       is_active: [true],
       sort_order: [0, [Validators.min(0)]]
     });
@@ -81,15 +82,21 @@ export class MainCategoryFormComponent implements OnInit {
       });
   }
 
+
+
   populateForm(mainCategory: MainCategory) {
     this.mainCategoryForm.patchValue({
       name: mainCategory.name,
       description: mainCategory.description || '',
       icon: mainCategory.icon || '📁',
       color: mainCategory.color || '#6c757d',
+      supplier_optional: mainCategory.supplier_optional !== undefined ? mainCategory.supplier_optional : true,
       is_active: mainCategory.is_active !== undefined ? mainCategory.is_active : true,
       sort_order: mainCategory.sort_order || 0
     });
+    
+    // Debug: Log the supplier_optional value
+    console.log('Populating form with supplier_optional:', mainCategory.supplier_optional);
   }
 
   onSubmit() {
@@ -103,11 +110,16 @@ export class MainCategoryFormComponent implements OnInit {
     this.success = '';
 
     const formData: MainCategoryFormData = this.mainCategoryForm.value;
+    
+    // Debug: Log the form data
+    console.log('Form data before submission:', formData);
+    console.log('Supplier optional value:', formData.supplier_optional, 'type:', typeof formData.supplier_optional);
+    console.log('Form control value:', this.mainCategoryForm.get('supplier_optional')?.value);
 
-    // Clean up empty strings
+    // Clean up empty strings but preserve boolean values
     Object.keys(formData).forEach(key => {
       const fieldKey = key as keyof MainCategoryFormData;
-      if (formData[fieldKey] === '') {
+      if (formData[fieldKey] === '' && typeof formData[fieldKey] !== 'boolean') {
         (formData as any)[fieldKey] = undefined;
       }
     });
@@ -118,6 +130,7 @@ export class MainCategoryFormComponent implements OnInit {
 
     request.subscribe({
       next: (response) => {
+        console.log('Main category saved successfully:', response);
         this.submitting = false;
         this.success = this.isEditMode ? 'MAIN_CATEGORIES.MESSAGES.UPDATE_SUCCESS' : 'MAIN_CATEGORIES.MESSAGES.CREATE_SUCCESS';
         
@@ -144,6 +157,11 @@ export class MainCategoryFormComponent implements OnInit {
 
   selectColor(color: string) {
     this.mainCategoryForm.patchValue({ color });
+  }
+
+  onSupplierOptionalChange(event: any) {
+    console.log('Checkbox changed:', event.target.checked);
+    console.log('Form control value after change:', this.mainCategoryForm.get('supplier_optional')?.value);
   }
 
   markFormGroupTouched() {

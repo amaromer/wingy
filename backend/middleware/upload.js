@@ -77,6 +77,6 @@ const handleUploadError = (error, req, res, next) => {
 };
 
 module.exports = {
-  upload: upload.single('attachment'),
+  upload,
   handleUploadError
 }; 

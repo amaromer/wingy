@@ -36,6 +36,7 @@ export class ExpenseFormComponent implements OnInit {
   filePreview: string | null = null;
   showErrorDetails = false;
   errorDetails: any = null;
+  isSupplierOptional: boolean = true;
 
   // Currency options
   currencies = [
@@ -452,8 +453,18 @@ export class ExpenseFormComponent implements OnInit {
       // Load all suppliers and categories if no main category selected
       this.loadAllSuppliers();
       this.loadAllCategories();
+      this.updateSupplierValidation(true); // Make supplier optional when no main category
       return;
     }
+
+    // Find the selected main category to check supplier_optional setting
+    const selectedMainCategory = this.mainCategories.find(mc => mc._id === mainCategoryId);
+    const isSupplierOptional = selectedMainCategory?.supplier_optional !== undefined ? selectedMainCategory.supplier_optional : true;
+    
+    console.log('Selected main category:', selectedMainCategory);
+    console.log('Supplier optional setting:', isSupplierOptional);
+    
+    this.updateSupplierValidation(isSupplierOptional);
 
     // Load suppliers filtered by main category
     this.http.get<Supplier[]>(`/api/expenses/suppliers-by-category/${mainCategoryId}`).subscribe({
@@ -482,6 +493,22 @@ export class ExpenseFormComponent implements OnInit {
         this.loadAllCategories();
       }
     });
+  }
+
+  updateSupplierValidation(isOptional: boolean): void {
+    this.isSupplierOptional = isOptional;
+    console.log('Updating supplier validation. Is optional:', isOptional);
+    const supplierControl = this.expenseForm.get('supplier_id');
+    if (supplierControl) {
+      if (isOptional) {
+        supplierControl.clearValidators();
+        console.log('Supplier field is now optional');
+      } else {
+        supplierControl.setValidators([Validators.required]);
+        console.log('Supplier field is now required');
+      }
+      supplierControl.updateValueAndValidity();
+    }
   }
 
   // Load all suppliers (fallback)

@@ -32,6 +32,7 @@
     "OF": "of",
     "PAGE": "Page",
     "REQUIRED": "This field is required",
+    "OPTIONAL": "Optional",
     "MIN_LENGTH": "Minimum length not met",
     "MAX_LENGTH": "Maximum length exceeded",
     "INVALID": "Invalid value",
@@ -306,6 +307,7 @@
     "NO_MAIN_CATEGORIES_MESSAGE": "Create main expense categories to enable quick expense actions. These categories will help organize your suppliers and speed up expense entry.",
     "CREATE_MAIN_CATEGORIES": "Create Main Categories",
     "MAIN_CATEGORY_HELP": "Select a main category to filter suppliers. Only suppliers assigned to this category will be shown.",
+    "SUPPLIER_OPTIONAL_HELP": "Supplier is optional for this category",
     "VIEW_TITLE": "Expense Details",
     "NOT_FOUND": "Expense Not Found",
     "NOT_FOUND_DESC": "The expense you're looking for doesn't exist or has been removed."
@@ -544,6 +546,11 @@
       "DESCRIPTION_HELP": "Optional description to provide more details about this main category",
       "ICON": "Icon",
       "COLOR": "Color",
+      "SUPPLIER": "Supplier",
+      "SELECT_SUPPLIER": "Select Supplier",
+      "SUPPLIER_HELP": "Choose a default supplier for this main category",
+      "SUPPLIER_OPTIONAL": "Make supplier optional for expenses",
+      "SUPPLIER_OPTIONAL_HELP": "When checked, supplier field will be optional when creating expenses in this category",
       "SORT_ORDER": "Sort Order",
       "IS_ACTIVE": "Active Status",
       "IS_ACTIVE_HELP": "Inactive main categories won't appear in quick actions"

@@ -138,10 +138,10 @@
           <span class="detail-label">{{ 'PROJECT.FIELDS.BUDGET' | translate }}:</span>
           <span class="detail-value budget">${{ project.budget | number:'1.0-0' }}</span>
         </div>
-        <div class="detail-item" *ngIf="project.expenses !== undefined">
+        <div class="detail-item" *ngIf="project.total_expenses !== undefined">
           <span class="detail-label">{{ 'PROJECT.FIELDS.EXPENSES' | translate }}:</span>
           <span class="detail-value expenses" [ngClass]="getBudgetClass(getBudgetUtilization(project))">
-            ${{ project.expenses | number:'1.0-0' }}
+            ${{ project.total_expenses | number:'1.0-0' }}
             <span class="utilization">({{ getBudgetUtilization(project) }}%)</span>
           </span>
         </div>

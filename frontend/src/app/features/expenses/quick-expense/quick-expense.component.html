@@ -185,7 +185,11 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
+          <label for="supplier_id">
+            {{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}
+            <span *ngIf="!isSupplierOptional" class="required-asterisk">*</span>
+            <span *ngIf="isSupplierOptional" class="optional-text">({{ 'COMMON.OPTIONAL' | translate }})</span>
+          </label>
           <select 
             id="supplier_id" 
             formControlName="supplier_id"
@@ -199,6 +203,9 @@
           <div class="error-message" *ngIf="getFieldError('supplier_id')">
             {{ getFieldError('supplier_id')! | translate }}
           </div>
+          <small *ngIf="isSupplierOptional" class="help-text">
+            {{ 'EXPENSE.SUPPLIER_OPTIONAL_HELP' | translate }}
+          </small>
         </div>
       </div>
     </div>

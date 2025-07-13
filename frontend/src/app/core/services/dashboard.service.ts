@@ -10,6 +10,9 @@ export interface DashboardStats {
     totalSuppliers: number;
     totalCategories: number;
     totalUsers: number;
+    totalVAT: number;
+    totalPayments: number;
+    netVAT: number;
   };
   expenseStats: Array<{
     period: string;
@@ -21,6 +24,12 @@ export interface DashboardStats {
     count: number;
   }>;
   recentExpenses: Array<any>;
+  vatStats: {
+    currentCycle: string;
+    expensesVAT: number;
+    paymentsVAT: number;
+    netVAT: number;
+  };
 }
 
 @Injectable({

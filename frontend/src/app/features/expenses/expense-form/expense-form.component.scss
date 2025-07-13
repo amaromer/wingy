@@ -215,6 +215,18 @@
       font-weight: 500;
       color: var(--color-text-primary, #fff);
       font-size: 0.95rem;
+      
+      .required-asterisk {
+        color: #ff7f7f;
+        margin-left: 0.25rem;
+      }
+      
+      .optional-text {
+        color: var(--color-text-secondary, #b0b8c1);
+        font-weight: 400;
+        font-size: 0.875rem;
+        margin-left: 0.25rem;
+      }
     }
     
     input, select, textarea {
@@ -287,6 +299,13 @@
         content: "\26a0";
         margin-right: 0.25rem;
       }
+    }
+    
+    .help-text {
+      color: var(--color-text-secondary, #b0b8c1);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      font-style: italic;
     }
   }
   

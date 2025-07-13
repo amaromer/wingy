@@ -34,6 +34,7 @@ export class QuickExpenseComponent implements OnInit {
   optimizedFileSize: number = 0;
   compressionProgress: number = 0;
   isCompressing: boolean = false;
+  isSupplierOptional: boolean = true;
   
   currencies = [
     { code: 'AED', symbol: 'د.إ' },
@@ -385,6 +386,10 @@ export class QuickExpenseComponent implements OnInit {
       description: mainCategory.name
     });
     
+    // Update supplier validation based on main category setting
+    const isSupplierOptional = mainCategory.supplier_optional !== undefined ? mainCategory.supplier_optional : true;
+    this.updateSupplierValidation(isSupplierOptional);
+    
     // Load suppliers and categories for this main category
     this.loadSuppliersByMainCategory(mainCategory._id!);
     this.loadCategoriesByMainCategory(mainCategory._id!);
@@ -458,6 +463,22 @@ export class QuickExpenseComponent implements OnInit {
         this.categories = [];
       }
     });
+  }
+
+  updateSupplierValidation(isOptional: boolean): void {
+    this.isSupplierOptional = isOptional;
+    console.log('Quick expense - Updating supplier validation. Is optional:', isOptional);
+    const supplierControl = this.quickExpenseForm.get('supplier_id');
+    if (supplierControl) {
+      if (isOptional) {
+        supplierControl.clearValidators();
+        console.log('Quick expense - Supplier field is now optional');
+      } else {
+        supplierControl.setValidators([Validators.required]);
+        console.log('Quick expense - Supplier field is now required');
+      }
+      supplierControl.updateValueAndValidity();
+    }
   }
 
   // Navigate to main categories

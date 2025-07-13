@@ -17,7 +17,8 @@ export interface Project {
   createdAt?: string;
   updatedAt?: string;
   progress?: number;
-  expenses?: number;
+  total_expenses?: number;
+  total_payments?: number;
 }
 
 export interface ProjectPhase {

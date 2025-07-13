@@ -1,6 +1,8 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Project = require('../models/Project');
+const Expense = require('../models/Expense');
+const Payment = require('../models/Payment');
 const { auth, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
@@ -22,6 +24,25 @@ const projectValidation = [
   body('phases').optional(),
   body('team_members').optional()
 ];
+
+// Helper function to calculate project totals
+async function calculateProjectTotals(projectId) {
+  const [expenseTotal, paymentTotal] = await Promise.all([
+    Expense.aggregate([
+      { $match: { project_id: projectId } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]),
+    Payment.aggregate([
+      { $match: { project_id: projectId } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ])
+  ]);
+
+  return {
+    total_expenses: expenseTotal[0]?.total || 0,
+    total_payments: paymentTotal[0]?.total || 0
+  };
+}
 
 // @route   GET /api/projects
 // @desc    Get all projects
@@ -57,10 +78,21 @@ router.get('/', /* auth, */ async (req, res) => {
       .limit(parseInt(req.query.limit) || 50)
       .skip(parseInt(req.query.skip) || 0);
     
+    // Calculate totals for each project
+    const projectsWithTotals = await Promise.all(
+      projects.map(async (project) => {
+        const totals = await calculateProjectTotals(project._id);
+        return {
+          ...project.toObject(),
+          ...totals
+        };
+      })
+    );
+    
     const total = await Project.countDocuments(query);
     
     res.json({
-      projects,
+      projects: projectsWithTotals,
       total,
       page: Math.floor(parseInt(req.query.skip) / parseInt(req.query.limit)) + 1 || 1,
       pages: Math.ceil(total / (parseInt(req.query.limit) || 50))
@@ -82,7 +114,14 @@ router.get('/:id', /* auth, */ async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
     
-    res.json(project);
+    // Calculate totals for the project
+    const totals = await calculateProjectTotals(project._id);
+    const projectWithTotals = {
+      ...project.toObject(),
+      ...totals
+    };
+    
+    res.json(projectWithTotals);
   } catch (error) {
     console.error('Get project error:', error);
     if (error.kind === 'ObjectId') {

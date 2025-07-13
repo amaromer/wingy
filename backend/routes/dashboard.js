@@ -4,6 +4,7 @@ const Project = require('../models/Project');
 const Supplier = require('../models/Supplier');
 const Category = require('../models/Category');
 const User = require('../models/User');
+const Payment = require('../models/Payment');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -28,6 +29,8 @@ router.get('/overview', auth, async (req, res) => {
       totalSuppliers,
       totalCategories,
       totalUsers,
+      totalPayments,
+      vatStats,
       expenseStats,
       projectStats,
       recentExpenses
@@ -55,6 +58,42 @@ router.get('/overview', auth, async (req, res) => {
       
       // Total users
       User.countDocuments({ is_active: true }),
+      
+      // Total payments
+      Payment.aggregate([
+        { $match: matchStage },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' },
+            count: { $sum: 1 }
+          }
+        }
+      ]),
+      
+      // VAT statistics
+      Promise.all([
+        // Expenses VAT
+        Expense.aggregate([
+          { $match: { ...matchStage, is_vat: true } },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: '$amount' }
+            }
+          }
+        ]),
+        // Payments VAT
+        Payment.aggregate([
+          { $match: matchStage },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: '$vat_amount' }
+            }
+          }
+        ])
+      ]),
       
       // Expense statistics by month
       Expense.aggregate([
@@ -92,6 +131,12 @@ router.get('/overview', auth, async (req, res) => {
         .limit(5)
     ]);
     
+    // Calculate VAT totals
+    const expensesVAT = vatStats[0][0]?.total || 0;
+    const paymentsVAT = vatStats[1][0]?.total || 0;
+    const totalVAT = expensesVAT + paymentsVAT;
+    const netVAT = paymentsVAT - expensesVAT;
+
     res.json({
       overview: {
         totalExpenses: totalExpenses[0]?.total || 0,
@@ -99,7 +144,10 @@ router.get('/overview', auth, async (req, res) => {
         totalProjects,
         totalSuppliers,
         totalCategories,
-        totalUsers
+        totalUsers,
+        totalPayments: totalPayments[0]?.total || 0,
+        totalVAT,
+        netVAT
       },
       expenseStats: expenseStats.map(stat => ({
         period: `${stat._id.year}-${String(stat._id.month).padStart(2, '0')}`,
@@ -107,7 +155,13 @@ router.get('/overview', auth, async (req, res) => {
         count: stat.count
       })),
       projectStats,
-      recentExpenses
+      recentExpenses,
+      vatStats: {
+        currentCycle: 'June-August 2024', // This should be calculated based on current date
+        expensesVAT,
+        paymentsVAT,
+        netVAT
+      }
     });
   } catch (error) {
     console.error('Get dashboard overview error:', error);

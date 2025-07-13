@@ -4,6 +4,7 @@ export interface MainCategory {
   description?: string;
   icon?: string;
   color?: string;
+  supplier_optional?: boolean;
   is_active?: boolean;
   sort_order?: number;
   createdAt?: string;
@@ -15,6 +16,7 @@ export interface MainCategoryFormData {
   description?: string;
   icon?: string;
   color?: string;
+  supplier_optional?: boolean;
   is_active?: boolean;
   sort_order?: number;
 } 

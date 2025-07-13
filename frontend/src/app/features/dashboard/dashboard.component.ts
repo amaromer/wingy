@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
+import { VATCalculator } from '../../core/utils/vat-calculator';
 
 interface StatItem {
   icon: string;
@@ -81,7 +82,27 @@ export class DashboardComponent implements OnInit {
         icon: '👥',
         value: this.stats.overview.totalUsers,
         label: 'DASHBOARD.ACTIVE_USERS'
+      },
+      {
+        icon: '🧾',
+        value: VATCalculator.formatVATAmount(this.stats.overview.totalVAT || 0),
+        label: 'DASHBOARD.TOTAL_VAT'
+      },
+      {
+        icon: '💳',
+        value: '$' + (this.stats.overview.totalPayments || 0).toLocaleString(),
+        label: 'DASHBOARD.TOTAL_PAYMENTS'
       }
     ];
+  }
+
+  getCurrentTaxCycle(): string {
+    return VATCalculator.getCurrentTaxCycle().period;
+  }
+
+  getVATNetAmount(): string {
+    if (!this.stats) return '$0.00';
+    const netVAT = this.stats.overview.netVAT || 0;
+    return VATCalculator.formatVATAmount(netVAT);
   }
 } 
