@@ -74,6 +74,7 @@
     "PROJECTS": "Projects",
     "SUPPLIERS": "Suppliers",
     "CATEGORIES": "Categories",
+    "MAIN_CATEGORIES": "Main Categories",
     "EXPENSES": "Expenses",
     "USERS": "Users",
     "PROFILE": "Profile",
@@ -263,6 +264,7 @@
     "SELECT_PROJECT": "Select a project",
     "SELECT_CATEGORY": "Select a category",
     "SELECT_SUPPLIER": "Select a supplier",
+    "SELECT_MAIN_CATEGORY": "Select a main category",
     "UPLOAD_FILE": "Upload File",
     "FILE_HELP": "Supported file types",
     "ACTIONS": {
@@ -300,6 +302,10 @@
       "LABOR": "Labor",
       "SUBMIT": "Save Expense"
     },
+    "NO_MAIN_CATEGORIES_TITLE": "No Main Categories",
+    "NO_MAIN_CATEGORIES_MESSAGE": "Create main expense categories to enable quick expense actions. These categories will help organize your suppliers and speed up expense entry.",
+    "CREATE_MAIN_CATEGORIES": "Create Main Categories",
+    "MAIN_CATEGORY_HELP": "Select a main category to filter suppliers. Only suppliers assigned to this category will be shown.",
     "VIEW_TITLE": "Expense Details",
     "NOT_FOUND": "Expense Not Found",
     "NOT_FOUND_DESC": "The expense you're looking for doesn't exist or has been removed."
@@ -382,12 +388,17 @@
       "PAYMENT_TERNS_PLACEHOLDER": "e.g., Net 30, Net 60",
       "NOTES": "Notes",
       "NOTES_PLACEHOLDER": "Enter any additional notes",
-      "IS_ACTIVE": "Active Status"
+      "IS_ACTIVE": "Active Status",
+      "MAIN_CATEGORIES": "Main Categories",
+      "MAIN_CATEGORIES_DESCRIPTION": "Assign this supplier to main expense categories",
+      "MAIN_CATEGORIES_HELP": "Suppliers assigned to main categories will appear in quick expense actions for those categories",
+      "NO_MAIN_CATEGORIES": "No main categories assigned"
     },
     "SECTIONS": {
       "BASIC_INFO": "Basic Information",
       "CONTACT_INFO": "Contact Information",
-      "ADDITIONAL_INFO": "Additional Information"
+      "ADDITIONAL_INFO": "Additional Information",
+      "MAIN_CATEGORIES": "Main Categories"
     },
     "FILTERS": {
       "STATUS": "Filter by Status",
@@ -493,6 +504,72 @@
       "DELETE_WARNING": "This action cannot be undone.",
       "CODE_EXISTS": "Category code already exists",
       "NAME_EXISTS": "Category name already exists"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    }
+  },
+  "MAIN_CATEGORIES": {
+    "TITLE": "Main Categories",
+    "LIST_TITLE": "Main Categories",
+    "LIST_SUBTITLE": "Manage main expense categories for quick actions",
+    "CREATE_TITLE": "Create New Main Category",
+    "CREATE_SUBTITLE": "Add a new main category for quick expense actions",
+    "EDIT_TITLE": "Edit Main Category",
+    "EDIT_SUBTITLE": "Update main category information and settings",
+    "CREATE_NEW": "Add Main Category",
+    "CREATE_FIRST": "Add Your First Main Category",
+    "EMPTY_TITLE": "No Main Categories Yet",
+    "EMPTY_MESSAGE": "Start by adding your first main category to enable quick expense actions.",
+    "NO_RESULTS_TITLE": "No Main Categories Found",
+    "NO_RESULTS_MESSAGE": "Try adjusting your search criteria or filters.",
+    "SEARCH_PLACEHOLDER": "Search main categories by name or description...",
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load main categories",
+      "CREATE_FAILED": "Failed to create main category",
+      "UPDATE_FAILED": "Failed to update main category",
+      "DELETE_FAILED": "Failed to delete main category",
+      "NOT_FOUND": "Main category not found"
+    },
+    "FIELDS": {
+      "NAME": "Main Category Name",
+      "NAME_PLACEHOLDER": "Enter main category name",
+      "NAME_HELP": "Enter a descriptive name for the main expense category",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Enter main category description",
+      "DESCRIPTION_HELP": "Optional description to provide more details about this main category",
+      "ICON": "Icon",
+      "COLOR": "Color",
+      "SORT_ORDER": "Sort Order",
+      "IS_ACTIVE": "Active Status",
+      "IS_ACTIVE_HELP": "Inactive main categories won't appear in quick actions"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "VISUAL_SETTINGS": "Visual Settings",
+      "SETTINGS": "Settings"
+    },
+    "FILTERS": {
+      "SHOW_INACTIVE": "Show Inactive",
+      "CLEAR": "Clear Filters"
+    },
+    "SORT_ORDER": "Sort Order",
+    "ACTIONS": {
+      "VIEW": "View Details",
+      "EDIT": "Edit Main Category",
+      "DELETE": "Delete Main Category",
+      "SAVE": "Save Main Category",
+      "CANCEL": "Cancel",
+      "BACK": "Back to List"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "Main category created successfully",
+      "UPDATE_SUCCESS": "Main category updated successfully",
+      "DELETE_SUCCESS": "Main category deleted successfully",
+      "DELETE_CONFIRM": "Are you sure you want to delete this main category?",
+      "DELETE_WARNING": "This action cannot be undone.",
+      "NAME_EXISTS": "Main category name already exists"
     },
     "STATUS": {
       "ACTIVE": "Active",

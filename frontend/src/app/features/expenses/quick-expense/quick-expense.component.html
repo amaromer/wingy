@@ -5,28 +5,35 @@
   </div>
 
   <!-- Quick Action Buttons -->
-  <div class="quick-actions">
+  <div class="quick-actions" *ngIf="mainCategories.length > 0">
     <h3>{{ 'EXPENSE.QUICK_ACTIONS' | translate }}</h3>
     <div class="quick-buttons">
-      <button type="button" class="quick-btn fuel" (click)="setQuickExpense('fuel')">
-        <span class="quick-icon">⛽</span>
-        <span class="quick-text">{{ 'EXPENSE.QUICK.FUEL' | translate }}</span>
+      <button 
+        type="button" 
+        class="quick-btn" 
+        *ngFor="let mainCategory of mainCategories"
+        (click)="setQuickExpense(mainCategory)"
+        [style.background-color]="mainCategory.color || '#6c757d'"
+        [style.border-color]="mainCategory.color || '#6c757d'"
+      >
+        <span class="quick-icon">{{ mainCategory.icon || '📁' }}</span>
+        <span class="quick-text">{{ mainCategory.name }}</span>
       </button>
-      <button type="button" class="quick-btn meals" (click)="setQuickExpense('meals')">
-        <span class="quick-icon">🍽️</span>
-        <span class="quick-text">{{ 'EXPENSE.QUICK.MEALS' | translate }}</span>
-      </button>
-      <button type="button" class="quick-btn materials" (click)="setQuickExpense('materials')">
-        <span class="quick-icon">🧱</span>
-        <span class="quick-text">{{ 'EXPENSE.QUICK.MATERIALS' | translate }}</span>
-      </button>
-      <button type="button" class="quick-btn tools" (click)="setQuickExpense('tools')">
-        <span class="quick-icon">🔧</span>
-        <span class="quick-text">{{ 'EXPENSE.QUICK.TOOLS' | translate }}</span>
-      </button>
-      <button type="button" class="quick-btn labor" (click)="setQuickExpense('labor')">
-        <span class="quick-icon">👷</span>
-        <span class="quick-text">{{ 'EXPENSE.QUICK.LABOR' | translate }}</span>
+    </div>
+  </div>
+
+  <!-- No Main Categories Message -->
+  <div class="no-main-categories" *ngIf="mainCategories.length === 0 && !loading">
+    <div class="empty-state">
+      <div class="empty-icon">🎯</div>
+      <h3>{{ 'EXPENSE.NO_MAIN_CATEGORIES_TITLE' | translate }}</h3>
+      <p>{{ 'EXPENSE.NO_MAIN_CATEGORIES_MESSAGE' | translate }}</p>
+      <button 
+        type="button" 
+        class="btn btn-primary"
+        (click)="navigateToMainCategories()"
+      >
+        {{ 'EXPENSE.CREATE_MAIN_CATEGORIES' | translate }}
       </button>
     </div>
   </div>

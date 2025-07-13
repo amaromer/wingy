@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { Supplier } from '../../../core/models/supplier.model';
+import { MainCategory } from '../../../core/models/main-category.model';
 
 @Component({
   selector: 'app-supplier-list',
@@ -17,6 +18,7 @@ import { Supplier } from '../../../core/models/supplier.model';
 export class SupplierListComponent implements OnInit, OnDestroy {
   suppliers: Supplier[] = [];
   filteredSuppliers: Supplier[] = [];
+  mainCategories: MainCategory[] = [];
   loading = true;
   error = '';
   deletingSupplierId: string | null = null;
@@ -63,6 +65,19 @@ export class SupplierListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadSuppliers();
+    this.loadMainCategories();
+  }
+
+  loadMainCategories() {
+    this.http.get<any>('/api/main-categories').subscribe({
+      next: (response) => {
+        this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+      },
+      error: (err) => {
+        console.error('Error loading main categories:', err);
+        this.mainCategories = [];
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -232,5 +247,37 @@ export class SupplierListComponent implements OnInit, OnDestroy {
 
   getStatusIcon(isActive: boolean | undefined): string {
     return isActive ? '✅' : '❌';
+  }
+
+  // Get main category names for a supplier
+  getMainCategoryNames(supplier: Supplier): string[] {
+    if (!supplier.main_category_ids || supplier.main_category_ids.length === 0) {
+      return [];
+    }
+    
+    return supplier.main_category_ids
+      .map(categoryId => {
+        const category = this.mainCategories.find(cat => cat._id === categoryId);
+        return category ? category.name : 'Unknown Category';
+      })
+      .filter(name => name !== 'Unknown Category');
+  }
+
+  // Get main category icons for a supplier
+  getMainCategoryIcons(supplier: Supplier): string[] {
+    if (!supplier.main_category_ids || supplier.main_category_ids.length === 0) {
+      return [];
+    }
+    
+    return supplier.main_category_ids
+      .map(categoryId => {
+        const category = this.mainCategories.find(cat => cat._id === categoryId);
+        return category ? category.icon || '📁' : '📁';
+      });
+  }
+
+  // Check if supplier has main categories
+  hasMainCategories(supplier: Supplier): boolean {
+    return !!(supplier.main_category_ids && supplier.main_category_ids.length > 0);
   }
 } 

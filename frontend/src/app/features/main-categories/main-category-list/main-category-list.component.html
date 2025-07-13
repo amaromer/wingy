@@ -1,0 +1,118 @@
+<div class="main-category-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ 'MAIN_CATEGORIES.LIST_TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'MAIN_CATEGORIES.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="onCreateMainCategory()"
+      >
+        <span class="icon">+</span>
+        {{ 'MAIN_CATEGORIES.CREATE_NEW' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        [placeholder]="'MAIN_CATEGORIES.SEARCH_PLACEHOLDER' | translate"
+        class="search-input"
+      >
+    </div>
+    
+    <div class="filter-controls">
+      <label class="checkbox-wrapper">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="showInactive"
+          class="filter-checkbox"
+        >
+        <span class="checkbox-label">{{ 'MAIN_CATEGORIES.FILTERS.SHOW_INACTIVE' | translate }}</span>
+      </label>
+      
+      <button 
+        class="btn btn-secondary clear-filters"
+        (click)="clearFilters()"
+      >
+        {{ 'MAIN_CATEGORIES.FILTERS.CLEAR' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Main Categories List -->
+  <div class="main-categories-grid" *ngIf="!loading">
+    <div class="main-category-card" *ngFor="let category of filteredMainCategories">
+      <div class="card-header">
+        <div class="category-icon" [style.background-color]="category.color || '#6c757d'">
+          <span class="icon-text">{{ category.icon || '📁' }}</span>
+        </div>
+        <div class="category-info">
+          <h3 class="category-name">{{ category.name }}</h3>
+          <p class="category-description" *ngIf="category.description">
+            {{ category.description }}
+          </p>
+        </div>
+        <div class="card-actions">
+          <button 
+            class="btn btn-icon edit-btn"
+            (click)="onEditMainCategory(category._id!)"
+            [title]="'MAIN_CATEGORIES.ACTIONS.EDIT' | translate"
+          >
+            ✏️
+          </button>
+          <button 
+            class="btn btn-icon delete-btn"
+            (click)="onDeleteMainCategory(category)"
+            [title]="'MAIN_CATEGORIES.ACTIONS.DELETE' | translate"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <span class="status-badge" [class.inactive]="category.is_active === false">
+          {{ (category.is_active !== false ? 'MAIN_CATEGORIES.STATUS.ACTIVE' : 'MAIN_CATEGORIES.STATUS.INACTIVE') | translate }}
+        </span>
+        <span class="sort-order" *ngIf="category.sort_order !== undefined">
+          {{ 'MAIN_CATEGORIES.SORT_ORDER' | translate }}: {{ category.sort_order }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredMainCategories.length === 0">
+    <div class="empty-icon">📂</div>
+    <h3>{{ 'MAIN_CATEGORIES.EMPTY_TITLE' | translate }}</h3>
+    <p>{{ 'MAIN_CATEGORIES.EMPTY_MESSAGE' | translate }}</p>
+    <button 
+      class="btn btn-primary"
+      (click)="onCreateMainCategory()"
+    >
+      {{ 'MAIN_CATEGORIES.CREATE_FIRST' | translate }}
+    </button>
+  </div>
+</div> 

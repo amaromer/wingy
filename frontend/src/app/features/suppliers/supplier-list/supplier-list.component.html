@@ -123,6 +123,25 @@
           <span class="detail-label">{{ 'SUPPLIERS.FIELDS.NOTES' | translate }}:</span>
           <span class="detail-value notes">{{ supplier.notes }}</span>
         </div>
+        
+        <!-- Main Categories -->
+        <div class="detail-item" *ngIf="hasMainCategories(supplier)">
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.MAIN_CATEGORIES' | translate }}:</span>
+          <div class="main-categories-display">
+            <span 
+              class="main-category-badge" 
+              *ngFor="let categoryName of getMainCategoryNames(supplier); let i = index"
+              [title]="categoryName"
+            >
+              {{ getMainCategoryIcons(supplier)[i] }} {{ categoryName }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="detail-item" *ngIf="!hasMainCategories(supplier)">
+          <span class="detail-label">{{ 'SUPPLIERS.FIELDS.MAIN_CATEGORIES' | translate }}:</span>
+          <span class="detail-value no-categories">📁 {{ 'SUPPLIERS.NO_MAIN_CATEGORIES' | translate }}</span>
+        </div>
       </div>
       
       <div class="supplier-footer">

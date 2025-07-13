@@ -16,7 +16,9 @@ const supplierValidation = [
   body('vat_no').optional().trim().isLength({ max: 50 }).withMessage('VAT number must be less than 50 characters'),
   body('payment_terms').optional().trim().isLength({ max: 100 }).withMessage('Payment terms must be less than 100 characters'),
   body('is_active').optional().isBoolean().withMessage('Active status must be a boolean'),
-  body('notes').optional().trim().isLength({ max: 1000 }).withMessage('Notes must be less than 1000 characters')
+  body('notes').optional().trim().isLength({ max: 1000 }).withMessage('Notes must be less than 1000 characters'),
+  body('main_category_ids').optional().isArray().withMessage('Main category IDs must be an array'),
+  body('main_category_ids.*').optional().isMongoId().withMessage('Each main category ID must be a valid MongoDB ObjectId')
 ];
 
 // @route   GET /api/suppliers
@@ -104,7 +106,8 @@ router.post('/', /* auth, requireAdmin, supplierValidation, */ async (req, res) 
       vat_no,
       payment_terms,
       is_active,
-      notes 
+      notes,
+      main_category_ids
     } = req.body;
     
     // Check if supplier email already exists (only if email is provided)
@@ -125,7 +128,8 @@ router.post('/', /* auth, requireAdmin, supplierValidation, */ async (req, res) 
       vat_no,
       payment_terms,
       is_active: is_active !== undefined ? is_active : true,
-      notes
+      notes,
+      main_category_ids: main_category_ids || []
     });
     
     console.log('Creating supplier with data:', supplier);
@@ -163,7 +167,8 @@ router.put('/:id', /* auth, requireAdmin, */ supplierValidation, async (req, res
       vat_no,
       payment_terms,
       is_active,
-      notes 
+      notes,
+      main_category_ids
     } = req.body;
     
     const supplier = await Supplier.findById(req.params.id);
@@ -190,6 +195,7 @@ router.put('/:id', /* auth, requireAdmin, */ supplierValidation, async (req, res
     if (payment_terms !== undefined) supplier.payment_terms = payment_terms;
     if (is_active !== undefined) supplier.is_active = is_active;
     if (notes !== undefined) supplier.notes = notes;
+    if (main_category_ids !== undefined) supplier.main_category_ids = main_category_ids;
     
     await supplier.save();
     

@@ -60,6 +60,11 @@ const supplierSchema = new mongoose.Schema({
     type: String,
     trim: true,
     maxlength: [1000, 'Notes cannot exceed 1000 characters']
+  },
+  main_category_ids: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'MainCategory',
+    default: []
   }
 }, {
   timestamps: true

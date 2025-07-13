@@ -172,6 +172,22 @@
 
           <div class="form-row">
             <div class="form-group">
+              <label for="main_category_id">{{ 'MAIN_CATEGORY.FIELDS.NAME' | translate }}</label>
+              <select 
+                id="main_category_id" 
+                #mainCategorySelect
+                (change)="onMainCategoryChange(mainCategorySelect.value)"
+                class="main-category-select"
+              >
+                <option value="">{{ 'EXPENSE.SELECT_MAIN_CATEGORY' | translate }}</option>
+                <option *ngFor="let mainCategory of mainCategories" [value]="mainCategory._id">
+                  {{ mainCategory.name }}
+                </option>
+              </select>
+              <small class="help-text">{{ 'EXPENSE.MAIN_CATEGORY_HELP' | translate }}</small>
+            </div>
+
+            <div class="form-group">
               <label for="supplier_id">{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }} *</label>
               <select 
                 id="supplier_id" 

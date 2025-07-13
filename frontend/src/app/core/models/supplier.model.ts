@@ -10,6 +10,7 @@ export interface Supplier {
   payment_terms?: string;
   is_active?: boolean;
   notes?: string;
+  main_category_ids?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -25,4 +26,5 @@ export interface SupplierFormData {
   payment_terms?: string;
   is_active?: boolean;
   notes?: string;
+  main_category_ids?: string[];
 } 

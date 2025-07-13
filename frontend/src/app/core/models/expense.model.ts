@@ -100,6 +100,7 @@ export interface Supplier {
   contact_person?: string;
   email?: string;
   phone?: string;
+  main_category_ids?: string[];
 }
 
 export interface Category {

@@ -1,0 +1,177 @@
+<div class="main-category-form-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ pageTitle | translate }}</h1>
+      <p class="subtitle">{{ (isEditMode ? 'MAIN_CATEGORIES.EDIT_SUBTITLE' : 'MAIN_CATEGORIES.CREATE_SUBTITLE') | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="mainCategoryForm" (ngSubmit)="onSubmit()" class="main-category-form" *ngIf="!loading">
+    <div class="form-sections">
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h3>{{ 'MAIN_CATEGORIES.SECTIONS.BASIC_INFO' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">{{ 'MAIN_CATEGORIES.FIELDS.NAME' | translate }} *</label>
+            <input 
+              type="text" 
+              id="name"
+              formControlName="name"
+              [placeholder]="'MAIN_CATEGORIES.FIELDS.NAME_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('name')"
+            >
+            <div class="error-message" *ngIf="getFieldError('name')">
+              {{ getFieldError('name')! | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">{{ 'MAIN_CATEGORIES.FIELDS.DESCRIPTION' | translate }}</label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              [placeholder]="'MAIN_CATEGORIES.FIELDS.DESCRIPTION_PLACEHOLDER' | translate"
+              rows="3"
+              [class.error]="isFieldInvalid('description')"
+            ></textarea>
+            <div class="error-message" *ngIf="getFieldError('description')">
+              {{ getFieldError('description')! | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Settings -->
+      <div class="form-section">
+        <h3>{{ 'MAIN_CATEGORIES.SECTIONS.VISUAL_SETTINGS' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ 'MAIN_CATEGORIES.FIELDS.ICON' | translate }}</label>
+            <div class="icon-selector">
+              <div class="current-icon" [style.background-color]="mainCategoryForm.get('color')?.value || '#6c757d'">
+                <span class="icon-text">{{ mainCategoryForm.get('icon')?.value || '📁' }}</span>
+              </div>
+              <div class="icon-options">
+                <button 
+                  type="button"
+                  class="icon-option"
+                  *ngFor="let icon of iconOptions"
+                  (click)="selectIcon(icon)"
+                  [class.selected]="mainCategoryForm.get('icon')?.value === icon"
+                >
+                  {{ icon }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ 'MAIN_CATEGORIES.FIELDS.COLOR' | translate }}</label>
+            <div class="color-selector">
+              <div class="current-color" [style.background-color]="mainCategoryForm.get('color')?.value || '#6c757d'"></div>
+              <div class="color-options">
+                <button 
+                  type="button"
+                  class="color-option"
+                  *ngFor="let color of colorOptions"
+                  (click)="selectColor(color)"
+                  [style.background-color]="color"
+                  [class.selected]="mainCategoryForm.get('color')?.value === color"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="form-section">
+        <h3>{{ 'MAIN_CATEGORIES.SECTIONS.SETTINGS' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sort_order">{{ 'MAIN_CATEGORIES.FIELDS.SORT_ORDER' | translate }}</label>
+            <input 
+              type="number" 
+              id="sort_order"
+              formControlName="sort_order"
+              min="0"
+              [class.error]="isFieldInvalid('sort_order')"
+            >
+            <div class="error-message" *ngIf="getFieldError('sort_order')">
+              {{ getFieldError('sort_order')! | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-wrapper">
+              <input 
+                type="checkbox" 
+                id="is_active" 
+                formControlName="is_active"
+                class="active-checkbox"
+              >
+              <label for="is_active" class="active-label">
+                {{ 'MAIN_CATEGORIES.FIELDS.IS_ACTIVE' | translate }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="mainCategoryForm.invalid || submitting"
+      >
+        <span *ngIf="submitting" class="spinner-small"></span>
+        {{ (isEditMode ? 'COMMON.UPDATE' : 'COMMON.CREATE') | translate }}
+      </button>
+    </div>
+  </form>
+</div> 

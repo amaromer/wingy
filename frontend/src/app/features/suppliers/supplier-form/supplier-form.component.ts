@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Supplier, SupplierFormData } from '../../../core/models/supplier.model';
+import { MainCategory } from '../../../core/models/main-category.model';
 
 // Custom validator for optional email
 function optionalEmailValidator(control: AbstractControl): ValidationErrors | null {
@@ -37,6 +38,8 @@ export class SupplierFormComponent implements OnInit {
   success = '';
   isEditMode = false;
   supplierId: string | null = null;
+  mainCategories: MainCategory[] = [];
+  selectedMainCategories: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +57,8 @@ export class SupplierFormComponent implements OnInit {
       vat_no: ['', [Validators.maxLength(50)]],
       payment_terms: ['', [Validators.maxLength(100)]],
       is_active: [true],
-      notes: ['', [Validators.maxLength(1000)]]
+      notes: ['', [Validators.maxLength(1000)]],
+      main_category_ids: [[]]
     });
 
     // Add conditional validation for VAT number
@@ -71,11 +75,25 @@ export class SupplierFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadMainCategories();
+    
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
         this.supplierId = params['id'];
         this.loadSupplier();
+      }
+    });
+  }
+
+  loadMainCategories() {
+    this.http.get<any>('/api/main-categories').subscribe({
+      next: (response) => {
+        this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+      },
+      error: (err) => {
+        console.error('Error loading main categories:', err);
+        this.mainCategories = [];
       }
     });
   }
@@ -127,8 +145,11 @@ export class SupplierFormComponent implements OnInit {
       is_active: supplier.is_active !== undefined ? supplier.is_active : true,
       notes: supplier.notes || '',
       vat_enabled: supplier.vat_enabled || false,
-      vat_no: supplier.vat_no || ''
+      vat_no: supplier.vat_no || '',
+      main_category_ids: supplier.main_category_ids || []
     });
+    
+    this.selectedMainCategories = supplier.main_category_ids || [];
   }
 
   onSubmit() {
@@ -219,5 +240,22 @@ export class SupplierFormComponent implements OnInit {
 
   get pageTitle(): string {
     return this.isEditMode ? 'SUPPLIERS.EDIT_TITLE' : 'SUPPLIERS.CREATE_TITLE';
+  }
+
+  // Main category selection methods
+  onMainCategoryChange(mainCategoryId: string, isChecked: boolean): void {
+    if (isChecked) {
+      if (!this.selectedMainCategories.includes(mainCategoryId)) {
+        this.selectedMainCategories.push(mainCategoryId);
+      }
+    } else {
+      this.selectedMainCategories = this.selectedMainCategories.filter(id => id !== mainCategoryId);
+    }
+    
+    this.supplierForm.patchValue({ main_category_ids: this.selectedMainCategories });
+  }
+
+  isMainCategorySelected(mainCategoryId: string): boolean {
+    return this.selectedMainCategories.includes(mainCategoryId);
   }
 } 

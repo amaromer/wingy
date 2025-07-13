@@ -187,6 +187,38 @@
       </div>
     </div>
 
+    <!-- Main Categories Section -->
+    <div class="form-section" *ngIf="mainCategories.length > 0">
+      <h3>{{ 'SUPPLIERS.SECTIONS.MAIN_CATEGORIES' | translate }}</h3>
+      <p class="section-description">{{ 'SUPPLIERS.FIELDS.MAIN_CATEGORIES_DESCRIPTION' | translate }}</p>
+      
+      <div class="main-categories-grid">
+        <div 
+          class="main-category-item" 
+          *ngFor="let mainCategory of mainCategories"
+        >
+          <div class="custom-checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              [id]="'main_category_' + mainCategory._id"
+              [checked]="isMainCategorySelected(mainCategory._id!)"
+              #mainCategoryCheckbox
+              (change)="onMainCategoryChange(mainCategory._id!, mainCategoryCheckbox.checked)"
+              class="custom-checkbox"
+            >
+            <label [for]="'main_category_' + mainCategory._id" class="custom-checkbox-label">
+              <span class="category-icon">{{ mainCategory.icon || '📁' }}</span>
+              <span class="category-name">{{ mainCategory.name }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="help-text">
+        <small>{{ 'SUPPLIERS.FIELDS.MAIN_CATEGORIES_HELP' | translate }}</small>
+      </div>
+    </div>
+
     <!-- Form Actions -->
     <div class="form-actions">
       <button 

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ExpenseService } from '../../../core/services/expense.service';
 import { Project, Category, Supplier } from '../../../core/models/expense.model';
+import { MainCategory } from '../../../core/models/main-category.model';
 
 @Component({
   selector: 'app-quick-expense',
@@ -24,6 +25,7 @@ export class QuickExpenseComponent implements OnInit {
   projects: Project[] = [];
   categories: Category[] = [];
   suppliers: Supplier[] = [];
+  mainCategories: MainCategory[] = [];
   
   // File upload
   selectedFile: File | null = null;
@@ -68,6 +70,17 @@ export class QuickExpenseComponent implements OnInit {
   private loadData(): void {
     this.loading = true;
     
+    // Load main categories
+    this.http.get<any>('/api/main-categories').subscribe({
+      next: (response) => {
+        this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+      },
+      error: (err) => {
+        console.error('Error loading main categories:', err);
+        this.mainCategories = [];
+      }
+    });
+
     // Load categories
     this.http.get<any>('/api/categories').subscribe({
       next: (response) => {
@@ -366,30 +379,54 @@ export class QuickExpenseComponent implements OnInit {
     return null;
   }
 
-  // Quick actions for common expense types
-  setQuickExpense(type: string): void {
-    const quickExpenses = {
-      'fuel': { description: 'Fuel', category: 'Transportation' },
-      'meals': { description: 'Meals', category: 'Food & Beverage' },
-      'materials': { description: 'Construction Materials', category: 'Materials' },
-      'tools': { description: 'Tools & Equipment', category: 'Equipment' },
-      'labor': { description: 'Labor Cost', category: 'Labor' }
-    };
+  // Quick actions using main categories
+  setQuickExpense(mainCategory: MainCategory): void {
+    this.quickExpenseForm.patchValue({
+      description: mainCategory.name
+    });
+    
+    // Load suppliers for this main category
+    this.loadSuppliersByMainCategory(mainCategory._id!);
+  }
 
-    const expense = quickExpenses[type as keyof typeof quickExpenses];
-    if (expense) {
-      this.quickExpenseForm.patchValue({
-        description: expense.description
-      });
-      
-      // Try to find matching category
-      const category = this.categories.find(c => 
-        c.name.toLowerCase().includes(expense.category.toLowerCase())
-      );
-      if (category) {
-        this.quickExpenseForm.patchValue({ category_id: category._id });
+  // Load suppliers filtered by main category
+  private loadSuppliersByMainCategory(mainCategoryId: string): void {
+    this.http.get<Supplier[]>(`/api/expenses/suppliers-by-category/${mainCategoryId}`).subscribe({
+      next: (suppliers) => {
+        this.suppliers = suppliers;
+        
+        // Auto-select first supplier if available
+        if (suppliers.length === 1) {
+          this.quickExpenseForm.patchValue({ supplier_id: suppliers[0]._id });
+        } else if (suppliers.length > 1) {
+          // Clear supplier selection to force user choice
+          this.quickExpenseForm.patchValue({ supplier_id: '' });
+        }
+      },
+      error: (err) => {
+        console.error('Error loading suppliers by main category:', err);
+        // Fallback to all suppliers
+        this.loadAllSuppliers();
       }
-    }
+    });
+  }
+
+  // Load all suppliers (fallback)
+  private loadAllSuppliers(): void {
+    this.http.get<Supplier[]>('/api/suppliers').subscribe({
+      next: (data) => {
+        this.suppliers = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error loading suppliers:', err);
+        this.suppliers = [];
+      }
+    });
+  }
+
+  // Navigate to main categories
+  navigateToMainCategories(): void {
+    this.router.navigate(['/main-categories']);
   }
 
   // Helper method to format file size

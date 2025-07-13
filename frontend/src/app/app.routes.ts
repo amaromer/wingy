@@ -87,6 +87,21 @@ export const routes: Routes = [
     loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
   },
   {
+    path: 'main-categories',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/main-categories/main-category-list/main-category-list.component').then(m => m.MainCategoryListComponent)
+  },
+  {
+    path: 'main-categories/create',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/main-categories/main-category-form/main-category-form.component').then(m => m.MainCategoryFormComponent)
+  },
+  {
+    path: 'main-categories/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/main-categories/main-category-form/main-category-form.component').then(m => m.MainCategoryFormComponent)
+  },
+  {
     path: 'users',
     canActivate: [authGuard],
     loadComponent: () => import('./features/users/user-list/user-list.component').then(m => m.UserListComponent)

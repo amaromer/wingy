@@ -61,6 +61,11 @@
           {{ 'NAVIGATION.CATEGORIES' | translate }}
         </a>
         
+        <a routerLink="/main-categories" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+          <span class="nav-icon">🎯</span>
+          {{ 'NAVIGATION.MAIN_CATEGORIES' | translate }}
+        </a>
+        
         <a routerLink="/users" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
           <span class="nav-icon">👥</span>
           {{ 'NAVIGATION.USERS' | translate }}

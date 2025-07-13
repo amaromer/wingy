@@ -4,13 +4,33 @@ const Expense = require('../models/Expense');
 const Project = require('../models/Project');
 const Supplier = require('../models/Supplier');
 const Category = require('../models/Category');
-const { auth, requireAccountant } = require('../middleware/auth');
+const { auth, requireRole } = require('../middleware/auth');
 const { upload, handleUploadError } = require('../middleware/upload');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const ExcelJS = require('exceljs');
 const path = require('path');
 
 const router = express.Router();
+
+// @route   GET /api/expenses/suppliers-by-category/:categoryId
+// @desc    Get suppliers filtered by main category
+// @access  Private
+router.get('/suppliers-by-category/:categoryId', auth, async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    
+    // Find suppliers that have this main category in their main_category_ids array
+    const suppliers = await Supplier.find({ 
+      main_category_ids: categoryId,
+      is_active: true 
+    }).sort({ name: 1 });
+    
+    res.json(suppliers);
+  } catch (error) {
+    console.error('Get suppliers by category error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Validation middleware
 const expenseValidation = [
@@ -141,7 +161,7 @@ router.get('/:id', auth, async (req, res) => {
 // @route   POST /api/expenses
 // @desc    Create a new expense
 // @access  Private (Accountant)
-router.post('/', auth, requireAccountant, upload, handleUploadError, expenseValidation, async (req, res) => {
+router.post('/', auth, requireRole(['Admin', 'Accountant']), upload, handleUploadError, expenseValidation, async (req, res) => {
   try {
     console.log('Creating expense - Request body:', req.body);
     console.log('Creating expense - Request file:', req.file);
@@ -271,7 +291,7 @@ router.post('/', auth, requireAccountant, upload, handleUploadError, expenseVali
 // @route   PUT /api/expenses/:id
 // @desc    Update expense
 // @access  Private (Accountant)
-router.put('/:id', auth, requireAccountant, upload, handleUploadError, expenseValidation, async (req, res) => {
+router.put('/:id', auth, requireRole(['Admin', 'Accountant']), upload, handleUploadError, expenseValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -385,7 +405,7 @@ router.put('/:id', auth, requireAccountant, upload, handleUploadError, expenseVa
 // @route   DELETE /api/expenses/:id
 // @desc    Delete expense
 // @access  Private (Accountant)
-router.delete('/:id', auth, requireAccountant, async (req, res) => {
+router.delete('/:id', auth, requireRole(['Admin', 'Accountant']), async (req, res) => {
   try {
     const expense = await Expense.findById(req.params.id);
     

@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { Expense, CreateExpenseRequest, UpdateExpenseRequest, Project, Category, Supplier } from '../../../core/models/expense.model';
 import { ExpenseService } from '../../../core/services/expense.service';
+import { MainCategory } from '../../../core/models/main-category.model';
 
 @Component({
   selector: 'app-expense-form',
@@ -29,6 +30,7 @@ export class ExpenseFormComponent implements OnInit {
   categories: Category[] = [];
   projects: Project[] = [];
   suppliers: Supplier[] = [];
+  mainCategories: MainCategory[] = [];
   
   selectedFile: File | null = null;
   filePreview: string | null = null;
@@ -80,6 +82,19 @@ export class ExpenseFormComponent implements OnInit {
   }
 
   loadFilters() {
+    // Load main categories
+    this.http.get<any>('/api/main-categories')
+      .subscribe({
+        next: (response) => {
+          console.log('Main Categories API response:', response);
+          this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+        },
+        error: (err) => {
+          console.error('Error loading main categories:', err);
+          this.mainCategories = [];
+        }
+      });
+
     // Load categories
     this.http.get<any>('/api/categories')
       .subscribe({
@@ -429,5 +444,40 @@ export class ExpenseFormComponent implements OnInit {
   // Accordion functionality
   toggleSection(section: string): void {
     this.activeSection = this.activeSection === section ? '' : section;
+  }
+
+  // Filter suppliers by main category
+  onMainCategoryChange(mainCategoryId: string): void {
+    if (!mainCategoryId) {
+      // Load all suppliers if no main category selected
+      this.loadAllSuppliers();
+      return;
+    }
+
+    this.http.get<Supplier[]>(`/api/expenses/suppliers-by-category/${mainCategoryId}`).subscribe({
+      next: (suppliers) => {
+        this.suppliers = suppliers;
+        // Clear supplier selection when main category changes
+        this.expenseForm.patchValue({ supplier_id: '' });
+      },
+      error: (err) => {
+        console.error('Error loading suppliers by main category:', err);
+        // Fallback to all suppliers
+        this.loadAllSuppliers();
+      }
+    });
+  }
+
+  // Load all suppliers (fallback)
+  private loadAllSuppliers(): void {
+    this.http.get<Supplier[]>('/api/suppliers').subscribe({
+      next: (data) => {
+        this.suppliers = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error loading suppliers:', err);
+        this.suppliers = [];
+      }
+    });
   }
 } 
