@@ -105,6 +105,74 @@ build_frontend() {
     log "Frontend built successfully"
 }
 
+# Run database migrations
+run_migrations() {
+    log "Running database migrations..."
+    
+    cd "$PROJECT_PATH/backend"
+    
+    # Create migration script for main categories
+    cat > migrate-main-categories.js << 'EOF'
+const mongoose = require('mongoose');
+const MainCategory = require('./models/MainCategory');
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/wingy', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+async function updateMainCategories() {
+  try {
+    console.log('Starting main categories migration...');
+    
+    // Find all main categories that don't have supplier_optional field
+    const categoriesToUpdate = await MainCategory.find({
+      supplier_optional: { $exists: false }
+    });
+    
+    console.log(\`Found \${categoriesToUpdate.length} categories to update\`);
+    
+    if (categoriesToUpdate.length > 0) {
+      // Update all categories to have supplier_optional = true (default)
+      const result = await MainCategory.updateMany(
+        { supplier_optional: { $exists: false } },
+        { $set: { supplier_optional: true } }
+      );
+      
+      console.log(\`Updated \${result.modifiedCount} categories\`);
+    } else {
+      console.log('No categories need updating');
+    }
+    
+    // Verify the update
+    const allCategories = await MainCategory.find({});
+    console.log('All categories after update:');
+    allCategories.forEach(cat => {
+      console.log(\`- \${cat.name}: supplier_optional = \${cat.supplier_optional}\`);
+    });
+    
+    console.log('Migration completed successfully!');
+  } catch (error) {
+    console.error('Migration failed:', error);
+    process.exit(1);
+  } finally {
+    mongoose.connection.close();
+  }
+}
+
+updateMainCategories();
+EOF
+
+    # Run the migration
+    node migrate-main-categories.js || error "Database migration failed"
+    
+    # Clean up migration script
+    rm -f migrate-main-categories.js
+    
+    log "Database migrations completed successfully"
+}
+
 # Update environment variables
 update_env() {
     log "Updating environment variables..."
@@ -124,7 +192,18 @@ update_env() {
         error "JWT_SECRET not found in .env file"
     fi
     
-    log "Environment variables validated"
+    # Check for optional environment variables and set defaults if missing
+    if ! grep -q "UPLOAD_PATH" .env; then
+        echo "UPLOAD_PATH=./uploads" >> .env
+        log "Added UPLOAD_PATH to .env file"
+    fi
+    
+    if ! grep -q "MAX_FILE_SIZE" .env; then
+        echo "MAX_FILE_SIZE=10485760" >> .env
+        log "Added MAX_FILE_SIZE to .env file (10MB)"
+    fi
+    
+    log "Environment variables validated and updated"
 }
 
 # Restart services
@@ -164,7 +243,37 @@ health_check() {
         error "Frontend health check failed"
     fi
     
+    # Check if main categories API is working
+    if curl -f -s http://localhost:3000/api/main-categories > /dev/null; then
+        log "Main categories API health check passed"
+    else
+        error "Main categories API health check failed"
+    fi
+    
     log "All health checks passed"
+}
+
+# Feature validation
+validate_features() {
+    log "Validating new features..."
+    
+    # Test main categories API
+    MAIN_CATEGORIES_RESPONSE=$(curl -s http://localhost:3000/api/main-categories 2>/dev/null || echo "FAILED")
+    
+    if [[ "$MAIN_CATEGORIES_RESPONSE" == "FAILED" ]]; then
+        warning "Main categories API validation failed"
+    else
+        log "Main categories API validation passed"
+    fi
+    
+    # Test if supplier_optional field exists in response
+    if echo "$MAIN_CATEGORIES_RESPONSE" | grep -q "supplier_optional"; then
+        log "Supplier optional field validation passed"
+    else
+        warning "Supplier optional field not found in API response"
+    fi
+    
+    log "Feature validation completed"
 }
 
 # Cleanup old backups
@@ -186,13 +295,19 @@ deploy() {
     update_code
     install_dependencies
     build_frontend
+    run_migrations
     update_env
     restart_services
     health_check
+    validate_features
     cleanup_backups
     
     log "Deployment completed successfully!"
     log "Application is now live at: https://your-domain.com"
+    log "New features deployed:"
+    log "  - Main category supplier optional checkbox"
+    log "  - Dynamic supplier validation in expense forms"
+    log "  - Database migration for existing categories"
 }
 
 # Rollback function
@@ -220,6 +335,8 @@ rollback() {
     health_check
     
     log "Rollback completed successfully"
+    log "Note: Database changes (supplier_optional field) will remain"
+    log "To fully rollback database, run: node migrate-main-categories.js"
 }
 
 # Show usage
