@@ -67,10 +67,13 @@ export class MainCategoryFormComponent implements OnInit {
 
     this.loading = true;
     this.error = '';
+    
+    console.log('Loading main category with ID:', this.mainCategoryId);
 
     this.mainCategoryService.getMainCategory(this.mainCategoryId)
       .subscribe({
         next: (response) => {
+          console.log('Main category loaded successfully:', response);
           this.populateForm(response.mainCategory);
           this.loading = false;
         },

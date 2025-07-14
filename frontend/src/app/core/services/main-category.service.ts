@@ -15,6 +15,7 @@ export class MainCategoryService {
   }
 
   getMainCategory(id: string): Observable<{ mainCategory: MainCategory }> {
+    console.log('Fetching main category with ID:', id);
     return this.http.get<{ mainCategory: MainCategory }>(`/api/main-categories/${id}`);
   }
 

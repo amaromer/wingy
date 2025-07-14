@@ -154,15 +154,25 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
         : category.parent_category;
     }
 
+    // Handle main_category_id - it can be either a string (ID), object (populated data), or null
+    let mainCategoryId = null;
+    if (category.main_category_id) {
+      mainCategoryId = typeof category.main_category_id === 'object' 
+        ? (category.main_category_id as any)._id 
+        : category.main_category_id;
+    }
+
     console.log('Parent category ID:', parentCategoryId);
     console.log('Parent category type:', typeof category.parent_category);
+    console.log('Main category ID:', mainCategoryId);
+    console.log('Main category type:', typeof category.main_category_id);
 
     const formData = {
       name: category.name,
       code: category.code,
       description: category.description || '',
       parent_category: parentCategoryId,
-      main_category_id: category.main_category_id || null,
+      main_category_id: mainCategoryId,
       is_active: category.is_active
     };
 
@@ -200,13 +210,15 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       cleanedData.description = formData.description.trim();
     }
 
-    if (formData.parent_category) {
+    // Handle parent_category - convert "null" string to actual null
+    if (formData.parent_category && formData.parent_category !== "null") {
       cleanedData.parent_category = formData.parent_category;
     } else {
       cleanedData.parent_category = null; // Explicitly set to null if no parent
     }
 
-    if (formData.main_category_id) {
+    // Handle main_category_id - convert "null" string to actual null
+    if (formData.main_category_id && formData.main_category_id !== "null") {
       cleanedData.main_category_id = formData.main_category_id;
     } else {
       cleanedData.main_category_id = null; // Explicitly set to null if no main category

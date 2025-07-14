@@ -166,7 +166,10 @@
         </div>
 
         <div class="form-group">
-          <label for="category_id">{{ 'EXPENSE.FIELDS.CATEGORY' | translate }} *</label>
+          <label for="category_id">
+            {{ 'EXPENSE.FIELDS.CATEGORY' | translate }}
+            <span class="optional-text">({{ 'COMMON.OPTIONAL' | translate }})</span>
+          </label>
           <select 
             id="category_id" 
             formControlName="category_id"

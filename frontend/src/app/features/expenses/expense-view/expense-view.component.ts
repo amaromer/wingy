@@ -106,22 +106,31 @@ export class ExpenseViewComponent implements OnInit {
     this.router.navigate(['/expenses']);
   }
 
-  getProjectName(projectId: string | Project): string {
-    if (typeof projectId === 'object' && projectId !== null) {
+  getProjectName(projectId: string | Project | null | undefined): string {
+    if (!projectId) {
+      return 'Unknown Project';
+    }
+    if (typeof projectId === 'object') {
       return projectId.name;
     }
     return 'Unknown Project';
   }
 
-  getCategoryName(categoryId: string | Category): string {
-    if (typeof categoryId === 'object' && categoryId !== null) {
+  getCategoryName(categoryId: string | Category | null | undefined): string {
+    if (!categoryId) {
+      return 'Uncategorized';
+    }
+    if (typeof categoryId === 'object') {
       return categoryId.name;
     }
-    return 'Unknown Category';
+    return 'Uncategorized';
   }
 
-  getSupplierName(supplierId: string | Supplier): string {
-    if (typeof supplierId === 'object' && supplierId !== null) {
+  getSupplierName(supplierId: string | Supplier | null | undefined): string {
+    if (!supplierId) {
+      return 'Unknown Supplier';
+    }
+    if (typeof supplierId === 'object') {
       return supplierId.name;
     }
     return 'Unknown Supplier';

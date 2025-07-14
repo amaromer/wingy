@@ -57,7 +57,7 @@ export class QuickExpenseComponent implements OnInit {
       currency: ['AED', Validators.required],
       date: [this.getTodayDate(), Validators.required],
       project_id: ['', Validators.required],
-      category_id: ['', Validators.required],
+      category_id: [''],
       supplier_id: ['', Validators.required],
       invoice_number: [''],
       is_vat: [false]

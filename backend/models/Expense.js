@@ -8,13 +8,11 @@ const expenseSchema = new mongoose.Schema({
   },
   supplier_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Supplier',
-    required: [true, 'Supplier is required']
+    ref: 'Supplier'
   },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: [true, 'Category is required']
+    ref: 'Category'
   },
   amount: {
     type: Number,

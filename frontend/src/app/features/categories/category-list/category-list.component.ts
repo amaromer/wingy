@@ -198,4 +198,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }
     return parentCategory || '-';
   }
+
+  // Helper method to check if main_category_id is populated object
+  isMainCategoryObject(mainCategory: any): boolean {
+    return mainCategory && typeof mainCategory === 'object' && mainCategory.name;
+  }
+
+  // Helper method to get main category display text
+  getMainCategoryDisplay(mainCategory: any): string {
+    if (this.isMainCategoryObject(mainCategory)) {
+      return mainCategory.name;
+    }
+    return mainCategory || '-';
+  }
 } 

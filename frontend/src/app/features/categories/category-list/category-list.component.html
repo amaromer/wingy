@@ -127,6 +127,7 @@
               <th>{{ 'CATEGORIES.FIELDS.NAME' | translate }}</th>
               <th>{{ 'CATEGORIES.FIELDS.DESCRIPTION' | translate }}</th>
               <th>{{ 'CATEGORIES.FIELDS.PARENT_CATEGORY' | translate }}</th>
+              <th>{{ 'CATEGORIES.FIELDS.MAIN_CATEGORY' | translate }}</th>
               <th>{{ 'CATEGORIES.FIELDS.IS_ACTIVE' | translate }}</th>
               <th *ngIf="authService.hasRole('Admin')">{{ 'COMMON.ACTIONS' | translate }}</th>
             </tr>
@@ -149,6 +150,9 @@
               </td>
               <td class="category-parent">
                 <span>{{ getParentCategoryDisplay(category.parent_category) }}</span>
+              </td>
+              <td class="category-main">
+                <span>{{ getMainCategoryDisplay(category.main_category_id) }}</span>
               </td>
               <td class="category-status">
                 <span 

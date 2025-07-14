@@ -52,11 +52,84 @@ router.get('/categories-by-main-category/:mainCategoryId', auth, requireExpenseA
   }
 });
 
-// Validation middleware
+// Custom validation middleware that checks main category supplier_optional setting
+const dynamicExpenseValidation = async (req, res, next) => {
+  const { category_id, supplier_id } = req.body;
+  
+  // Basic validation for required fields
+  const basicValidation = [
+    body('project_id').isMongoId().withMessage('Valid project ID is required'),
+    body('amount').isFloat({ min: 0 }).withMessage('Amount must be a positive number'),
+    body('currency').isIn(['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'AED', 'SAR', 'QAR', 'KWD', 'BHD', 'OMR', 'JOD']).withMessage('Invalid currency'),
+    body('date').isISO8601().withMessage('Date must be a valid date'),
+    body('description').trim().isLength({ min: 1, max: 500 }).withMessage('Description is required and must be less than 500 characters'),
+    body('invoice_number').optional().trim().isLength({ max: 50 }).withMessage('Invoice number must be less than 50 characters'),
+    body('category_id').optional().isMongoId().withMessage('Valid category ID is required')
+  ];
+
+  // Check basic validation first
+  await Promise.all(basicValidation.map(validation => validation.run(req)));
+  const basicErrors = validationResult(req);
+  
+  if (!basicErrors.isEmpty()) {
+    return res.status(400).json({ 
+      message: 'Validation failed',
+      errors: basicErrors.array() 
+    });
+  }
+
+  // If supplier_id is provided, validate it
+  if (supplier_id) {
+    const supplierValidation = body('supplier_id').isMongoId().withMessage('Valid supplier ID is required');
+    await supplierValidation.run(req);
+    const supplierErrors = validationResult(req);
+    
+    if (!supplierErrors.isEmpty()) {
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: supplierErrors.array() 
+      });
+    }
+  }
+
+  // If category_id is provided, check if supplier is optional for that category
+  if (category_id) {
+    try {
+      const category = await Category.findById(category_id);
+      if (category && category.main_category_id) {
+        const MainCategory = require('../models/MainCategory');
+        const mainCategory = await MainCategory.findById(category.main_category_id);
+        
+        if (mainCategory && mainCategory.supplier_optional === false && !supplier_id) {
+          return res.status(400).json({ 
+            message: 'Validation failed',
+            errors: [{ type: 'field', msg: 'Valid supplier ID is required', path: 'supplier_id', location: 'body' }]
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error checking main category supplier_optional setting:', error);
+      // If we can't check the setting, default to requiring supplier
+      if (!supplier_id) {
+        return res.status(400).json({ 
+          message: 'Validation failed',
+          errors: [{ type: 'field', msg: 'Valid supplier ID is required', path: 'supplier_id', location: 'body' }]
+        });
+      }
+    }
+  } else {
+    // If no category is provided, supplier is optional
+    // No additional validation needed
+  }
+
+  next();
+};
+
+// Static validation middleware (for backward compatibility)
 const expenseValidation = [
   body('project_id').isMongoId().withMessage('Valid project ID is required'),
   body('supplier_id').isMongoId().withMessage('Valid supplier ID is required'),
-  body('category_id').isMongoId().withMessage('Valid category ID is required'),
+  body('category_id').optional().isMongoId().withMessage('Valid category ID is required'),
   body('amount').isFloat({ min: 0 }).withMessage('Amount must be a positive number'),
   body('currency').isIn(['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'AED', 'SAR', 'QAR', 'KWD', 'BHD', 'OMR', 'JOD']).withMessage('Invalid currency'),
   body('date').isISO8601().withMessage('Date must be a valid date'),
@@ -181,20 +254,11 @@ router.get('/:id', auth, async (req, res) => {
 // @route   POST /api/expenses
 // @desc    Create a new expense
 // @access  Private (Admin, Accountant, Engineer)
-router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
+router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handleUploadError, dynamicExpenseValidation, async (req, res) => {
   try {
     console.log('Creating expense - Request body:', req.body);
     console.log('Creating expense - Request file:', req.file);
     console.log('Creating expense - User:', req.user);
-    
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log('Validation errors:', errors.array());
-      return res.status(400).json({ 
-        message: 'Validation failed',
-        errors: errors.array() 
-      });
-    }
 
     const { 
       project_id, 
@@ -212,11 +276,21 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     });
     
     // Validate that referenced entities exist
-    const [project, supplier, category] = await Promise.all([
-      Project.findById(project_id),
-      Supplier.findById(supplier_id),
-      Category.findById(category_id)
+    const [project] = await Promise.all([
+      Project.findById(project_id)
     ]);
+    
+    // Only validate supplier if supplier_id is provided
+    let supplier = null;
+    if (supplier_id) {
+      supplier = await Supplier.findById(supplier_id);
+    }
+    
+    // Only validate category if category_id is provided
+    let category = null;
+    if (category_id) {
+      category = await Category.findById(category_id);
+    }
     
     console.log('Creating expense - Found entities:', {
       project: project ? project.name : null,
@@ -227,10 +301,10 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     if (!project) {
       return res.status(400).json({ message: 'Project not found' });
     }
-    if (!supplier) {
+    if (supplier_id && !supplier) {
       return res.status(400).json({ message: 'Supplier not found' });
     }
-    if (!category) {
+    if (category_id && !category) {
       return res.status(400).json({ message: 'Category not found' });
     }
     
@@ -242,8 +316,8 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     
     const expense = new Expense({
       project_id,
-      supplier_id,
-      category_id,
+      supplier_id: supplier_id || null,
+      category_id: category_id || null,
       amount: parseFloat(amount),
       currency,
       date,
@@ -311,12 +385,8 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
 // @route   PUT /api/expenses/:id
 // @desc    Update expense
 // @access  Private (Admin, Accountant)
-router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
+router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), handleUploadError, dynamicExpenseValidation, async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
     const { 
       project_id, 
@@ -361,8 +431,8 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
     
     // Update fields
     if (project_id) expense.project_id = project_id;
-    if (supplier_id) expense.supplier_id = supplier_id;
-    if (category_id) expense.category_id = category_id;
+    if (supplier_id !== undefined) expense.supplier_id = supplier_id || null;
+    if (category_id !== undefined) expense.category_id = category_id || null;
     if (amount) expense.amount = parseFloat(amount);
     if (currency) expense.currency = currency;
     if (date) expense.date = date;

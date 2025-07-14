@@ -69,7 +69,7 @@ router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
       return res.status(404).json({ message: 'Main category not found' });
     }
     
-    res.json(mainCategory);
+    res.json({ mainCategory });
   } catch (error) {
     console.error('Get main category error:', error);
     if (error.kind === 'ObjectId') {

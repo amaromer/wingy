@@ -369,28 +369,40 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     return this.expenses.find(expense => expense.id === id);
   }
 
-  getCategoryName(categoryId: string | Category): string {
+  getCategoryName(categoryId: string | Category | null | undefined): string {
+    if (!categoryId) {
+      return this.translateService.instant('DASHBOARD.UNCATEGORIZED');
+    }
+    
     if (typeof categoryId === 'string') {
       const category = this.categories.find(cat => cat._id === categoryId || cat.id === categoryId);
-      return category ? category.name : this.translateService.instant('EXPENSE.UNKNOWN.CATEGORY');
+      return category ? category.name : this.translateService.instant('DASHBOARD.UNCATEGORIZED');
     }
-    return categoryId.name || this.translateService.instant('EXPENSE.UNKNOWN.CATEGORY');
+    return categoryId.name || this.translateService.instant('DASHBOARD.UNCATEGORIZED');
   }
 
-  getProjectName(projectId: string | Project): string {
+  getProjectName(projectId: string | Project | null | undefined): string {
+    if (!projectId) {
+      return this.translateService.instant('DASHBOARD.UNKNOWN_PROJECT');
+    }
+    
     if (typeof projectId === 'string') {
       const project = this.projects.find(proj => proj._id === projectId || proj.id === projectId);
-      return project ? project.name : this.translateService.instant('EXPENSE.UNKNOWN.PROJECT');
+      return project ? project.name : this.translateService.instant('DASHBOARD.UNKNOWN_PROJECT');
     }
-    return projectId.name || this.translateService.instant('EXPENSE.UNKNOWN.PROJECT');
+    return projectId.name || this.translateService.instant('DASHBOARD.UNKNOWN_PROJECT');
   }
 
-  getSupplierName(supplierId: string | Supplier): string {
+  getSupplierName(supplierId: string | Supplier | null | undefined): string {
+    if (!supplierId) {
+      return this.translateService.instant('DASHBOARD.UNKNOWN_SUPPLIER');
+    }
+    
     if (typeof supplierId === 'string') {
       const supplier = this.suppliers.find(sup => sup._id === supplierId || sup.id === supplierId);
-      return supplier ? supplier.name : this.translateService.instant('EXPENSE.UNKNOWN.SUPPLIER');
+      return supplier ? supplier.name : this.translateService.instant('DASHBOARD.UNKNOWN_SUPPLIER');
     }
-    return supplierId.name || this.translateService.instant('EXPENSE.UNKNOWN.SUPPLIER');
+    return supplierId.name || this.translateService.instant('DASHBOARD.UNKNOWN_SUPPLIER');
   }
 
   formatCurrency(amount: number, currency: string): string {

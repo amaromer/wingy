@@ -9,7 +9,17 @@ const router = express.Router();
 const categoryValidation = [
   body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('description').optional().trim().isLength({ max: 500 }).withMessage('Description must be less than 500 characters'),
-  body('main_category_id').isMongoId().withMessage('Main category ID must be a valid MongoDB ObjectId'),
+  body('main_category_id')
+    .optional()
+    .custom((value) => {
+      if (value === null || value === undefined || value === '') {
+        return true; // Allow null/undefined/empty values
+      }
+      // Check if it's a valid MongoDB ObjectId
+      const mongoose = require('mongoose');
+      return mongoose.Types.ObjectId.isValid(value);
+    })
+    .withMessage('Main category ID must be a valid MongoDB ObjectId'),
   body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
 ];
 
@@ -47,6 +57,7 @@ router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
     
     const categories = await Category.find(query)
       .populate('main_category_id', 'name')
+      .populate('parent_category', 'name code')
       .sort(sortOptions)
       .limit(parseInt(req.query.limit) || 50)
       .skip(parseInt(req.query.skip) || 0);
@@ -70,7 +81,9 @@ router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
 // @access  Private (Admin, Accountant)
 router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id).populate('main_category_id', 'name');
+    const category = await Category.findById(req.params.id)
+      .populate('main_category_id', 'name')
+      .populate('parent_category', 'name code');
     
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
