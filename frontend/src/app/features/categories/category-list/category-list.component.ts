@@ -7,6 +7,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Category, CategoryListResponse } from '../../../core/models/category.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-category-list',
@@ -57,7 +58,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public authService: AuthService
   ) {}
 
   ngOnInit() {

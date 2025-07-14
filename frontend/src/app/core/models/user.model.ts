@@ -23,7 +23,7 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  role: 'Admin' | 'Accountant';
+  role: 'Admin' | 'Accountant' | 'Engineer';
 }
 
 export interface UpdateProfileRequest {

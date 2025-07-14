@@ -136,15 +136,17 @@
               'is-valid': isFieldValid('role')
             }"
           >
-            <option value="Accountant">{{ 'USERS.ROLES.ACCOUNTANT' | translate }}</option>
-            <option value="Admin">{{ 'USERS.ROLES.ADMIN' | translate }}</option>
+            <option value="Accountant">{{ 'ROLES.ACCOUNTANT' | translate }}</option>
+            <option value="Admin">{{ 'ROLES.ADMIN' | translate }}</option>
+            <option value="Engineer">{{ 'ROLES.ENGINEER' | translate }}</option>
           </select>
           <div class="invalid-feedback" *ngIf="getFieldError('role')">
             {{ getFieldError('role') | translate }}
           </div>
           <small class="form-text">
-            <strong>{{ 'USERS.ROLES.ACCOUNTANT' | translate }}:</strong> {{ 'USERS.ROLES.ACCOUNTANT_DESCRIPTION' | translate }}<br>
-            <strong>{{ 'USERS.ROLES.ADMIN' | translate }}:</strong> {{ 'USERS.ROLES.ADMIN_DESCRIPTION' | translate }}
+            <strong>{{ 'ROLES.ACCOUNTANT' | translate }}:</strong> {{ 'ROLES.ACCOUNTANT_DESCRIPTION' | translate }}<br>
+            <strong>{{ 'ROLES.ADMIN' | translate }}:</strong> {{ 'ROLES.ADMIN_DESCRIPTION' | translate }}<br>
+            <strong>{{ 'ROLES.ENGINEER' | translate }}:</strong> {{ 'ROLES.ENGINEER_DESCRIPTION' | translate }}
           </small>
         </div>
 

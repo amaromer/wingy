@@ -152,4 +152,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     return {};
   }
+
+  getRoleDisplayName(role: string | undefined): string {
+    if (!role) return '';
+    
+    switch (role) {
+      case 'Admin':
+        return 'ROLES.ADMIN';
+      case 'Accountant':
+        return 'ROLES.ACCOUNTANT';
+      case 'Engineer':
+        return 'ROLES.ENGINEER';
+      default:
+        return role;
+    }
+  }
 } 

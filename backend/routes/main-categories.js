@@ -1,54 +1,94 @@
 const express = require('express');
-const router = express.Router();
+const { body, validationResult } = require('express-validator');
 const MainCategory = require('../models/MainCategory');
-const { auth, requireRole } = require('../middleware/auth');
+const { auth, requireRole, requireReadOnlyAccess } = require('../middleware/auth');
 
-// Get all main categories (active only for non-admin users)
-router.get('/', auth, async (req, res) => {
+const router = express.Router();
+
+// Validation middleware
+const mainCategoryValidation = [
+  body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
+  body('description').optional().trim().isLength({ max: 500 }).withMessage('Description must be less than 500 characters'),
+  body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
+];
+
+// @route   GET /api/main-categories
+// @desc    Get all main categories (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
   try {
-    const query = req.user.role === 'Admin' ? {} : { is_active: true };
-    const mainCategories = await MainCategory.find(query).sort({ sort_order: 1, name: 1 });
+    const { search, is_active, sort = 'name', order = 'asc' } = req.query;
     
-    // Add default supplier_optional field for existing categories that don't have it
-    const processedCategories = mainCategories.map(category => {
-      const categoryObj = category.toObject();
-      if (categoryObj.supplier_optional === undefined) {
-        categoryObj.supplier_optional = true; // Default to optional for existing categories
-      }
-      return categoryObj;
+    let query = {};
+    
+    // Filter by active status
+    if (is_active !== undefined) {
+      query.is_active = is_active === 'true';
+    }
+    
+    // Search by name or description
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Sorting
+    const sortOrder = order === 'desc' ? -1 : 1;
+    const sortOptions = {};
+    sortOptions[sort] = sortOrder;
+    
+    const mainCategories = await MainCategory.find(query)
+      .sort(sortOptions)
+      .limit(parseInt(req.query.limit) || 50)
+      .skip(parseInt(req.query.skip) || 0);
+    
+    const total = await MainCategory.countDocuments(query);
+    
+    res.json({
+      mainCategories,
+      total,
+      page: Math.floor(parseInt(req.query.skip) / parseInt(req.query.limit)) + 1 || 1,
+      pages: Math.ceil(total / (parseInt(req.query.limit) || 50))
     });
-    
-    res.json({ mainCategories: processedCategories });
   } catch (error) {
-    console.error('Error fetching main categories:', error);
-    res.status(500).json({ message: 'Failed to fetch main categories' });
+    console.error('Get main categories error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Get main category by ID
-router.get('/:id', auth, async (req, res) => {
+// @route   GET /api/main-categories/:id
+// @desc    Get main category by ID (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
   try {
     const mainCategory = await MainCategory.findById(req.params.id);
+    
     if (!mainCategory) {
       return res.status(404).json({ message: 'Main category not found' });
     }
     
-    // Add default supplier_optional field if it doesn't exist
-    const categoryObj = mainCategory.toObject();
-    if (categoryObj.supplier_optional === undefined) {
-      categoryObj.supplier_optional = true; // Default to optional for existing categories
-    }
-    
-    res.json({ mainCategory: categoryObj });
+    res.json(mainCategory);
   } catch (error) {
-    console.error('Error fetching main category:', error);
-    res.status(500).json({ message: 'Failed to fetch main category' });
+    console.error('Get main category error:', error);
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ message: 'Main category not found' });
+    }
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Create new main category (Admin only)
-router.post('/', auth, requireRole(['Admin']), async (req, res) => {
+// @route   POST /api/main-categories
+// @desc    Create new main category (Admin and Accountant)
+// @access  Private (Admin, Accountant)
+router.post('/', auth, requireRole(['Admin', 'Accountant']), mainCategoryValidation, async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const { name, description, icon, color, supplier_optional, is_active, sort_order } = req.body;
 
     // Check if name already exists

@@ -8,6 +8,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { Expense, ExpenseListResponse, ExpenseFilters, Project, Category, Supplier } from '../../../core/models/expense.model';
 import { ExpenseService } from '../../../core/services/expense.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-expense-list',
@@ -56,7 +57,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     private router: Router,
     private fb: FormBuilder,
     private expenseService: ExpenseService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public authService: AuthService
   ) {
     this.filterForm = this.fb.group({
       project_id: [''],

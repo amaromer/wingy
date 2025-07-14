@@ -1,42 +1,43 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Supplier = require('../models/Supplier');
-const { auth, requireAdmin } = require('../middleware/auth');
+const { auth, requireAdmin, requireReadOnlyAccess, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Validation middleware
 const supplierValidation = [
-  body('name').trim().isLength({ min: 1, max: 200 }).withMessage('Supplier name is required and must be less than 200 characters'),
-  body('contact_person').optional().trim().isLength({ min: 2, max: 100 }).withMessage('Contact person must be between 2 and 100 characters'),
-  body('phone').optional().matches(/^[\+]?[1-9][\d]{0,15}$/).withMessage('Please enter a valid phone number'),
+  body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('email').optional().isEmail().normalizeEmail().withMessage('Please enter a valid email'),
-  body('address').optional().trim().isLength({ min: 5, max: 500 }).withMessage('Address must be between 5 and 500 characters'),
-  body('vat_enabled').optional().isBoolean().withMessage('VAT enabled must be a boolean'),
-  body('vat_no').optional().trim().isLength({ max: 50 }).withMessage('VAT number must be less than 50 characters'),
-  body('payment_terms').optional().trim().isLength({ max: 100 }).withMessage('Payment terms must be less than 100 characters'),
-  body('is_active').optional().isBoolean().withMessage('Active status must be a boolean'),
+  body('phone').optional().trim().isLength({ max: 20 }).withMessage('Phone number must be less than 20 characters'),
+  body('address').optional().trim().isLength({ max: 500 }).withMessage('Address must be less than 500 characters'),
+  body('contact_person').optional().trim().isLength({ max: 100 }).withMessage('Contact person must be less than 100 characters'),
+  body('tax_number').optional().trim().isLength({ max: 50 }).withMessage('Tax number must be less than 50 characters'),
+  body('payment_terms').optional().trim().isLength({ max: 200 }).withMessage('Payment terms must be less than 200 characters'),
   body('notes').optional().trim().isLength({ max: 1000 }).withMessage('Notes must be less than 1000 characters'),
-  body('main_category_ids').optional().isArray().withMessage('Main category IDs must be an array'),
-  body('main_category_ids.*').optional().isMongoId().withMessage('Each main category ID must be a valid MongoDB ObjectId')
+  body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
 ];
 
 // @route   GET /api/suppliers
-// @desc    Get all suppliers
-// @access  Private
-router.get('/', /* auth, */ async (req, res) => {
+// @desc    Get all suppliers (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
   try {
-    console.log('GET /api/suppliers - Fetching suppliers...');
-    const { search, sort = 'name', order = 'asc' } = req.query;
+    const { search, is_active, sort = 'createdAt', order = 'desc' } = req.query;
     
     let query = {};
     
-    // Search by name, contact person, or email
+    // Filter by active status
+    if (is_active !== undefined) {
+      query.is_active = is_active === 'true';
+    }
+    
+    // Search by name, email, or contact person
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { contact_person: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { email: { $regex: search, $options: 'i' } },
+        { contact_person: { $regex: search, $options: 'i' } }
       ];
     }
     
@@ -52,10 +53,12 @@ router.get('/', /* auth, */ async (req, res) => {
     
     const total = await Supplier.countDocuments(query);
     
-    console.log(`Found ${suppliers.length} suppliers, total: ${total}`);
-    console.log('Suppliers:', JSON.stringify(suppliers, null, 2));
-    
-    res.json(suppliers);
+    res.json({
+      suppliers,
+      total,
+      page: Math.floor(parseInt(req.query.skip) / parseInt(req.query.limit)) + 1 || 1,
+      pages: Math.ceil(total / (parseInt(req.query.limit) || 50))
+    });
   } catch (error) {
     console.error('Get suppliers error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -63,9 +66,9 @@ router.get('/', /* auth, */ async (req, res) => {
 });
 
 // @route   GET /api/suppliers/:id
-// @desc    Get supplier by ID
-// @access  Private
-router.get('/:id', /* auth, */ async (req, res) => {
+// @desc    Get supplier by ID (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
   try {
     const supplier = await Supplier.findById(req.params.id);
     
@@ -84,9 +87,9 @@ router.get('/:id', /* auth, */ async (req, res) => {
 });
 
 // @route   POST /api/suppliers
-// @desc    Create a new supplier
-// @access  Private (Admin)
-router.post('/', /* auth, requireAdmin, supplierValidation, */ async (req, res) => {
+// @desc    Create new supplier (Admin and Accountant)
+// @access  Private (Admin, Accountant)
+router.post('/', auth, requireRole(['Admin', 'Accountant']), supplierValidation, async (req, res) => {
   try {
     console.log('Received supplier data:', req.body);
     

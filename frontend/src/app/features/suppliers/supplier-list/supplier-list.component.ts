@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { Supplier } from '../../../core/models/supplier.model';
 import { MainCategory } from '../../../core/models/main-category.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-supplier-list',
@@ -49,7 +50,8 @@ export class SupplierListComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {
     // Setup search debouncing
     this.searchSubject

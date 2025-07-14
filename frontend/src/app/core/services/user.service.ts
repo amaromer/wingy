@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { getApiUrl } from '../../../environments/environment';
 import { User } from '../models/user.model';
 
 export interface UserListResponse {
@@ -36,9 +36,12 @@ export interface UserFilters {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/users`;
-
   constructor(private http: HttpClient) {}
+
+  // Helper function to get the current API URL
+  private getApiUrl(): string {
+    return `${getApiUrl()}/users`;
+  }
 
   // Helper function to map backend user to frontend user
   private mapUser(user: any): User {
@@ -80,7 +83,7 @@ export class UserService {
       params = params.set('limit', filters.limit.toString());
     }
 
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
+    return this.http.get<any>(this.getApiUrl(), { params }).pipe(
       map(response => ({
         users: response.users.map((user: any) => this.mapUser(user)),
         total: response.total,
@@ -92,14 +95,14 @@ export class UserService {
 
   // Get user by ID
   getUser(id: string): Observable<User> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<any>(`${this.getApiUrl()}/${id}`).pipe(
       map(user => this.mapUser(user))
     );
   }
 
   // Create new user
   createUser(userData: Partial<User> & { password: string }): Observable<{ message: string; user: User }> {
-    return this.http.post<any>(this.apiUrl, userData).pipe(
+    return this.http.post<any>(this.getApiUrl(), userData).pipe(
       map(response => ({
         message: response.message,
         user: this.mapUser(response.user)
@@ -109,7 +112,7 @@ export class UserService {
 
   // Update user
   updateUser(id: string, userData: Partial<User> & { password?: string }): Observable<{ message: string; user: User }> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, userData).pipe(
+    return this.http.put<any>(`${this.getApiUrl()}/${id}`, userData).pipe(
       map(response => ({
         message: response.message,
         user: this.mapUser(response.user)
@@ -119,12 +122,12 @@ export class UserService {
 
   // Delete user
   deleteUser(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+    return this.http.delete<{ message: string }>(`${this.getApiUrl()}/${id}`);
   }
 
   // Toggle user active status
   toggleUserStatus(id: string): Observable<{ message: string; user: User }> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/toggle-status`, {}).pipe(
+    return this.http.put<any>(`${this.getApiUrl()}/${id}/toggle-status`, {}).pipe(
       map(response => ({
         message: response.message,
         user: this.mapUser(response.user)
@@ -134,6 +137,6 @@ export class UserService {
 
   // Get user statistics
   getUserStats(): Observable<UserStats> {
-    return this.http.get<UserStats>(`${this.apiUrl}/stats/overview`);
+    return this.http.get<UserStats>(`${this.getApiUrl()}/stats/overview`);
   }
 } 

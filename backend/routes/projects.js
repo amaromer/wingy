@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const Project = require('../models/Project');
 const Expense = require('../models/Expense');
 const Payment = require('../models/Payment');
-const { auth, requireAdmin } = require('../middleware/auth');
+const { auth, requireAdmin, requireReadOnlyAccess, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -45,9 +45,9 @@ async function calculateProjectTotals(projectId) {
 }
 
 // @route   GET /api/projects
-// @desc    Get all projects
-// @access  Private
-router.get('/', /* auth, */ async (req, res) => {
+// @desc    Get all projects (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
   try {
     const { status, search, sort = 'createdAt', order = 'desc' } = req.query;
     
@@ -104,9 +104,9 @@ router.get('/', /* auth, */ async (req, res) => {
 });
 
 // @route   GET /api/projects/:id
-// @desc    Get project by ID
-// @access  Private
-router.get('/:id', /* auth, */ async (req, res) => {
+// @desc    Get project by ID (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
     
@@ -132,9 +132,9 @@ router.get('/:id', /* auth, */ async (req, res) => {
 });
 
 // @route   POST /api/projects
-// @desc    Create a new project
-// @access  Private (Admin)
-router.post('/', /* auth, requireAdmin, */ projectValidation, async (req, res) => {
+// @desc    Create a new project (Admin and Accountant)
+// @access  Private (Admin, Accountant)
+router.post('/', auth, requireRole(['Admin', 'Accountant']), projectValidation, async (req, res) => {
   try {
     console.log('Received project data:', req.body);
     
@@ -188,9 +188,9 @@ router.post('/', /* auth, requireAdmin, */ projectValidation, async (req, res) =
 });
 
 // @route   PUT /api/projects/:id
-// @desc    Update project
+// @desc    Update project (Admin only)
 // @access  Private (Admin)
-router.put('/:id', /* auth, requireAdmin, */ projectValidation, async (req, res) => {
+router.put('/:id', auth, requireAdmin, projectValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -249,9 +249,9 @@ router.put('/:id', /* auth, requireAdmin, */ projectValidation, async (req, res)
 });
 
 // @route   DELETE /api/projects/:id
-// @desc    Delete project
+// @desc    Delete project (Admin only)
 // @access  Private (Admin)
-router.delete('/:id', /* auth, requireAdmin, */ async (req, res) => {
+router.delete('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
     

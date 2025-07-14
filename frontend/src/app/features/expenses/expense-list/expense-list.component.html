@@ -145,6 +145,7 @@
         class="btn btn-danger" 
         (click)="onBulkDelete()"
         [disabled]="submitting"
+        *ngIf="!authService.hasRole('Engineer')"
       >
         {{ 'EXPENSE.BULK.DELETE' | translate }}
       </button>
@@ -178,10 +179,10 @@
             <button class="btn-icon" (click)="onViewExpense(expense.id)" [title]="'COMMON.VIEW' | translate">
               👁️
             </button>
-            <button class="btn-icon" (click)="onEditExpense(expense.id)" [title]="'COMMON.EDIT' | translate">
+            <button class="btn-icon" (click)="onEditExpense(expense.id)" [title]="'COMMON.EDIT' | translate" *ngIf="!authService.hasRole('Engineer')">
               ✏️
             </button>
-            <button class="btn-icon" (click)="onDeleteExpense(expense.id)" title="Delete">
+            <button class="btn-icon" (click)="onDeleteExpense(expense.id)" title="Delete" *ngIf="!authService.hasRole('Engineer')">
               🗑️
             </button>
           </div>
@@ -329,6 +330,7 @@
                   class="btn btn-icon btn-edit" 
                   (click)="onEditExpense(expense.id)"
                   [title]="'COMMON.EDIT' | translate"
+                  *ngIf="!authService.hasRole('Engineer')"
                 >
                   ✏️
                 </button>
@@ -336,6 +338,7 @@
                   class="btn btn-icon btn-delete" 
                   (click)="onDeleteExpense(expense.id)"
                   [title]="'COMMON.DELETE' | translate"
+                  *ngIf="!authService.hasRole('Engineer')"
                 >
                   🗑️
                 </button>

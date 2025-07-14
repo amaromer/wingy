@@ -646,10 +646,12 @@
       "ADMINISTRATORS": "Administrators"
     },
     "ROLES": {
-      "ADMIN": "Admin",
+      "ADMIN": "Administrator",
       "ACCOUNTANT": "Accountant",
-      "ADMIN_DESCRIPTION": "Full system permissions",
-      "ACCOUNTANT_DESCRIPTION": "Manage expenses and budgets"
+      "ENGINEER": "Engineer",
+      "ADMIN_DESCRIPTION": "Full system access - can view, create, edit, and delete all data across all modules",
+      "ACCOUNTANT_DESCRIPTION": "Can view all modules except users, can create projects, suppliers, categories, and main categories",
+      "ENGINEER_DESCRIPTION": "Can only access expenses and quick expenses - create permissions only, no edit or delete"
     },
     "STATUS": {
       "ACTIVE": "Active",
@@ -819,5 +821,13 @@
     "CONFIRM_DELETE": "Are you sure you want to delete this item?",
     "NO_DATA_FOUND": "No data found",
     "NETWORK_ERROR": "Network error. Please check your connection."
+  },
+  "ROLES": {
+    "ADMIN": "Administrator",
+    "ACCOUNTANT": "Accountant",
+    "ENGINEER": "Engineer",
+    "ADMIN_DESCRIPTION": "Full system access - can view, create, edit, and delete all data across all modules",
+    "ACCOUNTANT_DESCRIPTION": "Can view all modules except users, can create projects, suppliers, categories, and main categories",
+    "ENGINEER_DESCRIPTION": "Can only access expenses and quick expenses - create permissions only, no edit or delete"
   }
 } 

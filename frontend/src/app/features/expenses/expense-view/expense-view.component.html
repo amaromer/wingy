@@ -8,7 +8,7 @@
       <h1>{{ 'EXPENSE.VIEW_TITLE' | translate }}</h1>
     </div>
     <div class="header-actions" *ngIf="expense">
-      <button class="btn btn-primary" (click)="onEdit()">
+      <button class="btn btn-primary" (click)="onEdit()" *ngIf="!authService.hasRole('Engineer')">
         ✏️ {{ 'COMMON.EDIT' | translate }}
       </button>
     </div>

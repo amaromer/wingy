@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { Expense, Project, Category, Supplier } from '../../../core/models/expense.model';
 import { ExpenseService } from '../../../core/services/expense.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-expense-view',
@@ -23,7 +24,8 @@ export class ExpenseViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private expenseService: ExpenseService
+    private expenseService: ExpenseService,
+    public authService: AuthService
   ) {}
 
   ngOnInit() {

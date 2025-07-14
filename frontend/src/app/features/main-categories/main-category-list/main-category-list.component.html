@@ -9,6 +9,7 @@
       <button 
         class="btn btn-primary" 
         (click)="onCreateMainCategory()"
+        *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])"
       >
         <span class="icon">+</span>
         {{ 'MAIN_CATEGORIES.CREATE_NEW' | translate }}
@@ -74,7 +75,7 @@
             {{ category.description }}
           </p>
         </div>
-        <div class="card-actions">
+        <div class="card-actions" *ngIf="authService.hasRole('Admin')">
           <button 
             class="btn btn-icon edit-btn"
             (click)="onEditMainCategory(category._id!)"
@@ -111,6 +112,7 @@
     <button 
       class="btn btn-primary"
       (click)="onCreateMainCategory()"
+      *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])"
     >
       {{ 'MAIN_CATEGORIES.CREATE_FIRST' | translate }}
     </button>

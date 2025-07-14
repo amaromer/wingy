@@ -45,12 +45,78 @@ const requireRole = (roles) => {
   };
 };
 
+// New middleware for read-only access (Accountant can view but not modify)
+const requireReadOnly = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: 'Access denied. Insufficient permissions.' 
+      });
+    }
+
+    next();
+  };
+};
+
+// New middleware for Engineer access (can only access expenses)
+const requireEngineer = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: 'Access denied. Insufficient permissions.' 
+      });
+    }
+
+    next();
+  };
+};
+
+// New middleware for Engineer creation only (can only create, not edit/delete)
+const requireEngineerCreateOnly = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: 'Access denied. Insufficient permissions.' 
+      });
+    }
+
+    // Engineers can only create, not edit or delete
+    if (req.user.role === 'Engineer' && (req.method === 'PUT' || req.method === 'DELETE')) {
+      return res.status(403).json({ 
+        message: 'Access denied. Engineers can only create expenses.' 
+      });
+    }
+
+    next();
+  };
+};
+
 const requireAdmin = requireRole(['Admin']);
 const requireAccountant = requireRole(['Admin', 'Accountant']);
+const requireReadOnlyAccess = requireReadOnly(['Admin', 'Accountant']);
+const requireExpenseAccess = requireEngineer(['Admin', 'Accountant', 'Engineer']);
+const requireExpenseCreateOnly = requireEngineerCreateOnly(['Admin', 'Accountant', 'Engineer']);
 
 module.exports = {
   auth,
   requireRole,
+  requireReadOnly,
+  requireEngineer,
   requireAdmin,
-  requireAccountant
+  requireAccountant,
+  requireReadOnlyAccess,
+  requireExpenseAccess,
+  requireExpenseCreateOnly
 }; 

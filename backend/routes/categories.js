@@ -1,32 +1,43 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Category = require('../models/Category');
-const { auth, requireAdmin } = require('../middleware/auth');
+const { auth, requireAdmin, requireReadOnlyAccess, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Validation middleware
 const categoryValidation = [
-  // Simplified validation for debugging
-  body('name').optional().trim(),
-  body('code').optional().trim(),
-  body('description').optional().trim(),
-  body('parent_category').optional(),
-  body('is_active').optional()
+  body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
+  body('description').optional().trim().isLength({ max: 500 }).withMessage('Description must be less than 500 characters'),
+  body('main_category_id').isMongoId().withMessage('Main category ID must be a valid MongoDB ObjectId'),
+  body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
 ];
 
 // @route   GET /api/categories
-// @desc    Get all categories
-// @access  Private
-router.get('/', /* auth, */ async (req, res) => {
+// @desc    Get all categories (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/', auth, requireReadOnlyAccess, async (req, res) => {
   try {
-    const { search, sort = 'name', order = 'asc' } = req.query;
+    const { main_category_id, search, is_active, sort = 'name', order = 'asc' } = req.query;
     
     let query = {};
     
-    // Search by name
+    // Filter by main category
+    if (main_category_id) {
+      query.main_category_id = main_category_id;
+    }
+    
+    // Filter by active status
+    if (is_active !== undefined) {
+      query.is_active = is_active === 'true';
+    }
+    
+    // Search by name or description
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
     }
     
     // Sorting
@@ -35,7 +46,7 @@ router.get('/', /* auth, */ async (req, res) => {
     sortOptions[sort] = sortOrder;
     
     const categories = await Category.find(query)
-      .populate('parent_category', 'name code')
+      .populate('main_category_id', 'name')
       .sort(sortOptions)
       .limit(parseInt(req.query.limit) || 50)
       .skip(parseInt(req.query.skip) || 0);
@@ -55,12 +66,11 @@ router.get('/', /* auth, */ async (req, res) => {
 });
 
 // @route   GET /api/categories/:id
-// @desc    Get category by ID
-// @access  Private
-router.get('/:id', /* auth, */ async (req, res) => {
+// @desc    Get category by ID (Admin and Accountant can view)
+// @access  Private (Admin, Accountant)
+router.get('/:id', auth, requireReadOnlyAccess, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id)
-      .populate('parent_category', 'name code');
+    const category = await Category.findById(req.params.id).populate('main_category_id', 'name');
     
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
@@ -77,9 +87,9 @@ router.get('/:id', /* auth, */ async (req, res) => {
 });
 
 // @route   POST /api/categories
-// @desc    Create a new category
-// @access  Private (Admin)
-router.post('/', /* auth, requireAdmin, */ categoryValidation, async (req, res) => {
+// @desc    Create new category (Admin and Accountant)
+// @access  Private (Admin, Accountant)
+router.post('/', auth, requireRole(['Admin', 'Accountant']), categoryValidation, async (req, res) => {
   try {
     console.log('Received category data:', req.body);
     
@@ -144,7 +154,7 @@ router.post('/', /* auth, requireAdmin, */ categoryValidation, async (req, res) 
 // @route   PUT /api/categories/:id
 // @desc    Update category
 // @access  Private (Admin)
-router.put('/:id', /* auth, requireAdmin, */ categoryValidation, async (req, res) => {
+router.put('/:id', auth, requireAdmin, categoryValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -203,7 +213,7 @@ router.put('/:id', /* auth, requireAdmin, */ categoryValidation, async (req, res
 // @route   DELETE /api/categories/:id
 // @desc    Delete category
 // @access  Private (Admin)
-router.delete('/:id', /* auth, requireAdmin, */ async (req, res) => {
+router.delete('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     

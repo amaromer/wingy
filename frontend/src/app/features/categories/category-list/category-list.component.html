@@ -10,7 +10,8 @@
         <button 
           class="btn btn-primary" 
           (click)="onCreateNew()"
-          [disabled]="loading">
+          [disabled]="loading"
+          *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
           <i class="icon-plus"></i>
           {{ 'CATEGORIES.CREATE_NEW' | translate }}
         </button>
@@ -109,7 +110,7 @@
         <i class="icon-category"></i>
         <h3>{{ 'CATEGORIES.EMPTY_TITLE' | translate }}</h3>
         <p>{{ 'CATEGORIES.EMPTY_MESSAGE' | translate }}</p>
-        <button class="btn btn-primary" (click)="onCreateNew()">
+        <button class="btn btn-primary" (click)="onCreateNew()" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
           {{ 'CATEGORIES.CREATE_FIRST' | translate }}
         </button>
       </div>
@@ -127,7 +128,7 @@
               <th>{{ 'CATEGORIES.FIELDS.DESCRIPTION' | translate }}</th>
               <th>{{ 'CATEGORIES.FIELDS.PARENT_CATEGORY' | translate }}</th>
               <th>{{ 'CATEGORIES.FIELDS.IS_ACTIVE' | translate }}</th>
-              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+              <th *ngIf="authService.hasRole('Admin')">{{ 'COMMON.ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +157,7 @@
                   {{ getStatusText(category.is_active) | translate }}
                 </span>
               </td>
-              <td class="category-actions">
+              <td class="category-actions" *ngIf="authService.hasRole('Admin')">
                 <div class="action-buttons">
                   <button 
                     class="btn btn-icon btn-secondary"

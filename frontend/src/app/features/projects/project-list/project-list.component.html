@@ -4,7 +4,9 @@
       <h2>{{ 'PROJECT.LIST_TITLE' | translate }}</h2>
       <p class="subtitle">{{ 'PROJECT.LIST_SUBTITLE' | translate }}</p>
     </div>
-    <button class="btn btn-primary create-btn" (click)="onCreateProject()">
+    <button class="btn btn-primary create-btn" 
+            (click)="onCreateProject()"
+            *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
       <span class="icon">➕</span>
       {{ 'PROJECT.CREATE_NEW' | translate }}
     </button>
@@ -93,6 +95,7 @@
             class="btn btn-icon btn-edit" 
             (click)="onEditProject(project._id!)"
             title="{{ 'COMMON.EDIT' | translate }}"
+            *ngIf="authService.hasRole('Admin')"
           >
             ✏️
           </button>
@@ -101,6 +104,7 @@
             (click)="onDeleteProject(project._id!)"
             [disabled]="deletingProjectId === project._id"
             title="{{ 'COMMON.DELETE' | translate }}"
+            *ngIf="authService.hasRole('Admin')"
           >
             <span class="spinner-small" *ngIf="deletingProjectId === project._id"></span>
             🗑️
@@ -172,7 +176,7 @@
     <div class="empty-icon">🏗️</div>
     <h3>{{ projects.length === 0 ? ('PROJECT.EMPTY_TITLE' | translate) : ('PROJECT.NO_RESULTS_TITLE' | translate) }}</h3>
     <p>{{ projects.length === 0 ? ('PROJECT.EMPTY_MESSAGE' | translate) : ('PROJECT.NO_RESULTS_MESSAGE' | translate) }}</p>
-    <button class="btn btn-primary" (click)="onCreateProject()" *ngIf="projects.length === 0">
+    <button class="btn btn-primary" (click)="onCreateProject()" *ngIf="projects.length === 0 && authService.hasRole('Admin')">
       {{ 'PROJECT.CREATE_FIRST' | translate }}
     </button>
   </div>

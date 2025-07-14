@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -43,77 +44,92 @@ export const routes: Routes = [
   },
   {
     path: 'projects',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/projects/project-list/project-list.component').then(m => m.ProjectListComponent)
   },
   {
     path: 'projects/create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/projects/project-form/project-form.component').then(m => m.ProjectFormComponent)
   },
   {
     path: 'projects/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/projects/project-form/project-form.component').then(m => m.ProjectFormComponent)
   },
   {
     path: 'suppliers',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/suppliers/supplier-list/supplier-list.component').then(m => m.SupplierListComponent)
   },
   {
     path: 'suppliers/create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/suppliers/supplier-form/supplier-form.component').then(m => m.SupplierFormComponent)
   },
   {
     path: 'suppliers/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/suppliers/supplier-form/supplier-form.component').then(m => m.SupplierFormComponent)
   },
   {
     path: 'categories',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/categories/category-list/category-list.component').then(m => m.CategoryListComponent)
   },
   {
     path: 'categories/create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
   },
   {
     path: 'categories/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/categories/category-form/category-form.component').then(m => m.CategoryFormComponent)
   },
   {
     path: 'main-categories',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/main-categories/main-category-list/main-category-list.component').then(m => m.MainCategoryListComponent)
   },
   {
     path: 'main-categories/create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/main-categories/main-category-form/main-category-form.component').then(m => m.MainCategoryFormComponent)
   },
   {
     path: 'main-categories/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/main-categories/main-category-form/main-category-form.component').then(m => m.MainCategoryFormComponent)
   },
   {
     path: 'users',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/users/user-list/user-list.component').then(m => m.UserListComponent)
   },
   {
     path: 'users/create',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/users/user-form/user-form.component').then(m => m.UserFormComponent)
   },
   {
     path: 'users/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     loadComponent: () => import('./features/users/user-form/user-form.component').then(m => m.UserFormComponent)
   },
   {

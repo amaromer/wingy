@@ -11,10 +11,20 @@
     "build": "cd frontend && npm run build",
     "test": "cd backend && npm test && cd ../frontend && npm test"
   },
-  "keywords": ["erp", "construction", "expense", "angular", "nodejs", "mongodb"],
+  "keywords": [
+    "erp",
+    "construction",
+    "expense",
+    "angular",
+    "nodejs",
+    "mongodb"
+  ],
   "author": "Construction ERP Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.10.0"
   }
-} 
+}

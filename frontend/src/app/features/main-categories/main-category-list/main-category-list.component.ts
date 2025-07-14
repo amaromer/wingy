@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { MainCategory } from '../../../core/models/main-category.model';
 import { MainCategoryService } from '../../../core/services/main-category.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-main-category-list',
@@ -29,7 +30,8 @@ export class MainCategoryListComponent implements OnInit, OnDestroy {
 
   constructor(
     private mainCategoryService: MainCategoryService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) { }
 
   ngOnInit() {

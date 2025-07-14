@@ -4,7 +4,9 @@
       <h2>{{ 'SUPPLIERS.LIST_TITLE' | translate }}</h2>
       <p class="subtitle">{{ 'SUPPLIERS.LIST_SUBTITLE' | translate }}</p>
     </div>
-    <button class="btn btn-primary create-btn" (click)="onCreateSupplier()">
+    <button class="btn btn-primary create-btn" 
+            (click)="onCreateSupplier()"
+            *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
       <span class="icon">➕</span>
       {{ 'SUPPLIERS.CREATE_NEW' | translate }}
     </button>
@@ -79,6 +81,7 @@
             class="btn btn-icon btn-edit" 
             (click)="onEditSupplier(supplier._id || '')"
             title="{{ 'SUPPLIERS.ACTIONS.EDIT' | translate }}"
+            *ngIf="authService.hasRole('Admin')"
           >
             ✏️
           </button>
@@ -87,6 +90,7 @@
             (click)="onDeleteSupplier(supplier._id || '')"
             [disabled]="deletingSupplierId === supplier._id"
             title="{{ 'SUPPLIERS.ACTIONS.DELETE' | translate }}"
+            *ngIf="authService.hasRole('Admin')"
           >
             <span class="spinner-small" *ngIf="deletingSupplierId === supplier._id"></span>
             🗑️
@@ -157,7 +161,7 @@
     <div class="empty-icon">🏢</div>
     <h3>{{ suppliers.length === 0 ? ('SUPPLIERS.EMPTY_TITLE' | translate) : ('SUPPLIERS.NO_RESULTS_TITLE' | translate) }}</h3>
     <p>{{ suppliers.length === 0 ? ('SUPPLIERS.EMPTY_MESSAGE' | translate) : ('SUPPLIERS.NO_RESULTS_MESSAGE' | translate) }}</p>
-    <button class="btn btn-primary" (click)="onCreateSupplier()" *ngIf="suppliers.length === 0">
+    <button class="btn btn-primary" (click)="onCreateSupplier()" *ngIf="suppliers.length === 0 && authService.hasAnyRole(['Admin', 'Accountant'])">
       {{ 'SUPPLIERS.CREATE_FIRST' | translate }}
     </button>
   </div>

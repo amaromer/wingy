@@ -205,7 +205,29 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getRoleBadgeClass(role: string): string {
-    return role === 'Admin' ? 'badge-admin' : 'badge-accountant';
+    switch (role) {
+      case 'Admin':
+        return 'badge-admin';
+      case 'Accountant':
+        return 'badge-accountant';
+      case 'Engineer':
+        return 'badge-engineer';
+      default:
+        return 'badge-default';
+    }
+  }
+
+  getRoleDisplayName(role: string): string {
+    switch (role) {
+      case 'Admin':
+        return 'ROLES.ADMIN';
+      case 'Accountant':
+        return 'ROLES.ACCOUNTANT';
+      case 'Engineer':
+        return 'ROLES.ENGINEER';
+      default:
+        return role;
+    }
   }
 
   getStatusBadgeClass(isActive: boolean): string {

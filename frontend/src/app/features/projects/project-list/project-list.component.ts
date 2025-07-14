@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Project } from '../../../core/models/project.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 @Component({
@@ -50,7 +51,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {
     // Set up debounced search
     this.searchSubject.pipe(

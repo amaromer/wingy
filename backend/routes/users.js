@@ -10,7 +10,7 @@ const userValidation = [
   body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
   body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-  body('role').isIn(['Admin', 'Accountant']).withMessage('Role must be either Admin or Accountant'),
+  body('role').isIn(['Admin', 'Accountant', 'Engineer']).withMessage('Role must be either Admin, Accountant, or Engineer'),
   body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
 ];
 
@@ -19,7 +19,7 @@ const createUserValidation = [
   body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-  body('role').isIn(['Admin', 'Accountant']).withMessage('Role must be either Admin or Accountant'),
+  body('role').isIn(['Admin', 'Accountant', 'Engineer']).withMessage('Role must be either Admin, Accountant, or Engineer'),
   body('is_active').optional().isBoolean().withMessage('is_active must be a boolean')
 ];
 

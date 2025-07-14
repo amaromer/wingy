@@ -42,8 +42,8 @@
         {{ 'NAVIGATION.EXPENSES' | translate }}
       </a>
       
-      <!-- Master Data - Admin only -->
-      <div class="nav-section" *ngIf="authService.hasRole('Admin')">
+      <!-- Master Data - Admin and Accountant can view (not Engineer) -->
+      <div class="nav-section" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
         <div class="nav-section-title">{{ 'NAVIGATION.MASTER_DATA' | translate }}</div>
         
         <a routerLink="/projects" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
@@ -66,7 +66,9 @@
           {{ 'NAVIGATION.MAIN_CATEGORIES' | translate }}
         </a>
         
-        <a routerLink="/users" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+        <!-- Users - Admin only -->
+        <a routerLink="/users" routerLinkActive="active" class="nav-item" 
+           *ngIf="authService.hasRole('Admin')" (click)="closeSidebar()">
           <span class="nav-icon">👥</span>
           {{ 'NAVIGATION.USERS' | translate }}
         </a>
@@ -96,7 +98,7 @@
         <div class="header-right" [class.rtl-right]="isArabic">
           <div class="user-info">
             <span class="user-name" [class.rtl-name]="isArabic">{{ authService.getCurrentUser()?.name }}</span>
-            <span class="user-role">{{ authService.getCurrentUser()?.role }}</span>
+            <span class="user-role">{{ getRoleDisplayName(authService.getCurrentUser()?.role) | translate }}</span>
           </div>
         </div>
       </div>

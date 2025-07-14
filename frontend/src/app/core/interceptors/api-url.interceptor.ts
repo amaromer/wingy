@@ -7,9 +7,12 @@ export const apiUrlInterceptor: HttpInterceptorFn = (req, next) => {
     const apiUrl = getApiUrl();
     const fullUrl = req.url.replace('/api/', `${apiUrl}/`);
     
-    console.log('API Interceptor:', {
-      original: req.url,
-      resolved: fullUrl
+    console.log('API Interceptor Debug:', {
+      originalUrl: req.url,
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'server-side',
+      protocol: typeof window !== 'undefined' ? window.location.protocol : 'server-side',
+      resolvedApiUrl: apiUrl,
+      fullUrl: fullUrl
     });
     
     const modifiedRequest = req.clone({

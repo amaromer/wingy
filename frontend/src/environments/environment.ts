@@ -11,18 +11,25 @@ export function getApiUrl(): string {
     
     // If accessing from localhost, use localhost for API
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return `http://localhost:3000/api`;
+      const localhostUrl = `http://localhost:3000/api`;
+      console.log('Environment: Using localhost API URL:', localhostUrl);
+      return localhostUrl;
     }
     
     // If accessing from production domain, use HTTPS
     if (hostname === 'winjyerp.com' || hostname === 'www.winjyerp.com') {
-      return `https://${hostname}/api`;
+      const productionUrl = `https://${hostname}/api`;
+      console.log('Environment: Using production API URL:', productionUrl);
+      return productionUrl;
     }
     
     // If accessing from mobile/network, use the same protocol and hostname
-    return `${protocol}//${hostname}/api`;
+    const networkUrl = `${protocol}//${hostname}/api`;
+    console.log('Environment: Using network API URL:', networkUrl);
+    return networkUrl;
   }
   
   // Fallback for server-side rendering
+  console.log('Environment: Using fallback API URL:', environment.apiUrl);
   return environment.apiUrl;
 } 

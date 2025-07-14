@@ -4,7 +4,7 @@ const Expense = require('../models/Expense');
 const Project = require('../models/Project');
 const Supplier = require('../models/Supplier');
 const Category = require('../models/Category');
-const { auth, requireRole } = require('../middleware/auth');
+const { auth, requireRole, requireExpenseAccess, requireExpenseCreateOnly } = require('../middleware/auth');
 const { upload, handleUploadError } = require('../middleware/upload');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const ExcelJS = require('exceljs');
@@ -14,8 +14,8 @@ const router = express.Router();
 
 // @route   GET /api/expenses/suppliers-by-category/:categoryId
 // @desc    Get suppliers filtered by main category
-// @access  Private
-router.get('/suppliers-by-category/:categoryId', auth, async (req, res) => {
+// @access  Private (Admin, Accountant, Engineer)
+router.get('/suppliers-by-category/:categoryId', auth, requireExpenseAccess, async (req, res) => {
   try {
     const { categoryId } = req.params;
     
@@ -34,8 +34,8 @@ router.get('/suppliers-by-category/:categoryId', auth, async (req, res) => {
 
 // @route   GET /api/expenses/categories-by-main-category/:mainCategoryId
 // @desc    Get categories filtered by main category
-// @access  Private
-router.get('/categories-by-main-category/:mainCategoryId', auth, async (req, res) => {
+// @access  Private (Admin, Accountant, Engineer)
+router.get('/categories-by-main-category/:mainCategoryId', auth, requireExpenseAccess, async (req, res) => {
   try {
     const { mainCategoryId } = req.params;
     
@@ -66,8 +66,8 @@ const expenseValidation = [
 
 // @route   GET /api/expenses
 // @desc    Get all expenses with filtering
-// @access  Private
-router.get('/', auth, async (req, res) => {
+// @access  Private (Admin, Accountant, Engineer)
+router.get('/', auth, requireExpenseAccess, async (req, res) => {
   try {
     const { 
       project_id, 
@@ -180,8 +180,8 @@ router.get('/:id', auth, async (req, res) => {
 
 // @route   POST /api/expenses
 // @desc    Create a new expense
-// @access  Private (Accountant)
-router.post('/', auth, requireRole(['Admin', 'Accountant']), upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
+// @access  Private (Admin, Accountant, Engineer)
+router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
   try {
     console.log('Creating expense - Request body:', req.body);
     console.log('Creating expense - Request file:', req.file);
@@ -310,8 +310,8 @@ router.post('/', auth, requireRole(['Admin', 'Accountant']), upload.single('atta
 
 // @route   PUT /api/expenses/:id
 // @desc    Update expense
-// @access  Private (Accountant)
-router.put('/:id', auth, requireRole(['Admin', 'Accountant']), upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
+// @access  Private (Admin, Accountant)
+router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), handleUploadError, expenseValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -424,8 +424,8 @@ router.put('/:id', auth, requireRole(['Admin', 'Accountant']), upload.single('at
 
 // @route   DELETE /api/expenses/:id
 // @desc    Delete expense
-// @access  Private (Accountant)
-router.delete('/:id', auth, requireRole(['Admin', 'Accountant']), async (req, res) => {
+// @access  Private (Admin, Accountant)
+router.delete('/:id', auth, requireExpenseCreateOnly, async (req, res) => {
   try {
     const expense = await Expense.findById(req.params.id);
     
