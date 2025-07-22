@@ -1,0 +1,284 @@
+<div class="received-payment-form-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ pageTitle | translate }}</h1>
+      <p class="subtitle">{{ (isEditMode ? 'RECEIVED_PAYMENT.EDIT_SUBTITLE' : 'RECEIVED_PAYMENT.CREATE_SUBTITLE') | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="receivedPaymentForm" (ngSubmit)="onSubmit()" class="received-payment-form" *ngIf="!loading">
+    <div class="form-sections">
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h3>{{ 'RECEIVED_PAYMENT.SECTIONS.BASIC_INFO' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">{{ 'RECEIVED_PAYMENT.FIELDS.DATE' | translate }} *</label>
+            <input 
+              type="date" 
+              id="date"
+              formControlName="date"
+              [class.error]="isFieldInvalid('date')"
+            >
+            <div class="error-message" *ngIf="getFieldError('date')">
+              {{ getFieldError('date')! | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="project_id">{{ 'RECEIVED_PAYMENT.FIELDS.PROJECT' | translate }} *</label>
+            <select 
+              id="project_id"
+              formControlName="project_id"
+              [class.error]="isFieldInvalid('project_id')"
+            >
+              <option value="">{{ 'RECEIVED_PAYMENT.FIELDS.SELECT_PROJECT' | translate }}</option>
+              <option 
+                *ngFor="let project of projects" 
+                [value]="project._id"
+              >
+                {{ project.name }}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="getFieldError('project_id')">
+              {{ getFieldError('project_id')! | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="invoice_number">{{ 'RECEIVED_PAYMENT.FIELDS.INVOICE_NUMBER' | translate }} *</label>
+            <input 
+              type="text" 
+              id="invoice_number"
+              formControlName="invoice_number"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.INVOICE_NUMBER_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('invoice_number')"
+            >
+            <div class="error-message" *ngIf="getFieldError('invoice_number')">
+              {{ getFieldError('invoice_number')! | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="amount">{{ 'RECEIVED_PAYMENT.FIELDS.AMOUNT' | translate }} *</label>
+            <input 
+              type="number" 
+              id="amount"
+              formControlName="amount"
+              step="0.01"
+              min="0"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.AMOUNT_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('amount')"
+            >
+            <div class="error-message" *ngIf="getFieldError('amount')">
+              {{ getFieldError('amount')! | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="currency">{{ 'RECEIVED_PAYMENT.FIELDS.CURRENCY' | translate }} *</label>
+            <select 
+              id="currency"
+              formControlName="currency"
+              [class.error]="isFieldInvalid('currency')"
+            >
+              <option value="AED">AED - UAE Dirham</option>
+              <option value="USD">USD - US Dollar</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - British Pound</option>
+              <option value="SAR">SAR - Saudi Riyal</option>
+              <option value="QAR">QAR - Qatari Riyal</option>
+            </select>
+            <div class="error-message" *ngIf="getFieldError('currency')">
+              {{ getFieldError('currency')! | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="client_name">{{ 'RECEIVED_PAYMENT.FIELDS.CLIENT_NAME' | translate }}</label>
+            <input 
+              type="text" 
+              id="client_name"
+              formControlName="client_name"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.CLIENT_NAME_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('client_name')"
+            >
+            <div class="error-message" *ngIf="getFieldError('client_name')">
+              {{ getFieldError('client_name')! | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reference_number">{{ 'RECEIVED_PAYMENT.FIELDS.REFERENCE_NUMBER' | translate }}</label>
+            <input 
+              type="text" 
+              id="reference_number"
+              formControlName="reference_number"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.REFERENCE_NUMBER_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('reference_number')"
+            >
+            <div class="error-message" *ngIf="getFieldError('reference_number')">
+              {{ getFieldError('reference_number')! | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VAT Information -->
+      <div class="form-section">
+        <h3>{{ 'RECEIVED_PAYMENT.SECTIONS.VAT_INFO' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <div class="checkbox-wrapper">
+              <input 
+                type="checkbox" 
+                id="is_vat_applicable" 
+                formControlName="is_vat_applicable"
+                class="vat-checkbox"
+              >
+              <label for="is_vat_applicable" class="vat-label">
+                {{ 'RECEIVED_PAYMENT.FIELDS.IS_VAT_APPLICABLE' | translate }}
+              </label>
+            </div>
+            <small class="help-text">{{ 'RECEIVED_PAYMENT.FIELDS.VAT_APPLICABLE_HELP' | translate }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="vat_amount">{{ 'RECEIVED_PAYMENT.FIELDS.VAT_AMOUNT' | translate }} *</label>
+            <input 
+              type="number" 
+              id="vat_amount"
+              formControlName="vat_amount"
+              step="0.01"
+              min="0"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.VAT_AMOUNT_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('vat_amount')"
+            >
+            <div class="error-message" *ngIf="getFieldError('vat_amount')">
+              {{ getFieldError('vat_amount')! | translate }}
+            </div>
+            <small class="help-text">{{ 'RECEIVED_PAYMENT.FIELDS.VAT_AUTO_CALCULATED' | translate }}</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div class="form-section">
+        <h3>{{ 'RECEIVED_PAYMENT.SECTIONS.PAYMENT_DETAILS' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="payment_method">{{ 'RECEIVED_PAYMENT.FIELDS.PAYMENT_METHOD' | translate }} *</label>
+            <select 
+              id="payment_method"
+              formControlName="payment_method"
+              [class.error]="isFieldInvalid('payment_method')"
+            >
+              <option value="Cash">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.CASH' | translate }}</option>
+              <option value="Bank Transfer">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.BANK_TRANSFER' | translate }}</option>
+              <option value="Cheque">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.CHEQUE' | translate }}</option>
+            </select>
+            <div class="error-message" *ngIf="getFieldError('payment_method')">
+              {{ getFieldError('payment_method')! | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">{{ 'RECEIVED_PAYMENT.FIELDS.DESCRIPTION' | translate }}</label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              [placeholder]="'RECEIVED_PAYMENT.FIELDS.DESCRIPTION_PLACEHOLDER' | translate"
+              rows="3"
+              [class.error]="isFieldInvalid('description')"
+            ></textarea>
+            <div class="error-message" *ngIf="getFieldError('description')">
+              {{ getFieldError('description')! | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Attachment -->
+      <div class="form-section">
+        <h3>{{ 'RECEIVED_PAYMENT.SECTIONS.ATTACHMENT' | translate }}</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="payment_attachment">{{ 'RECEIVED_PAYMENT.FIELDS.PAYMENT_ATTACHMENT' | translate }}</label>
+            <input 
+              type="file" 
+              id="payment_attachment"
+              accept="image/*,.pdf,.doc,.docx"
+              (change)="onFileSelected($event)"
+              class="file-input"
+            >
+            <small class="help-text">{{ 'RECEIVED_PAYMENT.FIELDS.ATTACHMENT_HELP' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- File Preview -->
+        <div class="file-preview" *ngIf="previewUrl">
+          <div class="preview-container">
+            <img *ngIf="selectedFile && selectedFile.type.startsWith('image/')" [src]="previewUrl" alt="Payment attachment preview" class="preview-image">
+            <div *ngIf="selectedFile && !selectedFile.type.startsWith('image/')" class="preview-document">
+              <span class="document-icon">📄</span>
+              <span class="document-name">{{ selectedFile.name }}</span>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeFile()">
+              {{ 'COMMON.REMOVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="submitting || receivedPaymentForm.invalid"
+      >
+        <span *ngIf="submitting">{{ 'COMMON.SAVING' | translate }}</span>
+        <span *ngIf="!submitting">{{ (isEditMode ? 'COMMON.UPDATE' : 'COMMON.SAVE') | translate }}</span>
+      </button>
+    </div>
+  </form>
+</div> 

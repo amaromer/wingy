@@ -1,0 +1,259 @@
+<div class="received-payment-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ 'RECEIVED_PAYMENT.LIST_TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'RECEIVED_PAYMENT.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="onCreateNew()"
+      >
+        {{ 'RECEIVED_PAYMENT.CREATE_NEW' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <!-- Search -->
+      <div class="filter-group">
+        <label>{{ 'COMMON.SEARCH' | translate }}</label>
+        <div class="search-input">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+            [placeholder]="'RECEIVED_PAYMENT.SEARCH_PLACEHOLDER' | translate"
+          >
+          <button class="btn btn-secondary" (click)="onSearch()">
+            {{ 'COMMON.SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Project Filter -->
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.PROJECT' | translate }}</label>
+        <select [(ngModel)]="selectedProject" (change)="onFilterChange()">
+          <option value="">{{ 'RECEIVED_PAYMENT.FILTERS.ALL_PROJECTS' | translate }}</option>
+          <option *ngFor="let project of projects" [value]="project._id">
+            {{ project.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Payment Method Filter -->
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.PAYMENT_METHOD' | translate }}</label>
+        <select [(ngModel)]="selectedPaymentMethod" (change)="onFilterChange()">
+          <option value="">{{ 'RECEIVED_PAYMENT.FILTERS.ALL_METHODS' | translate }}</option>
+          <option value="Cash">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.CASH' | translate }}</option>
+          <option value="Bank Transfer">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.BANK_TRANSFER' | translate }}</option>
+          <option value="Cheque">{{ 'RECEIVED_PAYMENT.PAYMENT_METHODS.CHEQUE' | translate }}</option>
+        </select>
+      </div>
+
+      <!-- Currency Filter -->
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.CURRENCY' | translate }}</label>
+        <select [(ngModel)]="selectedCurrency" (change)="onFilterChange()">
+          <option value="">{{ 'RECEIVED_PAYMENT.FILTERS.ALL_CURRENCIES' | translate }}</option>
+          <option value="AED">AED</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="SAR">SAR</option>
+          <option value="QAR">QAR</option>
+        </select>
+      </div>
+
+      <!-- Date Range -->
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.DATE_FROM' | translate }}</label>
+        <input 
+          type="date" 
+          [(ngModel)]="dateFrom"
+          (change)="onFilterChange()"
+        >
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.DATE_TO' | translate }}</label>
+        <input 
+          type="date" 
+          [(ngModel)]="dateTo"
+          (change)="onFilterChange()"
+        >
+      </div>
+
+      <!-- Amount Range -->
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.AMOUNT_MIN' | translate }}</label>
+        <input 
+          type="number" 
+          [(ngModel)]="amountMin"
+          (change)="onFilterChange()"
+          step="0.01"
+          min="0"
+        >
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'RECEIVED_PAYMENT.FILTERS.AMOUNT_MAX' | translate }}</label>
+        <input 
+          type="number" 
+          [(ngModel)]="amountMax"
+          (change)="onFilterChange()"
+          step="0.01"
+          min="0"
+        >
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn btn-secondary" (click)="clearFilters()">
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-summary" *ngIf="!loading">
+    <p>{{ 'COMMON.SHOWING_RESULTS' | translate: { total: total, current: receivedPayments.length } }}</p>
+  </div>
+
+  <!-- Received Payments Table -->
+  <div class="table-container" *ngIf="!loading">
+    <table class="received-payments-table">
+      <thead>
+        <tr>
+          <th (click)="onSort('date')" class="sortable">
+            {{ 'RECEIVED_PAYMENT.FIELDS.DATE' | translate }}
+            <span class="sort-icon">{{ getSortIcon('date') }}</span>
+          </th>
+          <th (click)="onSort('project_id')" class="sortable">
+            {{ 'RECEIVED_PAYMENT.FIELDS.PROJECT' | translate }}
+            <span class="sort-icon">{{ getSortIcon('project_id') }}</span>
+          </th>
+          <th (click)="onSort('invoice_number')" class="sortable">
+            {{ 'RECEIVED_PAYMENT.FIELDS.INVOICE_NUMBER' | translate }}
+            <span class="sort-icon">{{ getSortIcon('invoice_number') }}</span>
+          </th>
+          <th (click)="onSort('amount')" class="sortable">
+            {{ 'RECEIVED_PAYMENT.FIELDS.AMOUNT' | translate }}
+            <span class="sort-icon">{{ getSortIcon('amount') }}</span>
+          </th>
+          <th>{{ 'RECEIVED_PAYMENT.FIELDS.VAT_AMOUNT' | translate }}</th>
+          <th>{{ 'RECEIVED_PAYMENT.FIELDS.PAYMENT_METHOD' | translate }}</th>
+          <th>{{ 'RECEIVED_PAYMENT.FIELDS.CLIENT_NAME' | translate }}</th>
+          <th>{{ 'RECEIVED_PAYMENT.FIELDS.REFERENCE_NUMBER' | translate }}</th>
+          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of receivedPayments" class="payment-row">
+          <td>{{ formatDate(payment.date) }}</td>
+          <td>{{ getProjectName(payment) }}</td>
+          <td>{{ payment.invoice_number }}</td>
+          <td class="amount-cell">{{ formatAmount(payment.amount, payment.currency) }}</td>
+          <td class="vat-cell">
+            <span *ngIf="payment.is_vat_applicable">{{ formatAmount(payment.vat_amount, payment.currency) }}</span>
+            <span *ngIf="!payment.is_vat_applicable" class="no-vat">-</span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getPaymentMethodClass(payment.payment_method)">
+              {{ payment.payment_method }}
+            </span>
+          </td>
+          <td>{{ payment.client_name || '-' }}</td>
+          <td>{{ payment.reference_number || '-' }}</td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button 
+                class="btn btn-sm btn-primary" 
+                (click)="onEdit(payment)"
+                [title]="'COMMON.EDIT' | translate"
+              >
+                {{ 'COMMON.EDIT' | translate }}
+              </button>
+              <button 
+                class="btn btn-sm btn-secondary" 
+                (click)="onViewAttachment(payment)"
+                *ngIf="payment.payment_attachment"
+                [title]="'RECEIVED_PAYMENT.VIEW_ATTACHMENT' | translate"
+              >
+                {{ 'RECEIVED_PAYMENT.VIEW_ATTACHMENT' | translate }}
+              </button>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="onDelete(payment)"
+                [title]="'COMMON.DELETE' | translate"
+              >
+                {{ 'COMMON.DELETE' | translate }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="receivedPayments.length === 0">
+      <div class="empty-icon">💰</div>
+      <h3>{{ 'RECEIVED_PAYMENT.EMPTY_TITLE' | translate }}</h3>
+      <p>{{ 'RECEIVED_PAYMENT.EMPTY_MESSAGE' | translate }}</p>
+      <button class="btn btn-primary" (click)="onCreateNew()">
+        {{ 'RECEIVED_PAYMENT.CREATE_FIRST' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1 && !loading">
+    <div class="pagination-info">
+      {{ 'COMMON.PAGE_INFO' | translate: { current: currentPage, total: totalPages } }}
+    </div>
+    <div class="pagination-controls">
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        {{ 'COMMON.PREVIOUS' | translate }}
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPageNumbers()" 
+          class="btn btn-page"
+          [class.active]="page === currentPage"
+          (click)="onPageChange(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        {{ 'COMMON.NEXT' | translate }}
+      </button>
+    </div>
+  </div>
+</div> 

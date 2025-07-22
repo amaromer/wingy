@@ -37,6 +37,12 @@ export class ExpenseFormComponent implements OnInit {
   showErrorDetails = false;
   errorDetails: any = null;
   isSupplierOptional: boolean = true;
+  
+  // Compression properties
+  originalFileSize: number = 0;
+  optimizedFileSize: number = 0;
+  compressionProgress: number = 0;
+  isCompressing: boolean = false;
 
   // Currency options
   currencies = [
@@ -168,7 +174,7 @@ export class ExpenseFormComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: any) {
+  async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       // Validate file type
@@ -178,24 +184,32 @@ export class ExpenseFormComponent implements OnInit {
         return;
       }
       
-      // Validate file size (10MB max)
-      if (file.size > 10 * 1024 * 1024) {
-        this.error = 'EXPENSE.ERROR.FILE_TOO_LARGE';
-        return;
-      }
-      
-      this.selectedFile = file;
       this.error = '';
+      this.originalFileSize = file.size;
       
-      // Create preview for images
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.filePreview = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.filePreview = null;
+      try {
+        // Optimize image if it's an image file
+        if (file.type.startsWith('image/')) {
+          this.selectedFile = await this.optimizeImage(file);
+        } else {
+          this.selectedFile = file;
+          this.optimizedFileSize = file.size;
+        }
+        
+        // Create preview
+        if (file.type.startsWith('image/') && this.selectedFile) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.filePreview = e.target?.result as string;
+          };
+          reader.readAsDataURL(this.selectedFile);
+        } else {
+          this.filePreview = null;
+        }
+      } catch (error) {
+        console.error('Error optimizing file:', error);
+        this.error = 'EXPENSE.ERROR.FILE_OPTIMIZATION_FAILED';
+        this.isCompressing = false;
       }
     }
   }
@@ -203,6 +217,105 @@ export class ExpenseFormComponent implements OnInit {
   removeFile() {
     this.selectedFile = null;
     this.filePreview = null;
+    this.originalFileSize = 0;
+    this.optimizedFileSize = 0;
+    this.compressionProgress = 0;
+    this.isCompressing = false;
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  // Image optimization methods
+  private async optimizeImage(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(file); // Return original file for non-images
+        return;
+      }
+
+      this.isCompressing = true;
+      this.compressionProgress = 0;
+      this.originalFileSize = file.size;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate optimal dimensions (max 1200px width/height)
+        const maxDimension = 1200;
+        let { width, height } = img;
+        
+        if (width > height && width > maxDimension) {
+          height = (height * maxDimension) / width;
+          width = maxDimension;
+        } else if (height > maxDimension) {
+          width = (width * maxDimension) / height;
+          height = maxDimension;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw image with optimization
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Compress with quality settings
+        let quality = 0.8;
+        let compressedBlob: Blob;
+
+        const compressWithQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                compressedBlob = blob;
+                this.optimizedFileSize = blob.size;
+                this.compressionProgress = 100;
+
+                // Create new file with optimized data
+                const optimizedFile = new File([blob], file.name, {
+                  type: file.type,
+                  lastModified: Date.now()
+                });
+
+                this.isCompressing = false;
+                resolve(optimizedFile);
+              } else {
+                reject(new Error('Failed to compress image'));
+              }
+            },
+            file.type,
+            quality
+          );
+        };
+
+        // Progressive compression
+        const progressiveCompress = () => {
+          if (this.optimizedFileSize > 2 * 1024 * 1024 && quality > 0.3) { // If still > 2MB
+            quality -= 0.1;
+            this.compressionProgress = Math.min(90, (0.8 - quality) * 100);
+            setTimeout(progressiveCompress, 100);
+          } else {
+            compressWithQuality();
+          }
+        };
+
+        progressiveCompress();
+      };
+
+      img.onerror = () => {
+        this.isCompressing = false;
+        reject(new Error('Failed to load image'));
+      };
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   getAttachmentUrl(attachmentUrl: string): string {
@@ -535,5 +648,20 @@ export class ExpenseFormComponent implements OnInit {
         this.categories = [];
       }
     });
+  }
+
+  // Helper method to format file size
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Helper method to get compression ratio
+  getCompressionRatio(): number {
+    if (this.originalFileSize === 0) return 0;
+    return Math.round(((this.originalFileSize - this.optimizedFileSize) / this.originalFileSize) * 100);
   }
 } 

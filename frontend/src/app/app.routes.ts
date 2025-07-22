@@ -138,6 +138,24 @@ export const routes: Routes = [
     loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
   },
   {
+    path: 'received-payments',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/received-payments/received-payment-list/received-payment-list.component').then(m => m.ReceivedPaymentListComponent)
+  },
+  {
+    path: 'received-payments/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/received-payments/received-payment-form/received-payment-form.component').then(m => m.ReceivedPaymentFormComponent)
+  },
+  {
+    path: 'received-payments/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/received-payments/received-payment-form/received-payment-form.component').then(m => m.ReceivedPaymentFormComponent)
+  },
+  {
     path: '**',
     redirectTo: '/expenses'
   }

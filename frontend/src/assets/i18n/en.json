@@ -81,6 +81,7 @@
     "CATEGORIES": "Categories",
     "MAIN_CATEGORIES": "Main Categories",
     "EXPENSES": "Expenses",
+    "RECEIVED_PAYMENTS": "Received Payments",
     "USERS": "Users",
     "PROFILE": "Profile",
     "CONSTRUCTION_ERP": "winjy",
@@ -829,5 +830,86 @@
     "ADMIN_DESCRIPTION": "Full system access - can view, create, edit, and delete all data across all modules",
     "ACCOUNTANT_DESCRIPTION": "Can view all modules except users, can create projects, suppliers, categories, and main categories",
     "ENGINEER_DESCRIPTION": "Can only access expenses and quick expenses - create permissions only, no edit or delete"
+  },
+  "RECEIVED_PAYMENT": {
+    "LIST_TITLE": "Received Payments",
+    "LIST_SUBTITLE": "Manage and track all incoming payments for your projects",
+    "CREATE_TITLE": "Create Received Payment",
+    "CREATE_SUBTITLE": "Record a new incoming payment for a project",
+    "EDIT_TITLE": "Edit Received Payment",
+    "EDIT_SUBTITLE": "Update received payment information",
+    "CREATE_NEW": "Create New Payment",
+    "CREATE_FIRST": "Create Your First Payment",
+    "EMPTY_TITLE": "No Received Payments Yet",
+    "EMPTY_MESSAGE": "Get started by recording your first received payment.",
+    "SEARCH_PLACEHOLDER": "Search by invoice number, description, client name...",
+    "VIEW_ATTACHMENT": "View Attachment",
+    "ERROR": {
+      "LOADING_RECEIVED_PAYMENTS": "Failed to load received payments. Please try again.",
+      "LOADING_RECEIVED_PAYMENT": "Failed to load received payment. Please try again.",
+      "CREATING_RECEIVED_PAYMENT": "Failed to create received payment. Please try again.",
+      "UPDATING_RECEIVED_PAYMENT": "Failed to update received payment. Please try again.",
+      "DELETING_RECEIVED_PAYMENT": "Failed to delete received payment. Please try again.",
+      "LOADING_PROJECTS": "Failed to load projects. Please try again."
+    },
+    "SUCCESS": {
+      "CREATE_SUCCESS": "Received payment created successfully!",
+      "UPDATE_SUCCESS": "Received payment updated successfully!",
+      "DELETE_SUCCESS": "Received payment deleted successfully!"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "Basic Information",
+      "VAT_INFO": "VAT Information",
+      "PAYMENT_DETAILS": "Payment Details",
+      "ATTACHMENT": "Payment Attachment"
+    },
+    "FIELDS": {
+      "DATE": "Payment Date",
+      "PROJECT": "Project",
+      "SELECT_PROJECT": "Select a project",
+      "INVOICE_NUMBER": "Invoice Number",
+      "INVOICE_NUMBER_PLACEHOLDER": "Enter invoice number",
+      "AMOUNT": "Amount",
+      "AMOUNT_PLACEHOLDER": "Enter payment amount",
+      "CURRENCY": "Currency",
+      "CLIENT_NAME": "Client Name",
+      "CLIENT_NAME_PLACEHOLDER": "Enter client name",
+      "REFERENCE_NUMBER": "Reference Number",
+      "REFERENCE_NUMBER_PLACEHOLDER": "Enter reference number",
+      "IS_VAT_APPLICABLE": "VAT is applicable",
+      "VAT_APPLICABLE_HELP": "Check if VAT applies to this payment",
+      "VAT_AMOUNT": "VAT Amount",
+      "VAT_AMOUNT_PLACEHOLDER": "Enter VAT amount",
+      "VAT_AUTO_CALCULATED": "VAT amount will be calculated automatically",
+      "PAYMENT_METHOD": "Payment Method",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Enter payment description",
+      "PAYMENT_ATTACHMENT": "Payment Attachment",
+      "ATTACHMENT_HELP": "Upload payment receipt or related document (PDF, images, documents)"
+    },
+    "PAYMENT_METHODS": {
+      "CASH": "Cash",
+      "BANK_TRANSFER": "Bank Transfer",
+      "CHEQUE": "Cheque"
+    },
+    "FILTERS": {
+      "PROJECT": "Filter by Project",
+      "PAYMENT_METHOD": "Filter by Payment Method",
+      "CURRENCY": "Filter by Currency",
+      "DATE_FROM": "Date From",
+      "DATE_TO": "Date To",
+      "AMOUNT_MIN": "Minimum Amount",
+      "AMOUNT_MAX": "Maximum Amount",
+      "ALL_PROJECTS": "All Projects",
+      "ALL_METHODS": "All Methods",
+      "ALL_CURRENCIES": "All Currencies"
+    },
+    "ERRORS": {
+      "REQUIRED": "This field is required",
+      "MIN_LENGTH": "Minimum length not met",
+      "MAX_LENGTH": "Maximum length exceeded",
+      "MIN_VALUE": "Value must be greater than 0",
+      "INVALID_DATE": "Please enter a valid date"
+    }
   }
 } 

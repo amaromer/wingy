@@ -86,6 +86,7 @@
     "CATEGORIES": "الفئات",
     "MAIN_CATEGORIES": "الفئات الرئيسية",
     "EXPENSES": "المصروفات",
+    "RECEIVED_PAYMENTS": "المدفوعات المستلمة",
     "USERS": "المستخدمون",
     "PROFILE": "الملف الشخصي",
     "CONSTRUCTION_ERP": "ونجي",
@@ -851,5 +852,86 @@
     "NO_MAIN_CATEGORIES_MESSAGE": "قم بإنشاء فئات المصروفات الرئيسية لتمكين الإجراءات السريعة للمصروفات. ستساعد هذه الفئات في تنظيم الموردين وتسريع إدخال المصروفات.",
     "CREATE_MAIN_CATEGORIES": "إنشاء الفئات الرئيسية",
     "MAIN_CATEGORY_HELP": "اختر فئة رئيسية لتصفية الموردين. سيتم عرض الموردين المخصصين لهذه الفئة فقط."
+  },
+  "RECEIVED_PAYMENT": {
+    "LIST_TITLE": "المدفوعات المستلمة",
+    "LIST_SUBTITLE": "إدارة وتتبع جميع المدفوعات الواردة لمشاريعك",
+    "CREATE_TITLE": "إنشاء دفعة مستلمة",
+    "CREATE_SUBTITLE": "تسجيل دفعة واردة جديدة لمشروع",
+    "EDIT_TITLE": "تعديل الدفعة المستلمة",
+    "EDIT_SUBTITLE": "تحديث معلومات الدفعة المستلمة",
+    "CREATE_NEW": "إنشاء دفعة جديدة",
+    "CREATE_FIRST": "إنشاء أول دفعة لك",
+    "EMPTY_TITLE": "لا توجد مدفوعات مستلمة بعد",
+    "EMPTY_MESSAGE": "ابدأ بتسجيل أول دفعة مستلمة لك.",
+    "SEARCH_PLACEHOLDER": "البحث برقم الفاتورة أو الوصف أو اسم العميل...",
+    "VIEW_ATTACHMENT": "عرض المرفق",
+    "ERROR": {
+      "LOADING_RECEIVED_PAYMENTS": "فشل في تحميل المدفوعات المستلمة. يرجى المحاولة مرة أخرى.",
+      "LOADING_RECEIVED_PAYMENT": "فشل في تحميل الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
+      "CREATING_RECEIVED_PAYMENT": "فشل في إنشاء الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
+      "UPDATING_RECEIVED_PAYMENT": "فشل في تحديث الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
+      "DELETING_RECEIVED_PAYMENT": "فشل في حذف الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
+      "LOADING_PROJECTS": "فشل في تحميل المشاريع. يرجى المحاولة مرة أخرى."
+    },
+    "SUCCESS": {
+      "CREATE_SUCCESS": "تم إنشاء الدفعة المستلمة بنجاح!",
+      "UPDATE_SUCCESS": "تم تحديث الدفعة المستلمة بنجاح!",
+      "DELETE_SUCCESS": "تم حذف الدفعة المستلمة بنجاح!"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "المعلومات الأساسية",
+      "VAT_INFO": "معلومات ضريبة القيمة المضافة",
+      "PAYMENT_DETAILS": "تفاصيل الدفع",
+      "ATTACHMENT": "مرفق الدفع"
+    },
+    "FIELDS": {
+      "DATE": "تاريخ الدفع",
+      "PROJECT": "المشروع",
+      "SELECT_PROJECT": "اختر مشروعاً",
+      "INVOICE_NUMBER": "رقم الفاتورة",
+      "INVOICE_NUMBER_PLACEHOLDER": "أدخل رقم الفاتورة",
+      "AMOUNT": "المبلغ",
+      "AMOUNT_PLACEHOLDER": "أدخل مبلغ الدفع",
+      "CURRENCY": "العملة",
+      "CLIENT_NAME": "اسم العميل",
+      "CLIENT_NAME_PLACEHOLDER": "أدخل اسم العميل",
+      "REFERENCE_NUMBER": "رقم المرجع",
+      "REFERENCE_NUMBER_PLACEHOLDER": "أدخل رقم المرجع",
+      "IS_VAT_APPLICABLE": "ضريبة القيمة المضافة قابلة للتطبيق",
+      "VAT_APPLICABLE_HELP": "حدد إذا كانت ضريبة القيمة المضافة تنطبق على هذه الدفعة",
+      "VAT_AMOUNT": "مبلغ ضريبة القيمة المضافة",
+      "VAT_AMOUNT_PLACEHOLDER": "أدخل مبلغ ضريبة القيمة المضافة",
+      "VAT_AUTO_CALCULATED": "سيتم حساب مبلغ ضريبة القيمة المضافة تلقائياً",
+      "PAYMENT_METHOD": "طريقة الدفع",
+      "DESCRIPTION": "الوصف",
+      "DESCRIPTION_PLACEHOLDER": "أدخل وصف الدفع",
+      "PAYMENT_ATTACHMENT": "مرفق الدفع",
+      "ATTACHMENT_HELP": "رفع إيصال الدفع أو المستند المرتبط (PDF، صور، مستندات)"
+    },
+    "PAYMENT_METHODS": {
+      "CASH": "نقداً",
+      "BANK_TRANSFER": "تحويل بنكي",
+      "CHEQUE": "شيك"
+    },
+    "FILTERS": {
+      "PROJECT": "تصفية حسب المشروع",
+      "PAYMENT_METHOD": "تصفية حسب طريقة الدفع",
+      "CURRENCY": "تصفية حسب العملة",
+      "DATE_FROM": "التاريخ من",
+      "DATE_TO": "التاريخ إلى",
+      "AMOUNT_MIN": "الحد الأدنى للمبلغ",
+      "AMOUNT_MAX": "الحد الأقصى للمبلغ",
+      "ALL_PROJECTS": "جميع المشاريع",
+      "ALL_METHODS": "جميع الطرق",
+      "ALL_CURRENCIES": "جميع العملات"
+    },
+    "ERRORS": {
+      "REQUIRED": "هذا الحقل مطلوب",
+      "MIN_LENGTH": "الحد الأدنى للطول غير محقق",
+      "MAX_LENGTH": "تم تجاوز الحد الأقصى للطول",
+      "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
+      "INVALID_DATE": "يرجى إدخال تاريخ صحيح"
+    }
   }
 } 

@@ -246,11 +246,29 @@
               <div class="file-info" *ngIf="selectedFile">
                 <div class="file-details">
                   <span class="file-name">{{ selectedFile.name }}</span>
-                  <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} {{ 'COMMON.MB' | translate }})</span>
+                  <span class="file-size">
+                    <span *ngIf="originalFileSize > 0 && optimizedFileSize > 0">
+                      {{ formatFileSize(originalFileSize) }} → {{ formatFileSize(optimizedFileSize) }}
+                      <span class="compression-ratio" *ngIf="getCompressionRatio() > 0">
+                        ({{ getCompressionRatio() }}% {{ 'EXPENSE.QUICK.SMALLER' | translate }})
+                      </span>
+                    </span>
+                    <span *ngIf="originalFileSize === 0 || optimizedFileSize === 0">
+                      {{ formatFileSize(selectedFile.size) }}
+                    </span>
+                  </span>
                 </div>
                 <button type="button" class="btn btn-icon btn-remove" (click)="removeFile()">
                   🗑️
                 </button>
+              </div>
+              
+              <!-- Compression Progress -->
+              <div class="compression-progress" *ngIf="isCompressing">
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="compressionProgress"></div>
+                </div>
+                <span class="progress-text">{{ 'EXPENSE.QUICK.OPTIMIZING' | translate }} {{ compressionProgress }}%</span>
               </div>
               
               <div class="file-preview" *ngIf="filePreview">

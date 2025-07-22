@@ -42,6 +42,13 @@
         {{ 'NAVIGATION.EXPENSES' | translate }}
       </a>
       
+      <!-- Received Payments - Admin and Accountant can view -->
+      <a routerLink="/received-payments" routerLinkActive="active" class="nav-item" 
+         *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])" (click)="closeSidebar()">
+        <span class="nav-icon">💳</span>
+        {{ 'NAVIGATION.RECEIVED_PAYMENTS' | translate }}
+      </a>
+      
       <!-- Master Data - Admin and Accountant can view (not Engineer) -->
       <div class="nav-section" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
         <div class="nav-section-title">{{ 'NAVIGATION.MASTER_DATA' | translate }}</div>
