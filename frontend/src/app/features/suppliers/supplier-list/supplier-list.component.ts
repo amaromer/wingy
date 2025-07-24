@@ -92,13 +92,14 @@ export class SupplierListComponent implements OnInit, OnDestroy {
     this.error = '';
     
     console.log('Loading suppliers...');
-    this.http.get<Supplier[]>('/api/suppliers')
+    this.http.get<any>('/api/suppliers')
       .subscribe({
         next: (data) => {
           console.log('Suppliers received from API:', data);
           console.log('Data type:', typeof data);
           console.log('Is array:', Array.isArray(data));
-          this.suppliers = data || [];
+          // Extract suppliers from the response object
+          this.suppliers = data.suppliers || [];
           console.log('Suppliers after assignment:', this.suppliers);
           this.applyFilters();
           console.log('Filtered suppliers:', this.filteredSuppliers);
@@ -177,8 +178,8 @@ export class SupplierListComponent implements OnInit, OnDestroy {
       const searchLower = this.searchTerm.toLowerCase();
       filtered = filtered.filter(supplier =>
         supplier.name.toLowerCase().includes(searchLower) ||
-        supplier.contact_person.toLowerCase().includes(searchLower) ||
-        supplier.email.toLowerCase().includes(searchLower)
+        (supplier.contact_person && supplier.contact_person.toLowerCase().includes(searchLower)) ||
+        (supplier.email && supplier.email.toLowerCase().includes(searchLower))
       );
     }
 
@@ -192,6 +193,10 @@ export class SupplierListComponent implements OnInit, OnDestroy {
     filtered.sort((a, b) => {
       let aValue: any = a[this.sortBy as keyof Supplier];
       let bValue: any = b[this.sortBy as keyof Supplier];
+
+      // Handle missing values
+      if (aValue === undefined || aValue === null) aValue = '';
+      if (bValue === undefined || bValue === null) bValue = '';
 
       // Handle string comparison
       if (typeof aValue === 'string' && typeof bValue === 'string') {

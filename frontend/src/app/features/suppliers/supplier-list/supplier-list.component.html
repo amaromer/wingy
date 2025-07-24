@@ -69,12 +69,12 @@
       <div class="supplier-header">
         <div class="supplier-title">
           <h3>{{ supplier.name }}</h3>
-          <div class="supplier-meta">
-            <span class="contact-person">👤 {{ supplier.contact_person }}</span>
-            <span class="status-badge" [ngClass]="getStatusClass(supplier.is_active)">
-              {{ getStatusIcon(supplier.is_active) }} {{ supplier.is_active ? ('SUPPLIERS.FILTERS.ACTIVE' | translate) : ('SUPPLIERS.FILTERS.INACTIVE' | translate) }}
-            </span>
-          </div>
+                  <div class="supplier-meta">
+          <span class="contact-person" *ngIf="supplier.contact_person">👤 {{ supplier.contact_person }}</span>
+          <span class="status-badge" [ngClass]="getStatusClass(supplier.is_active)">
+            {{ getStatusIcon(supplier.is_active) }} {{ supplier.is_active ? ('SUPPLIERS.FILTERS.ACTIVE' | translate) : ('SUPPLIERS.FILTERS.INACTIVE' | translate) }}
+          </span>
+        </div>
         </div>
         <div class="supplier-actions">
           <button 
@@ -99,19 +99,19 @@
       </div>
       
       <div class="supplier-details">
-        <div class="detail-item">
+        <div class="detail-item" *ngIf="supplier.email">
           <span class="detail-label">{{ 'SUPPLIERS.FIELDS.EMAIL' | translate }}:</span>
           <span class="detail-value">
             <a href="mailto:{{ supplier.email }}" class="email-link">📧 {{ supplier.email }}</a>
           </span>
         </div>
-        <div class="detail-item">
+        <div class="detail-item" *ngIf="supplier.phone">
           <span class="detail-label">{{ 'SUPPLIERS.FIELDS.PHONE' | translate }}:</span>
           <span class="detail-value">
             <a href="tel:{{ supplier.phone }}" class="phone-link">📞 {{ supplier.phone }}</a>
           </span>
         </div>
-        <div class="detail-item">
+        <div class="detail-item" *ngIf="supplier.address">
           <span class="detail-label">{{ 'SUPPLIERS.FIELDS.ADDRESS' | translate }}:</span>
           <span class="detail-value">📍 {{ supplier.address }}</span>
         </div>
