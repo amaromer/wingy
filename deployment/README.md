@@ -1,369 +1,304 @@
-# Construction ERP Deployment Guide
+# Winjy ERP Deployment Guide
 
-This guide provides step-by-step instructions for deploying the Construction ERP system on a Linux Ubuntu 24 server.
+This directory contains deployment scripts and configuration files for the Winjy ERP system.
 
-## Table of Contents
+## 📁 Files Overview
 
-1. [Prerequisites](#prerequisites)
-2. [Server Setup](#server-setup)
-3. [Application Deployment](#application-deployment)
-4. [SSL Configuration](#ssl-configuration)
-5. [Monitoring and Maintenance](#monitoring-and-maintenance)
-6. [Troubleshooting](#troubleshooting)
+### Core Deployment Scripts
+- **`deploy.sh`** - Main deployment script with comprehensive features
+- **`monitoring.sh`** - System monitoring and health checks
+- **`ubuntu-setup.sh`** - Initial server setup for Ubuntu
 
-## Prerequisites
+### Configuration Files
+- **`pm2-ecosystem.config.js`** - PM2 process management configuration
+- **`nginx.conf`** - Nginx reverse proxy configuration
+- **`nginx-http.conf`** - HTTP to HTTPS redirect configuration
 
-### Server Requirements
+## 🚀 Deployment Commands
 
-- **OS**: Ubuntu 24.04 LTS (recommended)
-- **CPU**: 2+ cores
-- **RAM**: 4GB+ (8GB recommended)
-- **Storage**: 20GB+ available space
-- **Network**: Static IP address
-- **Domain**: Registered domain name (for SSL)
-
-### Software Requirements
-
-- Node.js 18+ (LTS)
-- MongoDB 6+
-- Nginx
-- PM2 (Process Manager)
-- Git
-- Certbot (for SSL)
-
-## Server Setup
-
-### 1. Initial Server Configuration
-
-Run the server setup script to install all required software:
-
+### Full Deployment
 ```bash
-# Download and run the setup script
-curl -fsSL https://raw.githubusercontent.com/your-repo/construction-erp/main/deployment/setup-server.sh | sudo bash
+# Deploy the application
+./deploy.sh deploy
+
+# Deploy with custom domain
+DOMAIN=your-domain.com ./deploy.sh deploy
 ```
 
-Or manually execute:
-
+### Rollback
 ```bash
-chmod +x deployment/setup-server.sh
-sudo ./deployment/setup-server.sh
+# Rollback to previous version
+./deploy.sh rollback
 ```
 
-### 2. Create Application User
-
+### Backup Only
 ```bash
-# Create a dedicated user for the application
-sudo useradd -m -s /bin/bash construction-erp
-sudo usermod -aG sudo construction-erp
-
-# Switch to the new user
-sudo su - construction-erp
+# Create backup without deploying
+./deploy.sh backup
 ```
 
-### 3. Clone Repository
-
+### Validation
 ```bash
-# Clone your repository
-cd /var/www
-sudo git clone https://github.com/your-username/construction-erp.git
-sudo chown -R construction-erp:construction-erp construction-erp
+# Validate current deployment
+./deploy.sh validate
 ```
 
-## Application Deployment
+## 🔍 Monitoring Commands
 
-### 1. Environment Configuration
-
-Create the environment file for the backend:
-
+### Full Monitoring
 ```bash
-cd /var/www/construction-erp/backend
-cp env.example .env
-nano .env
+# Comprehensive system monitoring
+./monitoring.sh monitor
 ```
 
-Configure the following variables:
+### Quick Health Check
+```bash
+# Quick system health check
+./monitoring.sh quick
+```
 
-```env
-# Database Configuration
-MONGODB_URI=mongodb://localhost:27017/construction_erp
+### Generate Report
+```bash
+# Generate monitoring report
+./monitoring.sh report
+```
 
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-here
-JWT_EXPIRES_IN=24h
+## 🆕 New Features in This Version
 
-# Server Configuration
-PORT=3000
+### HR Module Support
+- ✅ **Employee Management** - Complete employee CRUD operations
+- ✅ **Payroll System** - Salary calculation with overtime and deductions
+- ✅ **Petty Cash Management** - Employee petty cash tracking
+- ✅ **Expense-Credit Difference** - Real-time expense vs credit analysis
+- ✅ **Overtime Management** - Overtime tracking and calculation
+
+### Enhanced Deployment Features
+- ✅ **Prerequisites Check** - Validates all required tools and files
+- ✅ **HR Module Migrations** - Automatic database setup for HR features
+- ✅ **Performance Monitoring** - Response time checks for all API endpoints
+- ✅ **Enhanced Error Handling** - Better error reporting and recovery
+- ✅ **Environment Variables** - Configurable domain and environment settings
+
+### Improved Monitoring
+- ✅ **HR Module Statistics** - Employee, payroll, and petty cash counts
+- ✅ **API Endpoint Monitoring** - All HR and core API endpoints
+- ✅ **Performance Metrics** - Response time analysis
+- ✅ **File Upload Monitoring** - Upload directory size and file count
+- ✅ **SSL Certificate Monitoring** - Certificate expiry tracking
+
+## 📊 Deployment Process
+
+### 1. Prerequisites Check
+- Validates required commands (git, npm, node, pm2, nginx, curl)
+- Checks project directory and environment file existence
+- Ensures proper permissions and access
+
+### 2. Backup Creation
+- Creates timestamped backup of current deployment
+- Stores backups in `/var/backups/winjy-erp/`
+- Maintains last 5 backups automatically
+
+### 3. Code Update
+- Fetches latest code from repository
+- Shows commit information and branch details
+- Handles both main and master branches
+
+### 4. Dependency Installation
+- Installs root, backend, and frontend dependencies
+- Uses `npm ci` for consistent installations
+- Handles production vs development dependencies
+
+### 5. Frontend Build
+- Cleans previous build artifacts
+- Builds Angular application for production
+- Verifies build output and size
+
+### 6. Database Migrations
+- **Main Categories Migration** - Adds supplier_optional field
+- **HR Module Migration** - Creates indexes and validates models
+- **Statistics Reporting** - Shows migration results
+
+### 7. Environment Configuration
+- Validates required environment variables
+- Sets default values for optional variables
+- Ensures proper configuration
+
+### 8. Service Restart
+- Restarts PM2 application with error handling
+- Reloads Nginx configuration
+- Saves PM2 configuration
+
+### 9. Health Checks
+- Backend API health validation
+- Frontend accessibility checks
+- API endpoint response verification
+
+### 10. Feature Validation
+- **Core Features** - Main categories and supplier validation
+- **HR Module** - Employees, payroll, petty cash, overtime APIs
+- **Performance** - Response time analysis for all endpoints
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Domain configuration
+DOMAIN=your-domain.com
+
+# Node environment
 NODE_ENV=production
 
-# Rate Limiting
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
+# Custom paths (optional)
+PROJECT_PATH=/var/www/winjy-erp
+BACKUP_PATH=/var/backups/winjy-erp
+```
 
-# File Upload
-MAX_FILE_SIZE=10485760
+### Required Environment Variables (.env)
+```bash
+# Database
+MONGODB_URI=mongodb://localhost:27017/wingy
+
+# Security
+JWT_SECRET=your-secret-key
+
+# Optional (auto-configured)
 UPLOAD_PATH=./uploads
-
-# CORS (Update with your domain)
-FRONTEND_URL=https://your-domain.com
+MAX_FILE_SIZE=10485760
+PORT=3000
+NODE_ENV=production
 ```
 
-### 2. Database Setup
+## 📈 Monitoring Features
 
-```bash
-# Start MongoDB
-sudo systemctl start mongod
-sudo systemctl enable mongod
+### System Resources
+- CPU usage monitoring
+- Memory usage tracking
+- Disk space analysis
+- Available space reporting
 
-# Create database and user (optional)
-mongo
-use construction_erp
-db.createUser({
-  user: "erp_user",
-  pwd: "your_password",
-  roles: ["readWrite"]
-})
-exit
-```
+### Service Health
+- MongoDB connection and size
+- Nginx status and error logs
+- PM2 process monitoring
+- SSL certificate expiry
 
-### 3. Build and Deploy
+### Application Health
+- Backend API responsiveness
+- Frontend accessibility
+- API endpoint performance
+- Error log analysis
 
-Use the deployment script:
+### HR Module Statistics
+- Employee count
+- Payroll records
+- Petty cash transactions
+- Overtime records
+- Balance summaries
 
-```bash
-cd /var/www/construction-erp
-chmod +x deployment/deploy.sh
-./deployment/deploy.sh deploy
-```
+### File Management
+- Upload directory size
+- File count monitoring
+- Large file detection
+- Backup status tracking
 
-Or manually:
-
-```bash
-# Install dependencies
-npm run install-all
-
-# Build frontend
-cd frontend
-npm run build
-
-# Start backend with PM2
-cd ../backend
-pm2 start pm2-ecosystem.config.js
-pm2 save
-pm2 startup
-```
-
-### 4. Configure Nginx
-
-Copy the Nginx configuration:
-
-```bash
-sudo cp deployment/nginx.conf /etc/nginx/sites-available/construction-erp
-sudo ln -s /etc/nginx/sites-available/construction-erp /etc/nginx/sites-enabled/
-sudo rm /etc/nginx/sites-enabled/default  # Remove default site
-```
-
-Update the configuration with your domain:
-
-```bash
-sudo nano /etc/nginx/sites-available/construction-erp
-```
-
-Replace `your-domain.com` with your actual domain.
-
-Test and reload Nginx:
-
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-## SSL Configuration
-
-### 1. Obtain SSL Certificate
-
-```bash
-# Stop Nginx temporarily
-sudo systemctl stop nginx
-
-# Obtain certificate
-sudo certbot certonly --standalone -d your-domain.com -d www.your-domain.com
-
-# Start Nginx
-sudo systemctl start nginx
-```
-
-### 2. Configure Auto-renewal
-
-```bash
-# Test auto-renewal
-sudo certbot renew --dry-run
-
-# Add to crontab
-sudo crontab -e
-# Add this line:
-0 12 * * * /usr/bin/certbot renew --quiet
-```
-
-## Monitoring and Maintenance
-
-### 1. System Monitoring
-
-Run the monitoring script:
-
-```bash
-chmod +x deployment/monitoring.sh
-./deployment/monitoring.sh monitor
-```
-
-### 2. Log Management
-
-```bash
-# View application logs
-pm2 logs construction-erp-backend
-
-# View Nginx logs
-sudo tail -f /var/log/nginx/access.log
-sudo tail -f /var/log/nginx/error.log
-
-# View system logs
-sudo journalctl -u mongod -f
-```
-
-### 3. Backup Strategy
-
-```bash
-# Create manual backup
-./deployment/deploy.sh backup
-
-# Set up automated backups (add to crontab)
-0 2 * * * /var/www/construction-erp/deployment/deploy.sh backup
-```
-
-### 4. Updates and Maintenance
-
-```bash
-# Update application
-./deployment/deploy.sh deploy
-
-# Rollback if needed
-./deployment/deploy.sh rollback
-
-# Update system packages
-sudo apt update && sudo apt upgrade -y
-```
-
-## Security Considerations
-
-### 1. Firewall Configuration
-
-```bash
-# Configure UFW firewall
-sudo ufw allow ssh
-sudo ufw allow 80
-sudo ufw allow 443
-sudo ufw --force enable
-```
-
-### 2. Regular Security Updates
-
-```bash
-# Enable automatic security updates
-sudo apt install unattended-upgrades
-sudo dpkg-reconfigure -plow unattended-upgrades
-```
-
-### 3. Database Security
-
-```bash
-# Secure MongoDB
-sudo nano /etc/mongod.conf
-# Add authentication and network security settings
-```
-
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 ### Common Issues
 
-#### 1. Application Not Starting
+#### Deployment Fails
+```bash
+# Check prerequisites
+./deploy.sh validate
 
+# Check logs
+tail -f /var/log/deployment.log
+
+# Manual health check
+./monitoring.sh quick
+```
+
+#### Service Issues
 ```bash
 # Check PM2 status
-pm2 list
-pm2 logs construction-erp-backend
+pm2 status
 
-# Check environment variables
-cd /var/www/construction-erp/backend
-cat .env
-```
+# Check Nginx
+sudo systemctl status nginx
 
-#### 2. Database Connection Issues
-
-```bash
-# Check MongoDB status
+# Check MongoDB
 sudo systemctl status mongod
-
-# Test connection
-mongo --eval "db.adminCommand('ping')"
 ```
 
-#### 3. Nginx Configuration Errors
-
+#### Performance Issues
 ```bash
-# Test configuration
-sudo nginx -t
+# Full monitoring
+./monitoring.sh monitor
 
-# Check error logs
-sudo tail -f /var/log/nginx/error.log
+# Check specific endpoints
+curl -w "@-" -o /dev/null -s "http://localhost:3000/api/health"
 ```
 
-#### 4. SSL Certificate Issues
-
+### Rollback Process
 ```bash
-# Check certificate status
-sudo certbot certificates
+# Automatic rollback
+./deploy.sh rollback
 
-# Renew certificate
-sudo certbot renew
+# Manual rollback
+cd /var/www/winjy-erp
+git reset --hard HEAD~1
+pm2 reload winjy-erp-backend
 ```
 
-### Performance Optimization
+## 📋 Pre-deployment Checklist
 
-#### 1. Database Optimization
+- [ ] Server has required tools (git, npm, node, pm2, nginx)
+- [ ] MongoDB is installed and running
+- [ ] SSL certificate is configured
+- [ ] Environment file (.env) is properly configured
+- [ ] Domain DNS is pointing to server
+- [ ] Firewall allows ports 80, 443, 3000
+- [ ] Sufficient disk space available
+- [ ] Backup strategy is in place
 
+## 🎯 Post-deployment Verification
+
+### Quick Verification
 ```bash
-# Create indexes for better performance
-mongo construction_erp
-db.expenses.createIndex({ "projectId": 1 })
-db.expenses.createIndex({ "date": -1 })
-db.projects.createIndex({ "status": 1 })
+# Run quick health check
+./monitoring.sh quick
+
+# Check HR module
+curl -s http://localhost:3000/api/employees | jq '.employees | length'
+curl -s http://localhost:3000/api/petty-cash/balances | jq 'length'
 ```
 
-#### 2. Application Optimization
-
+### Full Verification
 ```bash
-# Monitor PM2 processes
-pm2 monit
+# Comprehensive monitoring
+./monitoring.sh monitor
 
-# Scale application
-pm2 scale construction-erp-backend 4
+# Generate report
+./monitoring.sh report
 ```
 
-## Support and Maintenance
+## 📞 Support
 
-### Regular Tasks
+For deployment issues:
+1. Check the deployment log: `/var/log/deployment.log`
+2. Run monitoring: `./monitoring.sh monitor`
+3. Validate deployment: `./deploy.sh validate`
+4. Check system resources and service status
 
-- **Daily**: Check application logs and system resources
-- **Weekly**: Review backup status and security updates
-- **Monthly**: Update dependencies and review performance metrics
-- **Quarterly**: Security audit and SSL certificate renewal
+## 🔄 Version History
 
-### Contact Information
+### v2.0.0 (Current)
+- ✅ Added HR module support
+- ✅ Enhanced monitoring capabilities
+- ✅ Improved error handling
+- ✅ Added performance metrics
+- ✅ Better backup management
 
-For technical support or questions:
-- Email: support@your-domain.com
-- Documentation: [GitHub Wiki](https://github.com/your-repo/construction-erp/wiki)
-- Issues: [GitHub Issues](https://github.com/your-repo/construction-erp/issues)
-
-## License
-
-This deployment guide is part of the Construction ERP project and is licensed under the MIT License. 
+### v1.0.0 (Previous)
+- Basic deployment functionality
+- Core application monitoring
+- Simple backup system 
