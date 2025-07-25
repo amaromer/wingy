@@ -1,0 +1,97 @@
+<div class="employee-form-container">
+  <div class="header">
+    <h2>{{ isEditMode ? ('EMPLOYEE.EDIT_TITLE' | translate) : ('EMPLOYEE.CREATE_TITLE' | translate) }}</h2>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-group">
+        <label for="name">{{ 'EMPLOYEE.FIELDS.NAME' | translate }} *</label>
+        <input 
+          type="text" 
+          id="name"
+          formControlName="name"
+          class="form-control"
+          [class.is-invalid]="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched"
+          [placeholder]="'EMPLOYEE.PLACEHOLDERS.NAME' | translate"
+        >
+        <div class="invalid-feedback" *ngIf="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched">
+          {{ getErrorMessage('name') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="job">{{ 'EMPLOYEE.FIELDS.JOB' | translate }} *</label>
+        <input 
+          type="text" 
+          id="job"
+          formControlName="job"
+          class="form-control"
+          [class.is-invalid]="employeeForm.get('job')?.invalid && employeeForm.get('job')?.touched"
+          [placeholder]="'EMPLOYEE.PLACEHOLDERS.JOB' | translate"
+        >
+        <div class="invalid-feedback" *ngIf="employeeForm.get('job')?.invalid && employeeForm.get('job')?.touched">
+          {{ getErrorMessage('job') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="salary">{{ 'EMPLOYEE.FIELDS.SALARY' | translate }} *</label>
+        <input 
+          type="number" 
+          id="salary"
+          formControlName="salary"
+          class="form-control"
+          [class.is-invalid]="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched"
+          [placeholder]="'EMPLOYEE.PLACEHOLDERS.SALARY' | translate"
+          min="0"
+          step="0.01"
+        >
+        <div class="invalid-feedback" *ngIf="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched">
+          {{ getErrorMessage('salary') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            formControlName="is_active"
+            class="form-checkbox"
+          >
+          <span class="checkmark"></span>
+          {{ 'EMPLOYEE.FIELDS.IS_ACTIVE' | translate }}
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onCancel()"
+          [disabled]="submitting"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="employeeForm.invalid || submitting"
+          [class.btn-disabled]="employeeForm.invalid"
+        >
+          <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+          {{ isEditMode ? ('EMPLOYEE.ACTIONS.UPDATE' | translate) : ('EMPLOYEE.ACTIONS.CREATE' | translate) }}
+        </button>
+        <div *ngIf="employeeForm.invalid && employeeForm.touched" class="form-error">
+          Please fill in all required fields correctly.
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading employee...
+    </div>
+  </ng-template>
+</div> 

@@ -91,7 +91,102 @@
     "PROFILE": "الملف الشخصي",
     "CONSTRUCTION_ERP": "ونجي",
     "QUICK_EXPENSE": "مصروف سريع",
-    "MASTER_DATA": "البيانات الأساسية"
+    "MASTER_DATA": "البيانات الأساسية",
+    "HR_MODULE": "الموارد البشرية",
+    "EMPLOYEES": "الموظفون",
+    "PAYROLL": "الرواتب",
+    "OVERTIME": "العمل الإضافي",
+    "PETTY_CASH": "الصندوق الصغير"
+  },
+  "EMPLOYEE": {
+    "CREATE_TITLE": "إضافة موظف",
+    "EDIT_TITLE": "تعديل الموظف",
+    "FIELDS": {
+      "NAME": "الاسم",
+      "JOB": "المسمى الوظيفي",
+      "SALARY": "الراتب",
+      "IS_ACTIVE": "موظف نشط"
+    },
+    "PLACEHOLDERS": {
+      "NAME": "أدخل اسم الموظف",
+      "JOB": "أدخل المسمى الوظيفي",
+      "SALARY": "أدخل مبلغ الراتب"
+    },
+    "ACTIONS": {
+      "CREATE": "إنشاء موظف",
+      "UPDATE": "تحديث الموظف"
+    }
+  },
+  "PAYROLL": {
+    "LIST_TITLE": "إدارة الرواتب",
+    "CREATE_TITLE": "إضافة راتب",
+    "EDIT_TITLE": "تعديل الراتب",
+    "VIEW_TITLE": "عرض الراتب",
+    "PERIOD": "فترة الراتب",
+    "ATTENDANCE": "الحضور والعمل الإضافي",
+    "PAYMENT_DATE": "تاريخ الدفع",
+    "LOADING": "جاري تحميل سجلات الرواتب...",
+    "NO_DATA": "لم يتم العثور على سجلات رواتب",
+    "SELECT_EMPLOYEE": "اختر الموظف",
+    "SALARY_CALCULATION": "حساب الراتب",
+    "FILTERS": {
+      "MONTH": "الشهر",
+      "YEAR": "السنة",
+      "STATUS": "الحالة"
+    },
+    "FIELDS": {
+      "EMPLOYEE": "الموظف",
+      "MONTH": "الشهر",
+      "YEAR": "السنة",
+      "BASIC_SALARY": "الراتب الأساسي",
+      "DAILY_RATE": "المعدل اليومي",
+      "ABSENT_DAYS": "أيام الغياب",
+      "OVERTIME_DAYS": "أيام العمل الإضافي",
+      "ABSENT_DEDUCTION": "خصم الغياب",
+      "OVERTIME_AMOUNT": "مبلغ العمل الإضافي",
+      "DEDUCTIONS": "الخصومات",
+      "BONUSES": "المكافآت",
+      "NET_SALARY": "صافي الراتب",
+      "STATUS": "الحالة",
+      "NOTES": "ملاحظات"
+    },
+    "PLACEHOLDERS": {
+      "NOTES": "أدخل أي ملاحظات إضافية..."
+    },
+    "ACTIONS": {
+      "CREATE": "إضافة راتب",
+      "UPDATE": "تحديث الراتب",
+      "MARK_PAID": "تحديد كمدفوع"
+    }
+  },
+  "OVERTIME": {
+    "LIST_TITLE": "إدارة العمل الإضافي",
+    "CREATE_TITLE": "إضافة عمل إضافي",
+    "EDIT_TITLE": "تعديل العمل الإضافي",
+    "LOADING": "جاري تحميل سجلات العمل الإضافي...",
+    "NO_DATA": "لم يتم العثور على سجلات عمل إضافي",
+    "FILTERS": {
+      "EMPLOYEE": "الموظف",
+      "EMPLOYEE_PLACEHOLDER": "البحث باسم الموظف...",
+      "STATUS": "الحالة",
+      "DATE": "التاريخ"
+    },
+    "FIELDS": {
+      "EMPLOYEE": "الموظف",
+      "DATE": "التاريخ",
+      "HOURS": "الساعات",
+      "HOURS_SHORT": "ساعة",
+      "RATE": "المعدل",
+      "AMOUNT": "المبلغ",
+      "STATUS": "الحالة",
+      "REASON": "السبب"
+    },
+    "ACTIONS": {
+      "CREATE": "إضافة عمل إضافي",
+      "UPDATE": "تحديث العمل الإضافي",
+      "APPROVE": "موافقة",
+      "REJECT": "رفض"
+    }
   },
   "PROJECT": {
     "LIST_TITLE": "إدارة المشاريع",
@@ -159,6 +254,36 @@
       "DESCRIPTION_PLACEHOLDER": "أدخل وصف المشروع",
       "STATUS": "الحالة",
       "PRIORITY": "الأولوية",
+  },
+  "PETTY_CASH": {
+    "LIST_TITLE": "إدارة النقد الصغير",
+    "CREATE_TITLE": "إضافة معاملة",
+    "EDIT_TITLE": "تعديل المعاملة",
+    "VIEW_TITLE": "عرض المعاملة",
+    "LOADING": "جاري تحميل معاملات النقد الصغير...",
+    "NO_DATA": "لم يتم العثور على معاملات نقد صغير",
+    "ACTIONS": {
+      "ADD_CREDIT": "إضافة رصيد",
+      "ADD_DEBIT": "إضافة خصم",
+      "TRANSFER": "تحويل",
+      "VIEW_BALANCES": "عرض الأرصدة"
+    },
+    "FILTERS": {
+      "EMPLOYEE": "الموظف",
+      "ALL_EMPLOYEES": "جميع الموظفين",
+      "TYPE": "النوع",
+      "REFERENCE_TYPE": "نوع المرجع"
+    },
+    "FIELDS": {
+      "EMPLOYEE": "الموظف",
+      "TYPE": "النوع",
+      "AMOUNT": "المبلغ",
+      "BALANCE_AFTER": "الرصيد بعد",
+      "DESCRIPTION": "الوصف",
+      "REFERENCE_TYPE": "نوع المرجع",
+      "DATE": "التاريخ",
+      "PROCESSED_BY": "تمت المعالجة بواسطة"
+    }
       "START_DATE": "تاريخ البدء",
       "END_DATE": "تاريخ الانتهاء",
       "BUDGET": "الميزانية الإجمالية",
@@ -729,6 +854,7 @@
     "SELECT_PROJECT": "اختر المشروع",
     "SELECT_CATEGORY": "اختر الفئة",
     "SELECT_SUPPLIER": "اختر المورد",
+    "SELECT_EMPLOYEE": "اختر الموظف",
     "SELECT_MAIN_CATEGORY": "اختر الفئة الرئيسية",
     "UPLOAD_FILE": "رفع ملف",
     "FILE_HELP": "أنواع الملفات المدعومة (JPEG, PNG, GIF, PDF - الحد الأقصى 10 ميجابايت)",
@@ -761,6 +887,7 @@
       "PROJECT": "المشروع",
       "CATEGORY": "الفئة",
       "SUPPLIER": "المورد",
+      "EMPLOYEE": "الموظف",
       "INVOICE": "رقم الفاتورة",
       "ATTACHMENT": "المرفق",
       "IS_VAT": "ضريبة القيمة المضافة"
@@ -851,7 +978,8 @@
     "NO_MAIN_CATEGORIES_TITLE": "لا توجد فئات رئيسية",
     "NO_MAIN_CATEGORIES_MESSAGE": "قم بإنشاء فئات المصروفات الرئيسية لتمكين الإجراءات السريعة للمصروفات. ستساعد هذه الفئات في تنظيم الموردين وتسريع إدخال المصروفات.",
     "CREATE_MAIN_CATEGORIES": "إنشاء الفئات الرئيسية",
-    "MAIN_CATEGORY_HELP": "اختر فئة رئيسية لتصفية الموردين. سيتم عرض الموردين المخصصين لهذه الفئة فقط."
+    "MAIN_CATEGORY_HELP": "اختر فئة رئيسية لتصفية الموردين. سيتم عرض الموردين المخصصين لهذه الفئة فقط.",
+    "EMPLOYEE_HELP": "ربط المصروف بالموظف لتتبع الصندوق الصغير"
   },
   "RECEIVED_PAYMENT": {
     "LIST_TITLE": "المدفوعات المستلمة",
@@ -872,7 +1000,9 @@
       "CREATING_RECEIVED_PAYMENT": "فشل في إنشاء الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
       "UPDATING_RECEIVED_PAYMENT": "فشل في تحديث الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
       "DELETING_RECEIVED_PAYMENT": "فشل في حذف الدفعة المستلمة. يرجى المحاولة مرة أخرى.",
-      "LOADING_PROJECTS": "فشل في تحميل المشاريع. يرجى المحاولة مرة أخرى."
+      "LOADING_PROJECTS": "فشل في تحميل المشاريع. يرجى المحاولة مرة أخرى.",
+      "INVALID_FILE_TYPE": "يرجى اختيار نوع ملف صحيح (JPEG أو PNG أو GIF أو PDF)",
+      "FILE_OPTIMIZATION_FAILED": "فشل في تحسين الصورة. يرجى المحاولة مرة أخرى."
     },
     "SUCCESS": {
       "CREATE_SUCCESS": "تم إنشاء الدفعة المستلمة بنجاح!",
@@ -933,5 +1063,11 @@
       "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
       "INVALID_DATE": "يرجى إدخال تاريخ صحيح"
     }
+  },
+  "BALANCES": {
+    "EMPLOYEE_BALANCES": "أرصدة الموظفين",
+    "RECENT_TRANSACTIONS": "المعاملات الأخيرة",
+    "TOTAL_EXPENSES": "إجمالي المصروفات",
+    "EXPENSE_CREDIT_DIFFERENCE": "المصروفات مقابل الرصيد"
   }
 } 

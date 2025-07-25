@@ -1,0 +1,143 @@
+<div class="petty-cash-balances-container">
+  <div class="header">
+    <div class="header-content">
+      <button class="btn btn-secondary" (click)="onBack()">
+        <i class="fas fa-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+      </button>
+      <h2>{{ 'PETTY_CASH.ACTIONS.VIEW_BALANCES' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="error-message" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+
+    <div class="balances-summary" *ngIf="balances.length > 0">
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ balances.length }}</div>
+            <div class="card-label">{{ 'PETTY_CASH.SUMMARY.TOTAL_EMPLOYEES' | translate }}</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="card-icon positive">
+            <i class="fas fa-plus-circle"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value positive">
+              {{ formatCurrency(totalCredits) }}
+            </div>
+            <div class="card-label">{{ 'PETTY_CASH.SUMMARY.TOTAL_CREDITS' | translate }}</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="card-icon negative">
+            <i class="fas fa-minus-circle"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value negative">
+              {{ formatCurrency(totalDebits) }}
+            </div>
+            <div class="card-label">{{ 'PETTY_CASH.SUMMARY.TOTAL_DEBITS' | translate }}</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value" [class]="getBalanceClass(netBalance)">
+              {{ formatCurrency(netBalance) }}
+            </div>
+            <div class="card-label">{{ 'PETTY_CASH.SUMMARY.NET_BALANCE' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="balances-list" *ngIf="balances.length > 0">
+      <h3>{{ 'PETTY_CASH.BALANCES.EMPLOYEE_BALANCES' | translate }}</h3>
+      
+      <div class="balance-cards">
+        <div class="balance-card" *ngFor="let balance of balances">
+          <div class="employee-info">
+            <div class="employee-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="employee-details">
+              <div class="employee-name">{{ getEmployeeName(balance.employee) }}</div>
+              <div class="employee-job">{{ getEmployeeJob(balance.employee) }}</div>
+            </div>
+          </div>
+          
+          <div class="balance-info">
+            <div class="balance-amount" [class]="getBalanceClass(balance.currentBalance)">
+              {{ formatCurrency(balance.currentBalance) }}
+            </div>
+            <div class="balance-label">
+              {{ getBalanceLabel(balance.currentBalance) }}
+            </div>
+            <div class="expenses-info">
+              <div class="expenses-label">{{ 'PETTY_CASH.BALANCES.TOTAL_EXPENSES' | translate }}</div>
+              <div class="expenses-amount">
+                {{ formatCurrency(balance.totalExpenses) }}
+              </div>
+            </div>
+            
+            <div class="difference-info">
+              <div class="difference-label">{{ 'PETTY_CASH.BALANCES.EXPENSE_CREDIT_DIFFERENCE' | translate }}</div>
+              <div class="difference-amount" [class]="getDifferenceClass(balance.expenseCreditDifference)">
+                {{ formatCurrency(balance.expenseCreditDifference) }}
+              </div>
+              <div class="difference-status" [class]="getDifferenceClass(balance.expenseCreditDifference)">
+                {{ getDifferenceStatus(balance.expenseCreditDifference) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-transactions" *ngIf="hasRecentTransactions(balance)">
+            <div class="transactions-header">
+              <h4>{{ 'PETTY_CASH.BALANCES.RECENT_TRANSACTIONS' | translate }}</h4>
+            </div>
+            <div class="transaction-list">
+              <div class="transaction-item" *ngFor="let transaction of getRecentTransactions(balance)">
+                <div class="transaction-info">
+                  <div class="transaction-type" [class]="transaction.type">
+                    {{ getTransactionSymbol(transaction.type) }}
+                  </div>
+                  <div class="transaction-details">
+                    <div class="transaction-amount">{{ formatCurrency(transaction.amount) }}</div>
+                    <div class="transaction-description">{{ transaction.description }}</div>
+                  </div>
+                </div>
+                <div class="transaction-date">
+                  {{ transaction.createdAt | date:'short' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-data" *ngIf="balances.length === 0">
+      <i class="fas fa-inbox"></i>
+      <p>{{ 'PETTY_CASH.NO_DATA' | translate }}</p>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PETTY_CASH.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

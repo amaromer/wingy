@@ -88,6 +88,15 @@ export class AppComponent implements OnInit, OnDestroy {
         return 'NAVIGATION.USERS';
       case '/profile':
         return 'NAVIGATION.PROFILE';
+              case '/employees':
+          return 'NAVIGATION.EMPLOYEES';
+        case '/payroll':
+        case '/payroll/create':
+          return 'NAVIGATION.PAYROLL';
+        case '/overtime':
+          return 'NAVIGATION.OVERTIME';
+        case '/petty-cash':
+          return 'NAVIGATION.PETTY_CASH';
       default:
         return 'DASHBOARD.TITLE';
     }

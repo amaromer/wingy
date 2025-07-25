@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ExpenseService } from '../../../core/services/expense.service';
 import { Project, Category, Supplier } from '../../../core/models/expense.model';
 import { MainCategory } from '../../../core/models/main-category.model';
+import { Employee } from '../../../core/models/employee.model';
 
 @Component({
   selector: 'app-quick-expense',
@@ -26,6 +27,7 @@ export class QuickExpenseComponent implements OnInit {
   categories: Category[] = [];
   suppliers: Supplier[] = [];
   mainCategories: MainCategory[] = [];
+  employees: Employee[] = [];
   
   // File upload
   selectedFile: File | null = null;
@@ -59,6 +61,7 @@ export class QuickExpenseComponent implements OnInit {
       project_id: ['', Validators.required],
       category_id: [''],
       supplier_id: ['', Validators.required],
+      employee_id: [''],
       invoice_number: [''],
       is_vat: [false]
     });
@@ -71,62 +74,119 @@ export class QuickExpenseComponent implements OnInit {
   private loadData(): void {
     this.loading = true;
     
+    // Track loading promises
+    const loadingPromises: Promise<void>[] = [];
+    
     // Load main categories
-    this.http.get<any>('/api/main-categories').subscribe({
-      next: (response) => {
-        this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
-      },
-      error: (err) => {
-        console.error('Error loading main categories:', err);
-        this.mainCategories = [];
-      }
+    const mainCategoriesPromise = new Promise<void>((resolve) => {
+      this.http.get<any>('/api/main-categories').subscribe({
+        next: (response) => {
+          this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading main categories:', err);
+          this.mainCategories = [];
+          resolve();
+        }
+      });
     });
+    loadingPromises.push(mainCategoriesPromise);
 
     // Load categories
-    this.http.get<any>('/api/categories').subscribe({
-      next: (response) => {
-        this.categories = Array.isArray(response.categories) ? response.categories : [];
-      },
-      error: (err) => {
-        console.error('Error loading categories:', err);
-        this.categories = [];
-      }
+    const categoriesPromise = new Promise<void>((resolve) => {
+      this.http.get<any>('/api/categories').subscribe({
+        next: (response) => {
+          this.categories = Array.isArray(response.categories) ? response.categories : [];
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading categories:', err);
+          this.categories = [];
+          resolve();
+        }
+      });
     });
+    loadingPromises.push(categoriesPromise);
 
     // Load projects
-    this.http.get<any>('/api/projects').subscribe({
-      next: (response) => {
-        this.projects = Array.isArray(response.projects) ? response.projects : [];
-      },
-      error: (err) => {
-        console.error('Error loading projects:', err);
-        this.projects = [];
-      }
+    const projectsPromise = new Promise<void>((resolve) => {
+      this.http.get<any>('/api/projects').subscribe({
+        next: (response) => {
+          this.projects = Array.isArray(response.projects) ? response.projects : [];
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading projects:', err);
+          this.projects = [];
+          resolve();
+        }
+      });
     });
+    loadingPromises.push(projectsPromise);
 
     // Load suppliers
-    this.http.get<Supplier[]>('/api/suppliers').subscribe({
-      next: (data) => {
-        this.suppliers = Array.isArray(data) ? data : [];
-        
-        // Set default values if available
-        if (this.projects.length === 1) {
-          this.quickExpenseForm.patchValue({ project_id: this.projects[0]._id });
+    const suppliersPromise = new Promise<void>((resolve) => {
+      this.http.get<Supplier[]>('/api/suppliers').subscribe({
+        next: (data) => {
+          this.suppliers = Array.isArray(data) ? data : [];
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading suppliers:', err);
+          this.suppliers = [];
+          resolve();
         }
-        if (this.categories.length === 1) {
-          this.quickExpenseForm.patchValue({ category_id: this.categories[0]._id });
+      });
+    });
+    loadingPromises.push(suppliersPromise);
+
+    // Load employees
+    const employeesPromise = new Promise<void>((resolve) => {
+      this.http.get<any>('/api/employees').subscribe({
+        next: (response) => {
+          console.log('Employees API response:', response);
+          this.employees = Array.isArray(response.employees) ? response.employees : [];
+          console.log('Employees loaded:', this.employees.length);
+          console.log('Employees data:', this.employees);
+          
+          // Set default employee if only one available
+          if (this.employees.length === 1) {
+            this.quickExpenseForm.patchValue({ employee_id: this.employees[0]._id });
+            console.log('Set default employee:', this.employees[0].name);
+          }
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading employees:', err);
+          console.error('Error details:', {
+            status: err.status,
+            statusText: err.statusText,
+            message: err.message,
+            url: err.url
+          });
+          this.employees = [];
+          resolve();
         }
-        if (this.suppliers.length === 1) {
-          this.quickExpenseForm.patchValue({ supplier_id: this.suppliers[0]._id });
-        }
-        
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading suppliers:', err);
-        this.suppliers = [];
-        this.loading = false;
+      });
+    });
+    loadingPromises.push(employeesPromise);
+
+    // Wait for all data to load
+    Promise.all(loadingPromises).then(() => {
+      // Set default values if available
+      if (this.projects.length === 1) {
+        this.quickExpenseForm.patchValue({ project_id: this.projects[0]._id });
       }
+      if (this.categories.length === 1) {
+        this.quickExpenseForm.patchValue({ category_id: this.categories[0]._id });
+      }
+      if (this.suppliers.length === 1) {
+        this.quickExpenseForm.patchValue({ supplier_id: this.suppliers[0]._id });
+      }
+      
+      this.loading = false;
+      console.log('All data loaded. Employees count:', this.employees.length);
     });
   }
 

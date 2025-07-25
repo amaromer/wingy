@@ -1,0 +1,222 @@
+<div class="payroll-form-container">
+  <div class="header">
+    <h2>{{ isEditMode ? ('PAYROLL.EDIT_TITLE' | translate) : (payrollId ? ('PAYROLL.VIEW_TITLE' | translate) : ('PAYROLL.CREATE_TITLE' | translate)) }}</h2>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <form [formGroup]="payrollForm" (ngSubmit)="onSubmit()" class="form" [class.view-mode]="isViewMode">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="employee_id">{{ 'PAYROLL.FIELDS.EMPLOYEE' | translate }} *</label>
+          <select 
+            id="employee_id"
+            formControlName="employee_id"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('employee_id')?.invalid && payrollForm.get('employee_id')?.touched"
+            [disabled]="isViewMode"
+          >
+            <option value="">{{ 'PAYROLL.SELECT_EMPLOYEE' | translate }}</option>
+            <option *ngFor="let employee of employees" [value]="employee._id">
+              {{ employee.name }} - {{ employee.job }} ({{ formatCurrency(employee.salary) }})
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="payrollForm.get('employee_id')?.invalid && payrollForm.get('employee_id')?.touched">
+            {{ getErrorMessage('employee_id') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="month">{{ 'PAYROLL.FIELDS.MONTH' | translate }} *</label>
+          <select 
+            id="month"
+            formControlName="month"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('month')?.invalid && payrollForm.get('month')?.touched"
+            [disabled]="isViewMode"
+          >
+            <option *ngFor="let month of months" [value]="month.value">
+              {{ month.label }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="payrollForm.get('month')?.invalid && payrollForm.get('month')?.touched">
+            {{ getErrorMessage('month') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="year">{{ 'PAYROLL.FIELDS.YEAR' | translate }} *</label>
+          <select 
+            id="year"
+            formControlName="year"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('year')?.invalid && payrollForm.get('year')?.touched"
+            [disabled]="isViewMode"
+          >
+            <option *ngFor="let year of years" [value]="year">
+              {{ year }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="payrollForm.get('year')?.invalid && payrollForm.get('year')?.touched">
+            {{ getErrorMessage('year') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="absent_days">{{ 'PAYROLL.FIELDS.ABSENT_DAYS' | translate }} *</label>
+          <input 
+            type="number" 
+            id="absent_days"
+            formControlName="absent_days"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('absent_days')?.invalid && payrollForm.get('absent_days')?.touched"
+            [disabled]="isViewMode"
+            min="0"
+            max="31"
+          >
+          <div class="invalid-feedback" *ngIf="payrollForm.get('absent_days')?.invalid && payrollForm.get('absent_days')?.touched">
+            {{ getErrorMessage('absent_days') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="overtime_days">{{ 'PAYROLL.FIELDS.OVERTIME_DAYS' | translate }} *</label>
+          <input 
+            type="number" 
+            id="overtime_days"
+            formControlName="overtime_days"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('overtime_days')?.invalid && payrollForm.get('overtime_days')?.touched"
+            [disabled]="isViewMode"
+            min="0"
+          >
+          <div class="invalid-feedback" *ngIf="payrollForm.get('overtime_days')?.invalid && payrollForm.get('overtime_days')?.touched">
+            {{ getErrorMessage('overtime_days') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="deductions">{{ 'PAYROLL.FIELDS.DEDUCTIONS' | translate }} *</label>
+          <input 
+            type="number" 
+            id="deductions"
+            formControlName="deductions"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('deductions')?.invalid && payrollForm.get('deductions')?.touched"
+            [disabled]="isViewMode"
+            min="0"
+            step="0.01"
+          >
+          <div class="invalid-feedback" *ngIf="payrollForm.get('deductions')?.invalid && payrollForm.get('deductions')?.touched">
+            {{ getErrorMessage('deductions') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="bonuses">{{ 'PAYROLL.FIELDS.BONUSES' | translate }} *</label>
+          <input 
+            type="number" 
+            id="bonuses"
+            formControlName="bonuses"
+            class="form-control"
+            [class.is-invalid]="payrollForm.get('bonuses')?.invalid && payrollForm.get('bonuses')?.touched"
+            [disabled]="isViewMode"
+            min="0"
+            step="0.01"
+          >
+          <div class="invalid-feedback" *ngIf="payrollForm.get('bonuses')?.invalid && payrollForm.get('bonuses')?.touched">
+            {{ getErrorMessage('bonuses') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary Calculation Preview -->
+      <div class="salary-preview" *ngIf="payrollForm.get('employee_id')?.value && payrollForm.get('absent_days')?.value !== null && payrollForm.get('overtime_days')?.value !== null">
+        <h3>{{ 'PAYROLL.SALARY_CALCULATION' | translate }}</h3>
+        <div class="calculation-grid">
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.BASIC_SALARY' | translate }}:</span>
+            <span class="value">{{ formatCurrency(getEmployeeSalary(payrollForm.get('employee_id')?.value)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.DAILY_RATE' | translate }}:</span>
+            <span class="value">{{ formatCurrency(calculateDailyRate(payrollForm.get('employee_id')?.value)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.ABSENT_DEDUCTION' | translate }}:</span>
+            <span class="value deduction">{{ formatCurrency(calculateAbsentDeduction(payrollForm.get('employee_id')?.value, payrollForm.get('absent_days')?.value)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.OVERTIME_AMOUNT' | translate }}:</span>
+            <span class="value bonus">{{ formatCurrency(calculateOvertimeAmount(payrollForm.get('employee_id')?.value, payrollForm.get('overtime_days')?.value)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.DEDUCTIONS' | translate }}:</span>
+            <span class="value deduction">{{ formatCurrency(payrollForm.get('deductions')?.value || 0) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.BONUSES' | translate }}:</span>
+            <span class="value bonus">{{ formatCurrency(payrollForm.get('bonuses')?.value || 0) }}</span>
+          </div>
+          <div class="calculation-item total">
+            <span class="label">{{ 'PAYROLL.FIELDS.NET_SALARY' | translate }}:</span>
+            <span class="value">{{ formatCurrency(calculateNetSalary(payrollForm.get('employee_id')?.value, payrollForm.get('absent_days')?.value, payrollForm.get('overtime_days')?.value)) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">{{ 'PAYROLL.FIELDS.NOTES' | translate }}</label>
+        <textarea 
+          id="notes"
+          formControlName="notes"
+          class="form-control"
+          [class.is-invalid]="payrollForm.get('notes')?.invalid && payrollForm.get('notes')?.touched"
+          [disabled]="isViewMode"
+          rows="4"
+          [placeholder]="'PAYROLL.PLACEHOLDERS.NOTES' | translate"
+        ></textarea>
+        <div class="invalid-feedback" *ngIf="payrollForm.get('notes')?.invalid && payrollForm.get('notes')?.touched">
+          {{ getErrorMessage('notes') }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onCancel()"
+          [disabled]="submitting"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button 
+          *ngIf="isEditMode || !payrollId"
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="payrollForm.invalid || submitting"
+        >
+          <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+          {{ isEditMode ? ('PAYROLL.ACTIONS.UPDATE' | translate) : ('PAYROLL.ACTIONS.CREATE' | translate) }}
+        </button>
+        <button 
+          *ngIf="!isEditMode && payrollId"
+          type="button" 
+          class="btn btn-warning" 
+          (click)="onEdit()"
+        >
+          {{ 'COMMON.EDIT' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PAYROLL.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

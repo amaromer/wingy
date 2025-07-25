@@ -49,6 +49,31 @@
         {{ 'NAVIGATION.RECEIVED_PAYMENTS' | translate }}
       </a>
       
+      <!-- HR Module - Admin and Accountant can view -->
+      <div class="nav-section" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
+        <div class="nav-section-title">{{ 'NAVIGATION.HR_MODULE' | translate }}</div>
+        
+        <a routerLink="/employees" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+          <span class="nav-icon">👨‍💼</span>
+          {{ 'NAVIGATION.EMPLOYEES' | translate }}
+        </a>
+        
+        <a routerLink="/payroll" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+          <span class="nav-icon">💰</span>
+          {{ 'NAVIGATION.PAYROLL' | translate }}
+        </a>
+        
+        <a routerLink="/overtime" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+          <span class="nav-icon">⏰</span>
+          {{ 'NAVIGATION.OVERTIME' | translate }}
+        </a>
+        
+        <a routerLink="/petty-cash" routerLinkActive="active" class="nav-item" (click)="closeSidebar()">
+          <span class="nav-icon">💵</span>
+          {{ 'NAVIGATION.PETTY_CASH' | translate }}
+        </a>
+      </div>
+      
       <!-- Master Data - Admin and Accountant can view (not Engineer) -->
       <div class="nav-section" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
         <div class="nav-section-title">{{ 'NAVIGATION.MASTER_DATA' | translate }}</div>

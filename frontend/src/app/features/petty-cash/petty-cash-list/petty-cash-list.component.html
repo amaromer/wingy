@@ -1,0 +1,171 @@
+<div class="petty-cash-list-container">
+  <div class="header">
+    <div class="header-content">
+      <h2>{{ 'PETTY_CASH.LIST_TITLE' | translate }}</h2>
+      <div class="header-actions">
+        <button class="btn btn-success" (click)="addCredit()">
+          <i class="fas fa-plus"></i> {{ 'PETTY_CASH.ACTIONS.ADD_CREDIT' | translate }}
+        </button>
+        <button class="btn btn-warning" (click)="addDebit()">
+          <i class="fas fa-minus"></i> {{ 'PETTY_CASH.ACTIONS.ADD_DEBIT' | translate }}
+        </button>
+        <button class="btn btn-info" (click)="transfer()">
+          <i class="fas fa-exchange-alt"></i> {{ 'PETTY_CASH.ACTIONS.TRANSFER' | translate }}
+        </button>
+        <button class="btn btn-secondary" (click)="viewBalances()">
+          <i class="fas fa-balance-scale"></i> {{ 'PETTY_CASH.ACTIONS.VIEW_BALANCES' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="employee-filter">{{ 'PETTY_CASH.FILTERS.EMPLOYEE' | translate }}</label>
+        <select 
+          id="employee-filter"
+          [(ngModel)]="selectedEmployee"
+          (change)="onFilterChange()"
+          class="form-control"
+        >
+          <option value="">{{ 'PETTY_CASH.FILTERS.ALL_EMPLOYEES' | translate }}</option>
+          <option *ngFor="let employee of employees" [value]="employee._id">
+            {{ employee.name }} - {{ employee.job }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="type-filter">{{ 'PETTY_CASH.FILTERS.TYPE' | translate }}</label>
+        <select 
+          id="type-filter"
+          [(ngModel)]="selectedType"
+          (change)="onFilterChange()"
+          class="form-control"
+        >
+          <option *ngFor="let option of typeOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="reference-filter">{{ 'PETTY_CASH.FILTERS.REFERENCE_TYPE' | translate }}</label>
+        <select 
+          id="reference-filter"
+          [(ngModel)]="selectedReferenceType"
+          (change)="onFilterChange()"
+          class="form-control"
+        >
+          <option *ngFor="let option of referenceTypeOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'PETTY_CASH.FIELDS.EMPLOYEE' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.TYPE' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.AMOUNT' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.BALANCE_AFTER' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.DESCRIPTION' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.REFERENCE_TYPE' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.DATE' | translate }}</th>
+            <th>{{ 'PETTY_CASH.FIELDS.PROCESSED_BY' | translate }}</th>
+            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of transactions">
+            <td>
+              <div class="employee-info">
+                <div class="employee-name">{{ getEmployeeName(transaction.employee_id) }}</div>
+                <div class="transfer-info" *ngIf="getTransferInfo(transaction)">
+                  {{ getTransferInfo(transaction) }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge" [class]="getTypeBadgeClass(transaction.type)">
+                {{ getTypeText(transaction.type) }}
+              </span>
+            </td>
+            <td class="amount" [class]="transaction.type === 'credit' ? 'credit' : 'debit'">
+              {{ formatCurrency(transaction.amount) }}
+            </td>
+            <td class="balance">
+              {{ formatCurrency(transaction.balance_after) }}
+            </td>
+            <td>
+              <div class="description" [title]="transaction.description">
+                {{ transaction.description }}
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-secondary">
+                {{ getReferenceTypeText(transaction.reference_type) }}
+              </span>
+            </td>
+            <td>
+              <div class="date-info">
+                <div class="date">{{ formatDate(transaction.createdAt) }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="processed-by">
+                {{ transaction.processed_by.name || 'N/A' }}
+              </div>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-danger" (click)="deleteTransaction(transaction._id)" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        {{ 'COMMON.PREVIOUS' | translate }}
+      </button>
+      
+      <span class="page-info">
+        {{ 'COMMON.PAGE_INFO' | translate: { current: currentPage, total: totalPages, count: total } }}
+      </span>
+      
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        {{ 'COMMON.NEXT' | translate }}
+      </button>
+    </div>
+
+    <div class="no-data" *ngIf="transactions.length === 0">
+      <i class="fas fa-inbox"></i>
+      <p>{{ 'PETTY_CASH.NO_DATA' | translate }}</p>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PETTY_CASH.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

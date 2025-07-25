@@ -106,6 +106,15 @@
           </div>
 
           <div class="filter-group">
+            <label>{{ 'EXPENSE.FILTERS.VAT' | translate }}</label>
+            <select formControlName="is_vat" class="filter-select">
+              <option value="">{{ 'EXPENSE.FILTERS.ALL_VAT' | translate }}</option>
+              <option value="true">{{ 'EXPENSE.FILTERS.VAT_APPLICABLE' | translate }}</option>
+              <option value="false">{{ 'EXPENSE.FILTERS.NO_VAT' | translate }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
             <label>{{ 'EXPENSE.FILTERS.DATE_FROM' | translate }}</label>
             <input type="date" formControlName="date_from" class="filter-input">
           </div>
@@ -267,6 +276,7 @@
             <th>{{ 'EXPENSE.FIELDS.PROJECT' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.CATEGORY' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}</th>
+            <th>{{ 'EXPENSE.FIELDS.VAT' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</th>
             <th class="actions-header">{{ 'COMMON.ACTIONS' | translate }}</th>
@@ -302,6 +312,10 @@
             </td>
             <td class="supplier-cell">
               {{ getSupplierName(expense.supplier_id) }}
+            </td>
+            <td class="vat-cell">
+              <span *ngIf="expense.is_vat" class="vat-badge">🧾 VAT</span>
+              <span *ngIf="!expense.is_vat" class="no-vat">-</span>
             </td>
             <td class="invoice-cell">
               {{ expense.invoice_number || '-' }}

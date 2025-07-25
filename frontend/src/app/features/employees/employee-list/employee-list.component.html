@@ -1,0 +1,103 @@
+<div class="employee-list-container">
+  <div class="header">
+    <h2>Employees</h2>
+    <button class="btn btn-primary" (click)="addEmployee()">
+      <i class="fas fa-plus"></i> Add Employee
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (keyup.enter)="onSearch()"
+        placeholder="Search employees..."
+        class="form-control"
+      >
+      <button class="btn btn-secondary" (click)="onSearch()">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    
+    <div class="filter-options">
+      <label>
+        <input 
+          type="checkbox" 
+          [(ngModel)]="activeFilter" 
+          (change)="onFilterChange()"
+        >
+        Active Only
+      </label>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Job</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.job }}</td>
+            <td>{{ employee.formattedSalary || (employee.salary | currency:'AED') }}</td>
+            <td>
+              <span class="badge" [class.badge-success]="employee.is_active" [class.badge-danger]="!employee.is_active">
+                {{ employee.is_active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-info" (click)="viewEmployee(employee._id)">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-warning" (click)="editEmployee(employee._id)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteEmployee(employee._id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        Previous
+      </button>
+      
+      <span class="page-info">
+        Page {{ currentPage }} of {{ totalPages }} ({{ total }} total)
+      </span>
+      
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading employees...
+    </div>
+  </ng-template>
+</div> 

@@ -68,7 +68,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       date_to: [''],
       amount_min: [''],
       amount_max: [''],
-      currency: ['']
+      currency: [''],
+      is_vat: ['']
     });
     
     this.checkScreenSize();

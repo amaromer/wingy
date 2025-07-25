@@ -143,6 +143,55 @@ export const routes: Routes = [
     data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/received-payments/received-payment-list/received-payment-list.component').then(m => m.ReceivedPaymentListComponent)
   },
+  // HR Module Routes
+  {
+    path: 'employees',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-list/employee-list.component').then(m => m.EmployeeListComponent)
+  },
+  {
+    path: 'employees/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-form/employee-form.component').then(m => m.EmployeeFormComponent)
+  },
+  {
+    path: 'employees/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-form/employee-form.component').then(m => m.EmployeeFormComponent)
+  },
+  {
+    path: 'payroll',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/payroll/payroll-list/payroll-list.component').then(m => m.PayrollListComponent)
+  },
+  {
+    path: 'overtime',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/overtime/overtime-list/overtime-list.component').then(m => m.OvertimeListComponent)
+  },
+  {
+    path: 'overtime/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/overtime/overtime-form/overtime-form.component').then(m => m.OvertimeFormComponent)
+  },
+  {
+    path: 'overtime/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/overtime/overtime-form/overtime-form.component').then(m => m.OvertimeFormComponent)
+  },
+  {
+    path: 'overtime/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/overtime/overtime-form/overtime-form.component').then(m => m.OvertimeFormComponent)
+  },
   {
     path: 'received-payments/create',
     canActivate: [authGuard, roleGuard],
@@ -154,6 +203,79 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/received-payments/received-payment-form/received-payment-form.component').then(m => m.ReceivedPaymentFormComponent)
+  },
+  // HR Module Routes
+  {
+    path: 'employees',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-list/employee-list.component').then(m => m.EmployeeListComponent)
+  },
+  {
+    path: 'employees/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-form/employee-form.component').then(m => m.EmployeeFormComponent)
+  },
+  {
+    path: 'employees/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/employees/employee-form/employee-form.component').then(m => m.EmployeeFormComponent)
+  },
+  {
+    path: 'payroll',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/payroll/payroll-list/payroll-list.component').then(m => m.PayrollListComponent)
+  },
+  {
+    path: 'payroll/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/payroll/payroll-form/payroll-form.component').then(m => m.PayrollFormComponent)
+  },
+  {
+    path: 'payroll/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/payroll/payroll-form/payroll-form.component').then(m => m.PayrollFormComponent)
+  },
+  {
+    path: 'payroll/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/payroll/payroll-view/payroll-view.component').then(m => m.PayrollViewComponent)
+  },
+  {
+    path: 'petty-cash',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/petty-cash/petty-cash-list/petty-cash-list.component').then(m => m.PettyCashListComponent)
+  },
+  {
+    path: 'petty-cash/credit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/petty-cash/petty-cash-credit/petty-cash-credit.component').then(m => m.PettyCashCreditComponent)
+  },
+  {
+    path: 'petty-cash/debit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/petty-cash/petty-cash-debit/petty-cash-debit.component').then(m => m.PettyCashDebitComponent)
+  },
+  {
+    path: 'petty-cash/transfer',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/petty-cash/petty-cash-transfer/petty-cash-transfer.component').then(m => m.PettyCashTransferComponent)
+  },
+  {
+    path: 'petty-cash/balances',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/petty-cash/petty-cash-balances/petty-cash-balances.component').then(m => m.PettyCashBalancesComponent)
   },
   {
     path: '**',

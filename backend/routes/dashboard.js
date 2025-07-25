@@ -262,15 +262,28 @@ router.get('/expenses-by-category', auth, async (req, res) => {
 // @access  Private
 router.get('/monthly-trend', auth, async (req, res) => {
   try {
-    const { months = 12 } = req.query;
+    const { months = 12, date_from, date_to } = req.query;
     
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - parseInt(months));
+    let startDate, endDate;
+    
+    if (date_from || date_to) {
+      // Use provided date range
+      startDate = date_from ? new Date(date_from) : new Date(0);
+      endDate = date_to ? new Date(date_to) : new Date();
+    } else {
+      // Use months parameter
+      endDate = new Date();
+      startDate = new Date();
+      startDate.setFullYear(endDate.getFullYear());
+      startDate.setMonth(endDate.getMonth() - parseInt(months) + 1);
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+    }
     
     const monthlyTrend = await Expense.aggregate([
       {
         $match: {
-          date: { $gte: startDate }
+          date: { $gte: startDate, $lte: endDate }
         }
       },
       {

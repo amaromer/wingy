@@ -28,25 +28,25 @@ const users = [
 const projects = [
   {
     name: 'Downtown Office Complex',
-    code: 'DOC-2024',
-    start_date: '2024-01-15',
-    end_date: '2024-12-31',
+    code: 'DOC-2025',
+    start_date: '2025-01-15',
+    end_date: '2025-12-31',
     status: 'Active',
     notes: 'Multi-story office building in downtown area'
   },
   {
     name: 'Residential Complex Phase 1',
-    code: 'RCP-2024-01',
-    start_date: '2024-03-01',
-    end_date: '2024-08-31',
+    code: 'RCP-2025-01',
+    start_date: '2025-03-01',
+    end_date: '2025-08-31',
     status: 'active',
     notes: 'First phase of residential complex with 50 units'
   },
   {
     name: 'Highway Bridge Renovation',
-    code: 'HBR-2024',
-    start_date: '2024-02-01',
-    end_date: '2024-06-30',
+    code: 'HBR-2025',
+    start_date: '2025-02-01',
+    end_date: '2025-06-30',
     status: 'Active',
     notes: 'Renovation of main highway bridge'
   }
@@ -178,9 +178,9 @@ async function seedDatabase() {
         category_id: createdCategories[0]._id,
         amount: 15000.00,
         currency: 'USD',
-        date: '2024-01-20',
+        date: '2025-01-20',
         description: 'Concrete and steel supplies for foundation',
-        invoice_number: 'INV-001-2024'
+        invoice_number: 'INV-001-2025'
       },
       {
         project_id: createdProjects[0]._id,
@@ -188,9 +188,9 @@ async function seedDatabase() {
         category_id: createdCategories[1]._id,
         amount: 5000.00,
         currency: 'USD',
-        date: '2024-01-25',
+        date: '2025-01-25',
         description: 'Crane rental for foundation work',
-        invoice_number: 'INV-002-2024'
+        invoice_number: 'INV-002-2025'
       },
       {
         project_id: createdProjects[1]._id,
@@ -198,9 +198,9 @@ async function seedDatabase() {
         category_id: createdCategories[0]._id,
         amount: 8000.00,
         currency: 'USD',
-        date: '2024-03-05',
+        date: '2025-03-05',
         description: 'Steel beams for residential complex',
-        invoice_number: 'INV-003-2024'
+        invoice_number: 'INV-003-2025'
       },
       {
         project_id: createdProjects[2]._id,
@@ -208,9 +208,82 @@ async function seedDatabase() {
         category_id: createdCategories[0]._id,
         amount: 12000.00,
         currency: 'USD',
-        date: '2024-02-10',
+        date: '2025-02-10',
         description: 'Bridge construction materials',
-        invoice_number: 'INV-004-2024'
+        invoice_number: 'INV-004-2025'
+      },
+      {
+        project_id: createdProjects[0]._id,
+        supplier_id: createdSuppliers[1]._id,
+        category_id: createdCategories[2]._id,
+        amount: 7500.00,
+        currency: 'USD',
+        date: '2025-04-15',
+        description: 'Labor costs for electrical work',
+        invoice_number: 'INV-005-2025'
+      },
+      {
+        project_id: createdProjects[1]._id,
+        supplier_id: createdSuppliers[0]._id,
+        category_id: createdCategories[3]._id,
+        amount: 3200.00,
+        currency: 'USD',
+        date: '2025-05-20',
+        description: 'Transportation costs for materials',
+        invoice_number: 'INV-006-2025'
+      },
+      {
+        project_id: createdProjects[2]._id,
+        supplier_id: createdSuppliers[2]._id,
+        category_id: createdCategories[0]._id,
+        amount: 9500.00,
+        currency: 'USD',
+        date: '2025-06-10',
+        description: 'Additional steel for bridge reinforcement',
+        invoice_number: 'INV-007-2025'
+      },
+      {
+        project_id: createdProjects[0]._id,
+        supplier_id: createdSuppliers[1]._id,
+        category_id: createdCategories[1]._id,
+        amount: 4200.00,
+        currency: 'USD',
+        date: '2025-07-05',
+        description: 'Equipment rental for finishing work',
+        invoice_number: 'INV-008-2025'
+      },
+      {
+        project_id: createdProjects[0]._id,
+        supplier_id: createdSuppliers[0]._id,
+        category_id: createdCategories[0]._id,
+        amount: 8500.00,
+        currency: 'USD',
+        date: '2025-01-15',
+        description: 'VAT-applicable construction materials',
+        invoice_number: 'INV-009-2025',
+        is_vat: true
+      },
+      {
+        project_id: createdProjects[1]._id,
+        supplier_id: createdSuppliers[2]._id,
+        category_id: createdCategories[0]._id,
+        amount: 12000.00,
+        currency: 'USD',
+        date: '2025-02-20',
+        description: 'VAT-applicable steel supplies',
+        invoice_number: 'INV-010-2025',
+        is_vat: true
+      },
+      {
+        project_id: createdProjects[2]._id,
+        supplier_id: createdSuppliers[0]._id,
+        category_id: createdCategories[0]._id,
+        amount: 6500.00,
+        currency: 'USD',
+        date: '2025-03-10',
+        description: 'VAT-applicable bridge materials',
+        invoice_number: 'INV-011-2025',
+        is_vat: true
       }
     ];
 

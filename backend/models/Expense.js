@@ -10,6 +10,10 @@ const expenseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Supplier'
   },
+  employee_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee'
+  },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
@@ -56,6 +60,7 @@ const expenseSchema = new mongoose.Schema({
 // Index for better query performance
 expenseSchema.index({ project_id: 1 });
 expenseSchema.index({ supplier_id: 1 });
+expenseSchema.index({ employee_id: 1 });
 expenseSchema.index({ category_id: 1 });
 expenseSchema.index({ date: 1 });
 expenseSchema.index({ amount: 1 });

@@ -210,6 +210,30 @@
             {{ 'EXPENSE.SUPPLIER_OPTIONAL_HELP' | translate }}
           </small>
         </div>
+
+        <div class="form-group">
+          <label for="employee_id">
+            {{ 'EXPENSE.FIELDS.EMPLOYEE' | translate }}
+            <span class="optional-text">({{ 'COMMON.OPTIONAL' | translate }})</span>
+            <span class="debug-info">({{ employees.length }} employees loaded)</span>
+          </label>
+          <select 
+            id="employee_id" 
+            formControlName="employee_id"
+            [class.error]="quickExpenseForm.get('employee_id')?.invalid && quickExpenseForm.get('employee_id')?.touched"
+          >
+            <option value="">{{ 'EXPENSE.SELECT_EMPLOYEE' | translate }}</option>
+            <option *ngFor="let employee of employees" [value]="employee._id">
+              {{ employee.name }} - {{ employee.job }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('employee_id')">
+            {{ getFieldError('employee_id')! | translate }}
+          </div>
+          <small class="help-text">
+            {{ 'EXPENSE.EMPLOYEE_HELP' | translate }}
+          </small>
+        </div>
       </div>
     </div>
 

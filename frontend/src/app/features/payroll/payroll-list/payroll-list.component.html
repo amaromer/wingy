@@ -1,0 +1,134 @@
+<div class="payroll-list-container">
+  <div class="header">
+    <h2>{{ 'PAYROLL.LIST_TITLE' | translate }}</h2>
+    <button class="btn btn-primary" (click)="addPayroll()">
+      <i class="fas fa-plus"></i> {{ 'PAYROLL.ACTIONS.CREATE' | translate }}
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>{{ 'PAYROLL.FILTERS.MONTH' | translate }}</label>
+      <select [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="form-control">
+        <option *ngFor="let month of months" [value]="month.value">
+          {{ month.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>{{ 'PAYROLL.FILTERS.YEAR' | translate }}</label>
+      <select [(ngModel)]="selectedYear" (change)="onFilterChange()" class="form-control">
+        <option *ngFor="let year of years" [value]="year">
+          {{ year }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>{{ 'PAYROLL.FILTERS.STATUS' | translate }}</label>
+      <select [(ngModel)]="selectedStatus" (change)="onFilterChange()" class="form-control">
+        <option *ngFor="let status of statusOptions" [value]="status.value">
+          {{ status.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'PAYROLL.FIELDS.EMPLOYEE' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.MONTH' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.YEAR' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.BASIC_SALARY' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.ABSENT_DAYS' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.ABSENT_DEDUCTION' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.OVERTIME_AMOUNT' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.NET_SALARY' | translate }}</th>
+            <th>{{ 'PAYROLL.FIELDS.STATUS' | translate }}</th>
+            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payroll of payrolls">
+            <td>
+              <div class="employee-info">
+                <div class="employee-name">{{ getEmployeeName(payroll.employee_id) }}</div>
+                <div class="employee-job">{{ payroll.employee_id.job || '' }}</div>
+              </div>
+            </td>
+            <td>{{ getMonthName(payroll.month) }}</td>
+            <td>{{ payroll.year }}</td>
+            <td>{{ formatCurrency(payroll.basic_salary || payroll.base_salary || 0) }}</td>
+            <td>{{ payroll.absent_days }}</td>
+            <td>{{ formatCurrency(payroll.absent_deduction || payroll.absentDeduction || 0) }}</td>
+            <td>{{ formatCurrency(payroll.overtime_amount || payroll.overtimeAmount || 0) }}</td>
+            <td class="net-salary">{{ formatCurrency(payroll.net_salary) }}</td>
+            <td>
+              <span class="badge" [class]="getStatusBadgeClass(payroll.is_paid)">
+                {{ getStatusText(payroll.is_paid) }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-info" (click)="viewPayroll(payroll._id)" title="View">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-warning" (click)="editPayroll(payroll._id)" title="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button 
+                  *ngIf="!payroll.is_paid"
+                  class="btn btn-sm btn-success" 
+                  (click)="markAsPaid(payroll._id)" 
+                  title="Mark as Paid"
+                >
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deletePayroll(payroll._id)" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        {{ 'COMMON.PREVIOUS' | translate }}
+      </button>
+      
+      <span class="page-info">
+        {{ 'COMMON.PAGE_INFO' | translate: { current: currentPage, total: totalPages, count: total } }}
+      </span>
+      
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        {{ 'COMMON.NEXT' | translate }}
+      </button>
+    </div>
+
+    <div class="no-data" *ngIf="payrolls.length === 0">
+      <i class="fas fa-inbox"></i>
+      <p>{{ 'PAYROLL.NO_DATA' | translate }}</p>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PAYROLL.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

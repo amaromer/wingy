@@ -254,17 +254,39 @@
         </div>
 
         <!-- File Preview -->
-        <div class="file-preview" *ngIf="previewUrl">
+        <div class="file-preview" *ngIf="selectedFile">
           <div class="preview-container">
-            <img *ngIf="selectedFile && selectedFile.type.startsWith('image/')" [src]="previewUrl" alt="Payment attachment preview" class="preview-image">
-            <div *ngIf="selectedFile && !selectedFile.type.startsWith('image/')" class="preview-document">
+            <img *ngIf="selectedFile.type.startsWith('image/')" [src]="previewUrl" alt="Payment attachment preview" class="preview-image">
+            <div *ngIf="!selectedFile.type.startsWith('image/')" class="preview-document">
               <span class="document-icon">📄</span>
               <span class="document-name">{{ selectedFile.name }}</span>
             </div>
+            
+            <!-- File Size Information -->
+            <div class="file-info">
+              <span *ngIf="originalFileSize > 0 && optimizedFileSize > 0">
+                {{ formatFileSize(originalFileSize) }} → {{ formatFileSize(optimizedFileSize) }}
+                <span class="compression-ratio" *ngIf="getCompressionRatio() > 0">
+                  ({{ getCompressionRatio() }}% {{ 'EXPENSE.QUICK.SMALLER' | translate }})
+                </span>
+              </span>
+              <span *ngIf="originalFileSize === 0 || optimizedFileSize === 0">
+                {{ formatFileSize(selectedFile.size) }}
+              </span>
+            </div>
+            
             <button type="button" class="btn btn-danger btn-sm" (click)="removeFile()">
               {{ 'COMMON.REMOVE' | translate }}
             </button>
           </div>
+        </div>
+
+        <!-- Compression Progress -->
+        <div class="compression-progress" *ngIf="isCompressing">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="compressionProgress"></div>
+          </div>
+          <span class="progress-text">{{ 'EXPENSE.QUICK.OPTIMIZING' | translate }} {{ compressionProgress }}%</span>
         </div>
       </div>
     </div>

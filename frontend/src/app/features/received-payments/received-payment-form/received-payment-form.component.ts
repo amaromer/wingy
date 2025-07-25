@@ -32,6 +32,12 @@ export class ReceivedPaymentFormComponent implements OnInit {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
 
+  // Compression properties
+  originalFileSize: number = 0;
+  optimizedFileSize: number = 0;
+  compressionProgress: number = 0;
+  isCompressing: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -102,68 +108,188 @@ export class ReceivedPaymentFormComponent implements OnInit {
   }
 
   private setupVATCalculation(): void {
-    this.receivedPaymentForm.get('amount')?.valueChanges.subscribe(amount => {
-      const isVATApplicable = this.receivedPaymentForm.get('is_vat_applicable')?.value;
-      if (amount && isVATApplicable) {
-        const vatAmount = this.receivedPaymentService.calculateVATAmount(amount, true);
-        this.receivedPaymentForm.patchValue({ vat_amount: vatAmount });
-      }
-    });
+    const vatApplicableControl = this.receivedPaymentForm.get('is_vat_applicable');
+    const vatAmountControl = this.receivedPaymentForm.get('vat_amount');
+    const amountControl = this.receivedPaymentForm.get('amount');
 
-    this.receivedPaymentForm.get('is_vat_applicable')?.valueChanges.subscribe(isVATApplicable => {
-      const amount = this.receivedPaymentForm.get('amount')?.value;
-      if (amount && isVATApplicable) {
-        const vatAmount = this.receivedPaymentService.calculateVATAmount(amount, true);
-        this.receivedPaymentForm.patchValue({ vat_amount: vatAmount });
-      } else {
-        this.receivedPaymentForm.patchValue({ vat_amount: 0 });
-      }
-    });
+    if (vatApplicableControl && vatAmountControl && amountControl) {
+      vatApplicableControl.valueChanges.subscribe(isApplicable => {
+        if (isApplicable) {
+          const amount = amountControl.value || 0;
+          const vatAmount = amount * 0.05; // 5% VAT
+          vatAmountControl.setValue(vatAmount);
+        } else {
+          vatAmountControl.setValue(0);
+        }
+      });
+
+      amountControl.valueChanges.subscribe(amount => {
+        if (vatApplicableControl.value) {
+          const vatAmount = amount * 0.05; // 5% VAT
+          vatAmountControl.setValue(vatAmount);
+        }
+      });
+    }
   }
 
   populateForm(receivedPayment: ReceivedPayment): void {
     this.receivedPaymentForm.patchValue({
-      date: receivedPayment.date ? new Date(receivedPayment.date).toISOString().split('T')[0] : '',
-      project_id: receivedPayment.project_id || '',
+      date: this.formatDateForInput(receivedPayment.date),
+      project_id: receivedPayment.project_id,
       invoice_number: receivedPayment.invoice_number,
       amount: receivedPayment.amount,
       is_vat_applicable: receivedPayment.is_vat_applicable,
       vat_amount: receivedPayment.vat_amount,
       payment_method: receivedPayment.payment_method,
-      description: receivedPayment.description || '',
+      description: receivedPayment.description,
       currency: receivedPayment.currency,
-      client_name: receivedPayment.client_name || '',
-      reference_number: receivedPayment.reference_number || ''
+      client_name: receivedPayment.client_name,
+      reference_number: receivedPayment.reference_number
     });
   }
 
-  onFileSelected(event: any): void {
+  async onFileSelected(event: any): Promise<void> {
     const file = event.target.files[0];
     if (file) {
-      this.selectedFile = file;
-      this.createPreview(file);
-    }
-  }
-
-  private createPreview(file: File): void {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      this.previewUrl = null;
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        this.error = 'RECEIVED_PAYMENT.ERROR.INVALID_FILE_TYPE';
+        return;
+      }
+      
+      this.error = '';
+      this.originalFileSize = file.size;
+      
+      try {
+        // Optimize image if it's an image file
+        if (file.type.startsWith('image/')) {
+          this.selectedFile = await this.optimizeImage(file);
+        } else {
+          this.selectedFile = file;
+          this.optimizedFileSize = file.size;
+        }
+        
+        // Create preview
+        if (file.type.startsWith('image/') && this.selectedFile) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.previewUrl = e.target?.result as string;
+          };
+          reader.readAsDataURL(this.selectedFile);
+        } else {
+          this.previewUrl = null;
+        }
+      } catch (error) {
+        console.error('Error optimizing file:', error);
+        this.error = 'RECEIVED_PAYMENT.ERROR.FILE_OPTIMIZATION_FAILED';
+        this.isCompressing = false;
+      }
     }
   }
 
   removeFile(): void {
     this.selectedFile = null;
     this.previewUrl = null;
+    this.originalFileSize = 0;
+    this.optimizedFileSize = 0;
+    this.compressionProgress = 0;
+    this.isCompressing = false;
     const fileInput = document.getElementById('payment_attachment') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  // Image optimization methods
+  private async optimizeImage(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(file); // Return original file for non-images
+        return;
+      }
+
+      this.isCompressing = true;
+      this.compressionProgress = 0;
+      this.originalFileSize = file.size;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate optimal dimensions (max 1200px width/height)
+        const maxDimension = 1200;
+        let { width, height } = img;
+        
+        if (width > height && width > maxDimension) {
+          height = (height * maxDimension) / width;
+          width = maxDimension;
+        } else if (height > maxDimension) {
+          width = (width * maxDimension) / height;
+          height = maxDimension;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw image with optimization
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Compress with quality settings
+        let quality = 0.8;
+        let compressedBlob: Blob;
+
+        const compressWithQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                compressedBlob = blob;
+                this.optimizedFileSize = blob.size;
+                this.compressionProgress = 100;
+
+                // Create new file with optimized data
+                const optimizedFile = new File([blob], file.name, {
+                  type: file.type,
+                  lastModified: Date.now()
+                });
+
+                this.isCompressing = false;
+                resolve(optimizedFile);
+              } else {
+                reject(new Error('Failed to compress image'));
+              }
+            },
+            file.type,
+            quality
+          );
+        };
+
+        // Progressive compression
+        const progressiveCompress = () => {
+          if (this.optimizedFileSize > 2 * 1024 * 1024 && quality > 0.3) { // If still > 2MB
+            quality -= 0.1;
+            this.compressionProgress = Math.min(90, (0.8 - quality) * 100);
+            setTimeout(progressiveCompress, 100);
+          } else {
+            compressWithQuality();
+          }
+        };
+
+        progressiveCompress();
+      };
+
+      img.onerror = () => {
+        this.isCompressing = false;
+        reject(new Error('Failed to load image'));
+      };
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   onSubmit(): void {
@@ -240,11 +366,30 @@ export class ReceivedPaymentFormComponent implements OnInit {
   getFieldError(fieldName: string): string | null {
     const field = this.receivedPaymentForm.get(fieldName);
     if (field && field.errors) {
-      const errors = Object.keys(field.errors);
-      if (errors.length > 0) {
-        return `RECEIVED_PAYMENT.ERRORS.${errors[0].toUpperCase()}`;
-      }
+      const errors = field.errors;
+      if (errors['required']) return 'VALIDATION.REQUIRED';
+      if (errors['min']) return 'VALIDATION.MIN_VALUE';
+      if (errors['maxlength']) return 'VALIDATION.MAX_LENGTH';
     }
     return null;
+  }
+
+  private formatDateForInput(dateString: string): string {
+    return new Date(dateString).toISOString().split('T')[0];
+  }
+
+  // Helper method to format file size
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Helper method to get compression ratio
+  getCompressionRatio(): number {
+    if (this.originalFileSize === 0) return 0;
+    return Math.round(((this.originalFileSize - this.optimizedFileSize) / this.originalFileSize) * 100);
   }
 } 

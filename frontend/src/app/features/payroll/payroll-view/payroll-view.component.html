@@ -1,0 +1,154 @@
+<div class="payroll-view-container">
+  <div class="header">
+    <div class="header-content">
+      <button class="btn btn-secondary" (click)="onBack()">
+        <i class="fas fa-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+      </button>
+      <h2>{{ 'PAYROLL.VIEW_TITLE' | translate }}</h2>
+      <div class="header-actions">
+        <button 
+          *ngIf="!payroll?.is_paid"
+          class="btn btn-success" 
+          (click)="markAsPaid()"
+          title="Mark as Paid"
+        >
+          <i class="fas fa-check"></i> {{ 'PAYROLL.ACTIONS.MARK_PAID' | translate }}
+        </button>
+        <button class="btn btn-warning" (click)="onEdit()">
+          <i class="fas fa-edit"></i> {{ 'COMMON.EDIT' | translate }}
+        </button>
+        <button class="btn btn-danger" (click)="onDelete()">
+          <i class="fas fa-trash"></i> {{ 'COMMON.DELETE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="error-message" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+
+    <div class="payroll-details" *ngIf="payroll && !error">
+      <!-- Employee Information -->
+      <div class="section">
+        <h3>{{ 'PAYROLL.FIELDS.EMPLOYEE' | translate }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">{{ 'EMPLOYEE.FIELDS.NAME' | translate }}:</span>
+            <span class="value">{{ getEmployeeName(payroll.employee_id) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.BASIC_SALARY' | translate }}:</span>
+            <span class="value">{{ formatCurrency(payroll.base_salary) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payroll Period -->
+      <div class="section">
+        <h3>{{ 'PAYROLL.FIELDS.PERIOD' | translate }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.MONTH' | translate }}:</span>
+            <span class="value">{{ getMonthName(payroll.month) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.YEAR' | translate }}:</span>
+            <span class="value">{{ payroll.year }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.STATUS' | translate }}:</span>
+            <span class="badge" [class]="getStatusBadgeClass(payroll.is_paid)">
+              {{ getStatusText(payroll.is_paid) }}
+            </span>
+          </div>
+          <div class="info-item" *ngIf="payroll.payment_date">
+            <span class="label">{{ 'PAYROLL.FIELDS.PAYMENT_DATE' | translate }}:</span>
+            <span class="value">{{ formatDate(payroll.payment_date) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance & Overtime -->
+      <div class="section">
+        <h3>{{ 'PAYROLL.FIELDS.ATTENDANCE' | translate }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.ABSENT_DAYS' | translate }}:</span>
+            <span class="value">{{ payroll.absent_days }} {{ 'COMMON.DAYS' | translate }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.OVERTIME_DAYS' | translate }}:</span>
+            <span class="value">{{ payroll.overtime_days }} {{ 'COMMON.DAYS' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary Calculation -->
+      <div class="section">
+        <h3>{{ 'PAYROLL.SALARY_CALCULATION' | translate }}</h3>
+        <div class="calculation-grid">
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.BASIC_SALARY' | translate }}:</span>
+            <span class="value">{{ formatCurrency(payroll.base_salary) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.DAILY_RATE' | translate }}:</span>
+            <span class="value">{{ formatCurrency(calculateDailyRate(payroll.base_salary)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.ABSENT_DEDUCTION' | translate }}:</span>
+            <span class="value deduction">{{ formatCurrency(calculateAbsentDeduction(calculateDailyRate(payroll.base_salary), payroll.absent_days)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.OVERTIME_AMOUNT' | translate }}:</span>
+            <span class="value bonus">{{ formatCurrency(calculateOvertimeAmount(calculateDailyRate(payroll.base_salary), payroll.overtime_days)) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.DEDUCTIONS' | translate }}:</span>
+            <span class="value deduction">{{ formatCurrency(payroll.deductions) }}</span>
+          </div>
+          <div class="calculation-item">
+            <span class="label">{{ 'PAYROLL.FIELDS.BONUSES' | translate }}:</span>
+            <span class="value bonus">{{ formatCurrency(payroll.bonuses) }}</span>
+          </div>
+          <div class="calculation-item total">
+            <span class="label">{{ 'PAYROLL.FIELDS.NET_SALARY' | translate }}:</span>
+            <span class="value">{{ formatCurrency(calculateNetSalary(payroll.base_salary, calculateAbsentDeduction(calculateDailyRate(payroll.base_salary), payroll.absent_days), calculateOvertimeAmount(calculateDailyRate(payroll.base_salary), payroll.overtime_days), payroll.deductions, payroll.bonuses)) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="section" *ngIf="payroll.notes">
+        <h3>{{ 'PAYROLL.FIELDS.NOTES' | translate }}</h3>
+        <div class="notes">
+          {{ payroll.notes }}
+        </div>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="section">
+        <h3>{{ 'COMMON.TIMESTAMPS' | translate }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">{{ 'COMMON.CREATED_AT' | translate }}:</span>
+            <span class="value">{{ formatDate(payroll.createdAt) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ 'COMMON.UPDATED_AT' | translate }}:</span>
+            <span class="value">{{ formatDate(payroll.updatedAt) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PAYROLL.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

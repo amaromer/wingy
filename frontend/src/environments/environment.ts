@@ -8,6 +8,9 @@ export function getApiUrl(): string {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
+    const port = window.location.port;
+    
+    console.log('Environment check:', { hostname, protocol, port });
     
     // If accessing from localhost, use localhost for API
     if (hostname === 'localhost' || hostname === '127.0.0.1') {

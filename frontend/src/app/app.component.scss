@@ -1,3 +1,14 @@
+/* HR Module Theme Variables */
+:root {
+  --hr-primary: #667eea;
+  --hr-secondary: #764ba2;
+  --hr-hover: #5a67d8;
+  --hr-active: #6b46c1;
+  --hr-shadow: rgba(102, 126, 234, 0.3);
+  --hr-shadow-hover: rgba(102, 126, 234, 0.4);
+  --hr-shadow-active: rgba(90, 103, 216, 0.5);
+}
+
 .app-container {
   display: flex;
   height: 100vh;
@@ -7,6 +18,20 @@
 /* RTL Layout for Arabic - More specific selectors */
 .app-container.rtl {
   flex-direction: row-reverse !important;
+}
+
+/* HR Module RTL Support */
+.app-container.rtl .nav-item[routerLink="/employees"],
+.app-container.rtl .nav-item[routerLink="/payroll"],
+.app-container.rtl .nav-item[routerLink="/overtime"],
+.app-container.rtl .nav-item[routerLink="/petty-cash"] {
+  text-align: right !important;
+  flex-direction: row-reverse !important;
+  
+  .nav-icon {
+    margin-right: 0 !important;
+    margin-left: var(--spacing-md) !important;
+  }
 }
 
 .app-container.rtl .sidebar {
@@ -213,10 +238,25 @@ html body div.app-container.rtl > main.main-content {
   }
 }
 
-.sidebar-nav {
-  flex: 1;
-  padding: var(--spacing-md);
-  overflow-y: auto;
+  .sidebar-nav {
+    flex: 1;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+    
+    // HR Module mobile optimization
+    .nav-item[routerLink="/employees"],
+    .nav-item[routerLink="/payroll"],
+    .nav-item[routerLink="/overtime"],
+    .nav-item[routerLink="/petty-cash"] {
+      @media (max-width: 768px) {
+        font-size: 0.9rem !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        
+        .nav-icon {
+          font-size: 1rem !important;
+        }
+      }
+    }
   
   .nav-item {
     display: flex;
@@ -270,6 +310,58 @@ html body div.app-container.rtl > main.main-content {
     }
   }
   
+  // HR Module Navigation Items - Special styling
+  .nav-item[routerLink="/employees"],
+  .nav-item[routerLink="/payroll"],
+  .nav-item[routerLink="/overtime"],
+  .nav-item[routerLink="/petty-cash"] {
+    background: linear-gradient(135deg, var(--hr-primary), var(--hr-secondary)) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: 2px solid var(--hr-primary) !important;
+    margin-bottom: var(--spacing-sm) !important;
+    box-shadow: 0 4px 12px var(--hr-shadow) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, var(--hr-secondary), var(--hr-primary)) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 16px var(--hr-shadow-hover) !important;
+    }
+    
+    &:active {
+      transform: translateY(0) !important;
+    }
+    
+    .nav-icon {
+      font-size: 1.2rem !important;
+      animation: hrPulse 3s infinite !important;
+    }
+    
+    // Add a subtle glow effect
+    &::before {
+      content: '' !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: -100% !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+      transition: left 0.6s !important;
+    }
+    
+    &:hover::before {
+      left: 100% !important;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, var(--hr-hover), var(--hr-active)) !important;
+      border-color: var(--hr-hover) !important;
+      box-shadow: 0 6px 16px var(--hr-shadow-active) !important;
+    }
+  }
+  
   // Master Data Section
   .nav-section {
     margin-top: var(--spacing-lg);
@@ -285,6 +377,22 @@ html body div.app-container.rtl > main.main-content {
       margin-bottom: var(--spacing-sm);
       padding: 0 var(--spacing-md);
     }
+    
+    // HR Module Section Title - Special styling
+    &:has(.nav-item[routerLink="/employees"]) {
+      .nav-section-title {
+        color: var(--hr-primary) !important;
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px var(--hr-shadow) !important;
+        position: relative !important;
+        
+        &::before {
+          content: '👥' !important;
+          margin-right: var(--spacing-sm) !important;
+          font-size: 0.9rem !important;
+        }
+      }
+    }
   }
 }
 
@@ -292,6 +400,12 @@ html body div.app-container.rtl > main.main-content {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
+}
+
+@keyframes hrPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .main-content {

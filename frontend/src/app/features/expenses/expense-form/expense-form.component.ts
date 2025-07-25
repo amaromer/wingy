@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Expense, CreateExpenseRequest, UpdateExpenseRequest, Project, Category, Supplier } from '../../../core/models/expense.model';
 import { ExpenseService } from '../../../core/services/expense.service';
 import { MainCategory } from '../../../core/models/main-category.model';
+import { Employee } from '../../../core/models/employee.model';
 
 @Component({
   selector: 'app-expense-form',
@@ -31,6 +32,7 @@ export class ExpenseFormComponent implements OnInit {
   projects: Project[] = [];
   suppliers: Supplier[] = [];
   mainCategories: MainCategory[] = [];
+  employees: Employee[] = [];
   
   selectedFile: File | null = null;
   filePreview: string | null = null;
@@ -66,7 +68,9 @@ export class ExpenseFormComponent implements OnInit {
     
     this.expenseForm = this.fb.group({
       project_id: ['', [Validators.required]],
+      main_category_id: [''],
       supplier_id: ['', [Validators.required]],
+      employee_id: [''],
       category_id: [''],
       amount: [0, [Validators.required, Validators.min(0)]],
       currency: ['AED', [Validators.required]],
@@ -99,6 +103,19 @@ export class ExpenseFormComponent implements OnInit {
         error: (err) => {
           console.error('Error loading main categories:', err);
           this.mainCategories = [];
+        }
+      });
+
+    // Load employees
+    this.http.get<any>('/api/employees')
+      .subscribe({
+        next: (response) => {
+          console.log('Employees API response:', response);
+          this.employees = Array.isArray(response.employees) ? response.employees : [];
+        },
+        error: (err) => {
+          console.error('Error loading employees:', err);
+          this.employees = [];
         }
       });
 
@@ -148,20 +165,36 @@ export class ExpenseFormComponent implements OnInit {
     this.loading = true;
     this.expenseService.getExpense(this.expenseId).subscribe({
       next: (expense) => {
-        this.expenseForm.patchValue({
-          project_id: expense.project_id,
-          supplier_id: expense.supplier_id,
-          category_id: expense.category_id,
+        console.log('Loaded expense for editing:', expense);
+        // Extract IDs from populated objects or use string IDs
+        const projectId = expense.project_id ? (typeof expense.project_id === 'string' ? expense.project_id : expense.project_id._id || expense.project_id.id) : '';
+        const supplierId = expense.supplier_id ? (typeof expense.supplier_id === 'string' ? expense.supplier_id : expense.supplier_id._id || expense.supplier_id.id) : '';
+        const employeeId = expense.employee_id ? (typeof expense.employee_id === 'string' ? expense.employee_id : expense.employee_id._id || expense.employee_id.id) : '';
+        const categoryId = expense.category_id ? (typeof expense.category_id === 'string' ? expense.category_id : expense.category_id._id || expense.category_id.id) : '';
+        
+        const formValues = {
+          project_id: projectId,
+          supplier_id: supplierId,
+          employee_id: employeeId,
+          category_id: categoryId,
           amount: expense.amount,
           currency: expense.currency,
           date: this.formatDateForInput(expense.date),
           description: expense.description,
           invoice_number: expense.invoice_number || '',
           is_vat: expense.is_vat
-        });
+        };
+        
+        console.log('Setting form values:', formValues);
+        this.expenseForm.patchValue(formValues);
         
         if (expense.attachment_url) {
           this.filePreview = expense.attachment_url;
+        }
+        
+        // If there's a category, determine the main category and load related data
+        if (categoryId) {
+          this.loadMainCategoryFromCategory(categoryId);
         }
         
         this.loading = false;
@@ -531,6 +564,11 @@ export class ExpenseFormComponent implements OnInit {
     return supplier ? supplier.name : '';
   }
 
+  getEmployeeName(employeeId: string): string {
+    const employee = this.employees.find(emp => emp._id === employeeId || emp.id === employeeId);
+    return employee ? `${employee.name} - ${employee.job}` : '';
+  }
+
   // Custom validator to prevent future dates
   private futureDateValidator() {
     return (control: any) => {
@@ -562,6 +600,10 @@ export class ExpenseFormComponent implements OnInit {
 
   // Filter suppliers and categories by main category
   onMainCategoryChange(mainCategoryId: string): void {
+    console.log('Main category changed to:', mainCategoryId);
+    // Update the form value
+    this.expenseForm.patchValue({ main_category_id: mainCategoryId });
+    
     if (!mainCategoryId) {
       // Load all suppliers and categories if no main category selected
       this.loadAllSuppliers();
@@ -646,6 +688,29 @@ export class ExpenseFormComponent implements OnInit {
       error: (err) => {
         console.error('Error loading categories:', err);
         this.categories = [];
+      }
+    });
+  }
+
+  // Load main category from category ID
+  private loadMainCategoryFromCategory(categoryId: string): void {
+    console.log('Loading main category for category ID:', categoryId);
+    this.http.get<any>(`/api/categories/${categoryId}`).subscribe({
+      next: (category) => {
+        console.log('Loaded category details:', category);
+        if (category && category.main_category_id) {
+          // Set the main category in the form
+          this.expenseForm.patchValue({ main_category_id: category.main_category_id });
+          
+          // Load suppliers and categories for this main category
+          this.onMainCategoryChange(category.main_category_id);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading category details:', err);
+        // Fallback to loading all suppliers and categories
+        this.loadAllSuppliers();
+        this.loadAllCategories();
       }
     });
   }

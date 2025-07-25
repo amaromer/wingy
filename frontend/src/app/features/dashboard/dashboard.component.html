@@ -18,10 +18,36 @@
 
     <!-- Dashboard Content -->
     <div class="dashboard-main" *ngIf="stats && !loading && !error">
+      <!-- Date Filters -->
+      <section class="filters-section">
+        <div class="filters-container">
+          <div class="filter-group">
+            <label for="dateFrom" class="filter-label">{{ 'COMMON.DATE_FROM' | translate }}</label>
+            <input 
+              type="date" 
+              id="dateFrom" 
+              [(ngModel)]="dateFrom" 
+              (change)="onDateFilterChange()"
+              class="filter-input"
+            >
+          </div>
+          <div class="filter-group">
+            <label for="dateTo" class="filter-label">{{ 'COMMON.DATE_TO' | translate }}</label>
+            <input 
+              type="date" 
+              id="dateTo" 
+              [(ngModel)]="dateTo" 
+              (change)="onDateFilterChange()"
+              class="filter-input"
+            >
+          </div>
+        </div>
+      </section>
+
       <!-- Statistics Cards -->
       <section class="stats-section">
         <div class="stats-grid">
-          <div class="stat-card" *ngFor="let stat of getStats()">
+          <div class="stat-card" *ngFor="let stat of getStats()" (click)="onStatCardClick(stat.route || '')" [class.clickable]="stat.route">
             <div class="stat-icon">{{ stat.icon }}</div>
             <div class="stat-content">
               <h3 class="stat-value">{{ stat.value }}</h3>
@@ -49,28 +75,105 @@
         </div>
       </section>
 
-      <!-- Recent Expenses -->
-      <section class="recent-section" *ngIf="stats.recentExpenses && stats.recentExpenses.length > 0">
-        <div class="section-header">
-          <h2 class="section-title">{{ 'DASHBOARD.RECENT_EXPENSES' | translate }}</h2>
-        </div>
-        
-        <div class="expenses-list">
-          <div class="expense-card" *ngFor="let expense of stats.recentExpenses">
-            <div class="expense-main">
-              <div class="expense-details">
-                <h4 class="expense-project">{{ expense.project_id?.name || ('DASHBOARD.UNKNOWN_PROJECT' | translate) }}</h4>
-                <p class="expense-supplier">{{ expense.supplier_id?.name || ('DASHBOARD.UNKNOWN_SUPPLIER' | translate) }}</p>
-                <span class="expense-category">{{ expense.category_id?.name || ('DASHBOARD.UNCATEGORIZED' | translate) }}</span>
+      <!-- Analytics Section -->
+      <section class="analytics-section">
+        <div class="analytics-grid">
+          <!-- Monthly Trend -->
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3 class="analytics-title">{{ 'DASHBOARD.MONTHLY_TREND' | translate }}</h3>
+              <p class="analytics-subtitle">{{ 'DASHBOARD.EXPENSE_TREND' | translate }}</p>
+            </div>
+            <div class="analytics-content">
+              <div class="trend-item" *ngFor="let item of getMonthlyTrendData()">
+                <div class="trend-period">{{ item.period }}</div>
+                <div class="trend-amount">{{ item.formattedTotal }}</div>
               </div>
-              <div class="expense-meta">
-                <div class="expense-amount">${{ expense.amount | number:'1.0-0' }}</div>
-                <div class="expense-date">{{ expense.date | date:'shortDate' }}</div>
+            </div>
+          </div>
+
+          <!-- Top Projects -->
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3 class="analytics-title">{{ 'DASHBOARD.PROJECT_DISTRIBUTION' | translate }}</h3>
+              <p class="analytics-subtitle">{{ 'DASHBOARD.EXPENSES_BY_PROJECT' | translate }}</p>
+            </div>
+            <div class="analytics-content">
+              <div class="project-item" *ngFor="let project of getTopProjectsData()">
+                <div class="project-info">
+                  <h4 class="project-name">{{ project.name }}</h4>
+                  <p class="project-count">{{ project.count }} {{ 'COMMON.EXPENSES' | translate }}</p>
+                </div>
+                <div class="project-amount">{{ project.formattedTotal }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Categories -->
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3 class="analytics-title">{{ 'DASHBOARD.CATEGORY_EXPENSES' | translate }}</h3>
+              <p class="analytics-subtitle">{{ 'DASHBOARD.EXPENSES_BY_CATEGORY' | translate }}</p>
+            </div>
+            <div class="analytics-content">
+              <div class="category-item" *ngFor="let category of getTopCategoriesData()">
+                <div class="category-info">
+                  <h4 class="category-name">{{ category.name }}</h4>
+                  <p class="category-count">{{ category.count }} {{ 'COMMON.EXPENSES' | translate }}</p>
+                </div>
+                <div class="category-amount">{{ category.formattedTotal }}</div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      <!-- Analytics Section -->
+      <section class="analytics-section">
+        <div class="analytics-grid">
+          <!-- Top Suppliers -->
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3 class="analytics-title">{{ 'DASHBOARD.TOP_SUPPLIERS' | translate }}</h3>
+              <p class="analytics-subtitle">{{ 'DASHBOARD.BY_EXPENSE_AMOUNT' | translate }}</p>
+            </div>
+            <div class="analytics-content">
+              <div class="supplier-item" *ngFor="let supplier of topSuppliers; let i = index">
+                <div class="supplier-rank">{{ i + 1 }}</div>
+                <div class="supplier-info">
+                  <h4 class="supplier-name">{{ supplier.supplierName }}</h4>
+                  <p class="supplier-contact">{{ supplier.contactPerson }}</p>
+                </div>
+                <div class="supplier-stats">
+                  <div class="supplier-amount">${{ supplier.total | number:'1.0-0' }}</div>
+                  <div class="supplier-count">{{ supplier.count }} {{ 'COMMON.EXPENSES' | translate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3 class="analytics-title">{{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}</h3>
+              <p class="analytics-subtitle">{{ 'DASHBOARD.LATEST_UPDATES' | translate }}</p>
+            </div>
+            <div class="analytics-content">
+              <div class="activity-item" *ngFor="let activity of recentActivity">
+                <div class="activity-icon" [style.color]="getActivityColor(activity.type)">
+                  {{ getActivityIcon(activity.type) }}
+                </div>
+                <div class="activity-info">
+                  <h4 class="activity-title">{{ activity.title }}</h4>
+                  <p class="activity-subtitle">{{ activity.subtitle }}</p>
+                  <span class="activity-date">{{ activity.date | date:'short' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 </div> 

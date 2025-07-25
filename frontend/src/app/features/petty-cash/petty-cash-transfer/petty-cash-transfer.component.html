@@ -1,0 +1,120 @@
+<div class="petty-cash-transfer-container">
+  <div class="header">
+    <div class="header-content">
+      <button class="btn btn-secondary" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+      </button>
+      <h2>{{ 'PETTY_CASH.ACTIONS.TRANSFER' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="error-message" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+
+    <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.FROM_EMPLOYEE' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="from_employee_id">{{ 'PETTY_CASH.FIELDS.FROM_EMPLOYEE' | translate }} *</label>
+          <select 
+            id="from_employee_id"
+            formControlName="from_employee_id"
+            class="form-control"
+            [class.error]="transferForm.get('from_employee_id')?.invalid && transferForm.get('from_employee_id')?.touched"
+          >
+            <option value="">{{ 'COMMON.SELECT' | translate }}</option>
+            <option *ngFor="let employee of employees" [value]="employee._id">
+              {{ getEmployeeName(employee) }}
+            </option>
+          </select>
+          <div class="error-text" *ngIf="transferForm.get('from_employee_id')?.invalid && transferForm.get('from_employee_id')?.touched">
+            {{ getErrorMessage('from_employee_id') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.TO_EMPLOYEE' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="to_employee_id">{{ 'PETTY_CASH.FIELDS.TO_EMPLOYEE' | translate }} *</label>
+          <select 
+            id="to_employee_id"
+            formControlName="to_employee_id"
+            class="form-control"
+            [class.error]="transferForm.get('to_employee_id')?.invalid && transferForm.get('to_employee_id')?.touched"
+          >
+            <option value="">{{ 'COMMON.SELECT' | translate }}</option>
+            <option *ngFor="let employee of employees" [value]="employee._id">
+              {{ getEmployeeName(employee) }}
+            </option>
+          </select>
+          <div class="error-text" *ngIf="transferForm.get('to_employee_id')?.invalid && transferForm.get('to_employee_id')?.touched">
+            {{ getErrorMessage('to_employee_id') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.AMOUNT' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="amount">{{ 'PETTY_CASH.FIELDS.AMOUNT' | translate }} *</label>
+          <input 
+            type="number"
+            id="amount"
+            formControlName="amount"
+            class="form-control"
+            placeholder="Enter amount"
+            step="0.01"
+            min="0.01"
+            [class.error]="transferForm.get('amount')?.invalid && transferForm.get('amount')?.touched"
+          >
+          <div class="error-text" *ngIf="transferForm.get('amount')?.invalid && transferForm.get('amount')?.touched">
+            {{ getErrorMessage('amount') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.DESCRIPTION' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="description">{{ 'PETTY_CASH.FIELDS.DESCRIPTION' | translate }} *</label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            class="form-control"
+            placeholder="Enter description"
+            rows="4"
+            [class.error]="transferForm.get('description')?.invalid && transferForm.get('description')?.touched"
+          ></textarea>
+          <div class="error-text" *ngIf="transferForm.get('description')?.invalid && transferForm.get('description')?.touched">
+            {{ getErrorMessage('description') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="submitting">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="submit" class="btn btn-info" [disabled]="transferForm.invalid || submitting">
+          <i class="fas fa-exchange-alt" *ngIf="!submitting"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+          {{ 'PETTY_CASH.ACTIONS.TRANSFER' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PETTY_CASH.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 

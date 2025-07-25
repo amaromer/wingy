@@ -41,7 +41,12 @@
     "CREATED_AT": "Created At",
     "UPDATED_AT": "Updated At",
     "BACK_TO_LIST": "Back to List",
-    "MB": "MB"
+    "MB": "MB",
+    "DATE_FROM": "Date From",
+    "DATE_TO": "Date To",
+    "EXPENSES": "Expenses",
+    "DAYS": "days",
+    "TIMESTAMPS": "Timestamps"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -72,7 +77,20 @@
     "UNKNOWN_SUPPLIER": "Unknown Supplier",
     "UNCATEGORIZED": "Uncategorized",
     "TOTAL_VAT": "Total VAT",
-    "TOTAL_PAYMENTS": "Total Payments"
+    "TOTAL_PAYMENTS": "Total Payments",
+    "VAT_SUMMARY": "VAT Summary",
+    "TAX_CYCLE": "Tax Cycle",
+    "NET_VAT": "Net VAT",
+    "MONTHLY_TREND": "Monthly Trend",
+    "EXPENSE_TREND": "Expense trend over time",
+    "PROJECT_DISTRIBUTION": "Project Distribution",
+    "EXPENSES_BY_PROJECT": "Expenses by project",
+    "CATEGORY_EXPENSES": "Category Expenses",
+    "EXPENSES_BY_CATEGORY": "Expenses by category",
+    "TOP_SUPPLIERS": "Top Suppliers",
+    "BY_EXPENSE_AMOUNT": "By expense amount",
+    "RECENT_ACTIVITY": "Recent Activity",
+    "LATEST_UPDATES": "Latest updates and changes"
   },
   "NAVIGATION": {
     "DASHBOARD": "Dashboard",
@@ -86,7 +104,102 @@
     "PROFILE": "Profile",
     "CONSTRUCTION_ERP": "winjy",
     "QUICK_EXPENSE": "Quick Expense",
-    "MASTER_DATA": "Master Data"
+    "MASTER_DATA": "Master Data",
+    "HR_MODULE": "HR Module",
+    "EMPLOYEES": "Employees",
+    "PAYROLL": "Payroll",
+    "OVERTIME": "Overtime",
+    "PETTY_CASH": "Petty Cash"
+  },
+  "EMPLOYEE": {
+    "CREATE_TITLE": "Add Employee",
+    "EDIT_TITLE": "Edit Employee",
+    "FIELDS": {
+      "NAME": "Name",
+      "JOB": "Job Title",
+      "SALARY": "Salary",
+      "IS_ACTIVE": "Active Employee"
+    },
+    "PLACEHOLDERS": {
+      "NAME": "Enter employee name",
+      "JOB": "Enter job title",
+      "SALARY": "Enter salary amount"
+    },
+    "ACTIONS": {
+      "CREATE": "Create Employee",
+      "UPDATE": "Update Employee"
+    }
+  },
+  "PAYROLL": {
+    "LIST_TITLE": "Payroll Management",
+    "CREATE_TITLE": "Add Payroll",
+    "EDIT_TITLE": "Edit Payroll",
+    "VIEW_TITLE": "View Payroll",
+    "PERIOD": "Payroll Period",
+    "ATTENDANCE": "Attendance & Overtime",
+    "PAYMENT_DATE": "Payment Date",
+    "LOADING": "Loading payroll records...",
+    "NO_DATA": "No payroll records found",
+    "SELECT_EMPLOYEE": "Select Employee",
+    "SALARY_CALCULATION": "Salary Calculation",
+    "FILTERS": {
+      "MONTH": "Month",
+      "YEAR": "Year",
+      "STATUS": "Status"
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employee",
+      "MONTH": "Month",
+      "YEAR": "Year",
+      "BASIC_SALARY": "Basic Salary",
+      "DAILY_RATE": "Daily Rate",
+      "ABSENT_DAYS": "Absent Days",
+      "OVERTIME_DAYS": "Overtime Days",
+      "ABSENT_DEDUCTION": "Absent Deduction",
+      "OVERTIME_AMOUNT": "Overtime Amount",
+      "DEDUCTIONS": "Deductions",
+      "BONUSES": "Bonuses",
+      "NET_SALARY": "Net Salary",
+      "STATUS": "Status",
+      "NOTES": "Notes"
+    },
+    "PLACEHOLDERS": {
+      "NOTES": "Enter any additional notes..."
+    },
+    "ACTIONS": {
+      "CREATE": "Add Payroll",
+      "UPDATE": "Update Payroll",
+      "MARK_PAID": "Mark as Paid"
+    }
+  },
+  "OVERTIME": {
+    "LIST_TITLE": "Overtime Management",
+    "CREATE_TITLE": "Add Overtime",
+    "EDIT_TITLE": "Edit Overtime",
+    "LOADING": "Loading overtime records...",
+    "NO_DATA": "No overtime records found",
+    "FILTERS": {
+      "EMPLOYEE": "Employee",
+      "EMPLOYEE_PLACEHOLDER": "Search by employee name...",
+      "STATUS": "Status",
+      "DATE": "Date"
+    },
+    "FIELDS": {
+      "EMPLOYEE": "Employee",
+      "DATE": "Date",
+      "HOURS": "Hours",
+      "HOURS_SHORT": "hrs",
+      "RATE": "Rate",
+      "AMOUNT": "Amount",
+      "STATUS": "Status",
+      "REASON": "Reason"
+    },
+    "ACTIONS": {
+      "CREATE": "Add Overtime",
+      "UPDATE": "Update Overtime",
+      "APPROVE": "Approve",
+      "REJECT": "Reject"
+    }
   },
   "PROJECT": {
     "LIST_TITLE": "Project Management",
@@ -156,15 +269,20 @@
       "PRIORITY": "Priority",
       "START_DATE": "Start Date",
       "END_DATE": "End Date",
-      "BUDGET": "Total Budget",
-      "BUDGET_PLACEHOLDER": "Enter total budget",
+      "BUDGET": "Budget",
+      "BUDGET_PLACEHOLDER": "Enter project budget",
       "LOCATION": "Location",
       "LOCATION_PLACEHOLDER": "Enter project location",
-      "CLIENT_NAME": "Client Name",
-      "CLIENT_NAME_PLACEHOLDER": "Enter client name",
-      "PROJECT_MANAGER": "Project Manager",
-      "PROJECT_MANAGER_PLACEHOLDER": "Enter project manager name",
-      "EXPENSES": "Total Expenses",
+      "CLIENT": "Client",
+      "CLIENT_PLACEHOLDER": "Enter client name",
+      "MANAGER": "Project Manager",
+      "MANAGER_PLACEHOLDER": "Select project manager",
+      "PHASES": "Project Phases",
+      "TEAM_MEMBERS": "Team Members"
+    },
+    "PHASES": {
+      "TITLE": "Project Phases",
+      "ADD_PHASE": "Add Phase",
       "PHASE_NAME": "Phase Name",
       "PHASE_NAME_PLACEHOLDER": "Enter phase name",
       "PHASE_DESCRIPTION": "Phase Description",
@@ -174,45 +292,66 @@
       "PHASE_BUDGET": "Phase Budget",
       "PHASE_BUDGET_PLACEHOLDER": "Enter phase budget",
       "PHASE_STATUS": "Phase Status",
+      "PHASE_STATUS_PLACEHOLDER": "Select phase status"
+    },
+    "TEAM": {
+      "TITLE": "Team Members",
+      "ADD_MEMBER": "Add Team Member",
       "MEMBER_NAME": "Member Name",
       "MEMBER_NAME_PLACEHOLDER": "Enter member name",
       "MEMBER_ROLE": "Role",
+      "MEMBER_ROLE_PLACEHOLDER": "Select role",
       "MEMBER_EMAIL": "Email",
       "MEMBER_EMAIL_PLACEHOLDER": "Enter email address",
       "MEMBER_PHONE": "Phone",
       "MEMBER_PHONE_PLACEHOLDER": "Enter phone number",
-      "SELECT_ROLE": "Select a role"
-    },
+      "MEMBER_RESPONSIBILITIES": "Responsibilities",
+      "MEMBER_RESPONSIBILITIES_PLACEHOLDER": "Enter responsibilities"
+    }
+  },
+  "PETTY_CASH": {
+    "LIST_TITLE": "Petty Cash Management",
+    "CREATE_TITLE": "Add Transaction",
+    "EDIT_TITLE": "Edit Transaction",
+    "VIEW_TITLE": "View Transaction",
+    "LOADING": "Loading petty cash transactions...",
+    "NO_DATA": "No petty cash transactions found",
     "ACTIONS": {
-      "ADD_PHASE": "Add Phase",
-      "REMOVE_PHASE": "Remove Phase",
-      "ADD_MEMBER": "Add Member",
-      "REMOVE_MEMBER": "Remove Member"
+      "ADD_CREDIT": "Add Credit",
+      "ADD_DEBIT": "Add Debit",
+      "TRANSFER": "Transfer",
+      "VIEW_BALANCES": "View Balances"
     },
     "FILTERS": {
-      "STATUS": "Filter by Status",
-      "LOCATION": "Filter by Location",
-      "LOCATION_PLACEHOLDER": "Enter location to filter"
+      "EMPLOYEE": "Employee",
+      "ALL_EMPLOYEES": "All Employees",
+      "TYPE": "Type",
+      "REFERENCE_TYPE": "Reference Type"
     },
-    "SORT": {
-      "BY": "Sort By",
-      "ORDER": "Sort Order",
-      "ASC": "Ascending",
-      "DESC": "Descending",
-      "NAME": "Name",
-      "STATUS": "Status",
-      "START_DATE": "Start Date",
-      "BUDGET": "Budget",
-      "LOCATION": "Location",
-      "PROGRESS": "Progress"
+    "FIELDS": {
+      "EMPLOYEE": "Employee",
+      "FROM_EMPLOYEE": "From Employee",
+      "TO_EMPLOYEE": "To Employee",
+      "TYPE": "Type",
+      "AMOUNT": "Amount",
+      "BALANCE_AFTER": "Balance After",
+      "DESCRIPTION": "Description",
+      "REFERENCE_TYPE": "Reference Type",
+      "DATE": "Date",
+      "PROCESSED_BY": "Processed By"
     },
-    "BUDGET": {
-      "TOTAL_PROJECT": "Total Project Budget",
-      "TOTAL_PHASES": "Total Phase Budget",
-      "DIFFERENCE": "Budget Difference"
+    "BALANCES": {
+      "EMPLOYEE_BALANCES": "Employee Balances",
+      "RECENT_TRANSACTIONS": "Recent Transactions",
+      "TOTAL_EXPENSES": "Total Expenses",
+      "EXPENSE_CREDIT_DIFFERENCE": "Expense vs Credit"
     },
-    "PHASE": "Phase",
-    "TEAM_MEMBER": "Team Member"
+    "SUMMARY": {
+      "TOTAL_EMPLOYEES": "Total Employees",
+      "TOTAL_CREDITS": "Total Credits",
+      "TOTAL_DEBITS": "Total Debits",
+      "NET_BALANCE": "Net Balance"
+    }
   },
   "EXPENSE": {
     "LIST_TITLE": "Expense Management",
@@ -259,6 +398,7 @@
       "PROJECT": "Project",
       "CATEGORY": "Category",
       "SUPPLIER": "Supplier",
+      "EMPLOYEE": "Employee",
       "INVOICE": "Invoice Number",
       "ATTACHMENT": "Attachment",
       "IS_VAT": "Is VAT"
@@ -270,6 +410,7 @@
     "SELECT_PROJECT": "Select a project",
     "SELECT_CATEGORY": "Select a category",
     "SELECT_SUPPLIER": "Select a supplier",
+    "SELECT_EMPLOYEE": "Select an employee",
     "SELECT_MAIN_CATEGORY": "Select a main category",
     "UPLOAD_FILE": "Upload File",
     "FILE_HELP": "Supported file types (JPEG, PNG, GIF, PDF - Max 10MB)",
@@ -285,6 +426,7 @@
       "CATEGORY": "Category",
       "SUPPLIER": "Supplier",
       "CURRENCY": "Currency",
+      "VAT": "VAT Status",
       "DATE_FROM": "Date From",
       "DATE_TO": "Date To",
       "AMOUNT_MIN": "Min Amount",
@@ -293,6 +435,9 @@
       "ALL_CATEGORIES": "All Categories",
       "ALL_SUPPLIERS": "All Suppliers",
       "ALL_CURRENCIES": "All Currencies",
+      "ALL_VAT": "All VAT Status",
+      "VAT_APPLICABLE": "VAT Applicable",
+      "NO_VAT": "No VAT",
       "CLEAR": "Clear Filters",
       "TOGGLE": "Filters"
     },
@@ -317,6 +462,7 @@
     "CREATE_MAIN_CATEGORIES": "Create Main Categories",
     "MAIN_CATEGORY_HELP": "Select a main category to filter suppliers. Only suppliers assigned to this category will be shown.",
     "SUPPLIER_OPTIONAL_HELP": "Supplier is optional for this category",
+    "EMPLOYEE_HELP": "Link expense to employee for petty cash tracking",
     "VIEW_TITLE": "Expense Details",
     "NOT_FOUND": "Expense Not Found",
     "NOT_FOUND_DESC": "The expense you're looking for doesn't exist or has been removed."
@@ -850,7 +996,9 @@
       "CREATING_RECEIVED_PAYMENT": "Failed to create received payment. Please try again.",
       "UPDATING_RECEIVED_PAYMENT": "Failed to update received payment. Please try again.",
       "DELETING_RECEIVED_PAYMENT": "Failed to delete received payment. Please try again.",
-      "LOADING_PROJECTS": "Failed to load projects. Please try again."
+      "LOADING_PROJECTS": "Failed to load projects. Please try again.",
+      "INVALID_FILE_TYPE": "Please select a valid file type (JPEG, PNG, GIF, or PDF)",
+      "FILE_OPTIMIZATION_FAILED": "Failed to optimize the image. Please try again."
     },
     "SUCCESS": {
       "CREATE_SUCCESS": "Received payment created successfully!",

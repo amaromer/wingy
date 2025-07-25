@@ -1,8 +1,11 @@
+import { Employee } from './employee.model';
+
 export interface Expense {
   id: string;
   _id?: string;
   project_id: string | Project;
   supplier_id: string | Supplier;
+  employee_id?: string | Employee;
   category_id: string | Category;
   amount: number;
   currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
@@ -19,6 +22,7 @@ export interface Expense {
 export interface CreateExpenseRequest {
   project_id: string;
   supplier_id: string;
+  employee_id?: string;
   category_id: string;
   amount: number;
   currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
@@ -32,6 +36,7 @@ export interface CreateExpenseRequest {
 export interface UpdateExpenseRequest {
   project_id?: string;
   supplier_id?: string;
+  employee_id?: string;
   category_id?: string;
   amount?: number;
   currency?: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';

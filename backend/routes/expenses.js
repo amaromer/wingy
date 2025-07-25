@@ -4,6 +4,8 @@ const Expense = require('../models/Expense');
 const Project = require('../models/Project');
 const Supplier = require('../models/Supplier');
 const Category = require('../models/Category');
+const Employee = require('../models/Employee');
+const PettyCash = require('../models/PettyCash');
 const { auth, requireRole, requireExpenseAccess, requireExpenseCreateOnly } = require('../middleware/auth');
 const { upload, handleUploadError } = require('../middleware/upload');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -263,12 +265,14 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     const { 
       project_id, 
       supplier_id, 
+      employee_id,
       category_id, 
       amount, 
       currency, 
       date, 
       description, 
-      invoice_number 
+      invoice_number,
+      is_vat
     } = req.body;
     
     console.log('Creating expense - Parsed data:', {
@@ -286,6 +290,12 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
       supplier = await Supplier.findById(supplier_id);
     }
     
+    // Only validate employee if employee_id is provided
+    let employee = null;
+    if (employee_id) {
+      employee = await Employee.findById(employee_id);
+    }
+    
     // Only validate category if category_id is provided
     let category = null;
     if (category_id) {
@@ -295,6 +305,7 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     console.log('Creating expense - Found entities:', {
       project: project ? project.name : null,
       supplier: supplier ? supplier.name : null,
+      employee: employee ? employee.name : null,
       category: category ? category.name : null
     });
     
@@ -303,6 +314,9 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     }
     if (supplier_id && !supplier) {
       return res.status(400).json({ message: 'Supplier not found' });
+    }
+    if (employee_id && !employee) {
+      return res.status(400).json({ message: 'Employee not found' });
     }
     if (category_id && !category) {
       return res.status(400).json({ message: 'Category not found' });
@@ -317,13 +331,15 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     const expense = new Expense({
       project_id,
       supplier_id: supplier_id || null,
+      employee_id: employee_id || null,
       category_id: category_id || null,
       amount: parseFloat(amount),
       currency,
       date,
       description,
       invoice_number,
-      attachment_url
+      attachment_url,
+      is_vat: is_vat === 'true' || is_vat === true
     });
     
     console.log('Creating expense - Expense object:', expense);
@@ -332,9 +348,42 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     
     console.log('Creating expense - Expense saved successfully');
     
+    // If expense is linked to an employee, deduct from petty cash
+    if (employee_id) {
+      try {
+        // Get current balance
+        const lastTransaction = await PettyCash.findOne({ employee_id })
+          .sort({ createdAt: -1 });
+
+        const currentBalance = lastTransaction ? lastTransaction.balance_after : 0;
+        
+        // Always deduct from petty cash, even if it results in negative balance
+        const newBalance = currentBalance - parseFloat(amount);
+        
+        const pettyCashTransaction = new PettyCash({
+          employee_id,
+          type: 'debit',
+          amount: parseFloat(amount),
+          balance_after: newBalance,
+          description: `Expense deduction: ${description}`,
+          reference_type: 'expense',
+          reference_id: expense._id,
+          processed_by: req.user.id
+        });
+        
+        await pettyCashTransaction.save();
+        console.log('Creating expense - Petty cash deduction saved');
+        console.log(`Employee balance: ${currentBalance} → ${newBalance} (${newBalance < 0 ? 'NEGATIVE' : 'POSITIVE'})`);
+      } catch (error) {
+        console.error('Creating expense - Petty cash deduction error:', error);
+        // Don't fail the expense creation if petty cash deduction fails
+      }
+    }
+    
     // Populate references for response
     await expense.populate('project_id', 'name code');
     await expense.populate('supplier_id', 'name contact_person');
+    await expense.populate('employee_id', 'name job');
     await expense.populate('category_id', 'name');
     
     res.status(201).json(expense);
@@ -391,12 +440,14 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
     const { 
       project_id, 
       supplier_id, 
+      employee_id,
       category_id, 
       amount, 
       currency, 
       date, 
       description, 
-      invoice_number 
+      invoice_number,
+      is_vat
     } = req.body;
     
     const expense = await Expense.findById(req.params.id);
@@ -417,6 +468,12 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
         return res.status(400).json({ message: 'Supplier not found' });
       }
     }
+    if (employee_id) {
+      const employee = await Employee.findById(employee_id);
+      if (!employee) {
+        return res.status(400).json({ message: 'Employee not found' });
+      }
+    }
     if (category_id) {
       const category = await Category.findById(category_id);
       if (!category) {
@@ -432,18 +489,21 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
     // Update fields
     if (project_id) expense.project_id = project_id;
     if (supplier_id !== undefined) expense.supplier_id = supplier_id || null;
+    if (employee_id !== undefined) expense.employee_id = employee_id || null;
     if (category_id !== undefined) expense.category_id = category_id || null;
     if (amount) expense.amount = parseFloat(amount);
     if (currency) expense.currency = currency;
     if (date) expense.date = date;
     if (description) expense.description = description;
     if (invoice_number !== undefined) expense.invoice_number = invoice_number;
+    if (is_vat !== undefined) expense.is_vat = is_vat === 'true' || is_vat === true;
     
     await expense.save();
     
     // Populate references for response
     await expense.populate('project_id', 'name code');
     await expense.populate('supplier_id', 'name contact_person');
+    await expense.populate('employee_id', 'name job');
     await expense.populate('category_id', 'name');
     
     res.json(expense);

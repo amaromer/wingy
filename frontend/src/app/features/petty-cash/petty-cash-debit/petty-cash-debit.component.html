@@ -1,0 +1,98 @@
+<div class="petty-cash-debit-container">
+  <div class="header">
+    <div class="header-content">
+      <button class="btn btn-secondary" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+      </button>
+      <h2>{{ 'PETTY_CASH.ACTIONS.ADD_DEBIT' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="error-message" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+
+    <form [formGroup]="debitForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.EMPLOYEE' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="employee_id">{{ 'PETTY_CASH.FIELDS.EMPLOYEE' | translate }} *</label>
+          <select 
+            id="employee_id"
+            formControlName="employee_id"
+            class="form-control"
+            [class.error]="debitForm.get('employee_id')?.invalid && debitForm.get('employee_id')?.touched"
+          >
+            <option value="">{{ 'COMMON.SELECT' | translate }}</option>
+            <option *ngFor="let employee of employees" [value]="employee._id">
+              {{ getEmployeeName(employee) }}
+            </option>
+          </select>
+          <div class="error-text" *ngIf="debitForm.get('employee_id')?.invalid && debitForm.get('employee_id')?.touched">
+            {{ getErrorMessage('employee_id') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.AMOUNT' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="amount">{{ 'PETTY_CASH.FIELDS.AMOUNT' | translate }} *</label>
+          <input 
+            type="number"
+            id="amount"
+            formControlName="amount"
+            class="form-control"
+            placeholder="Enter amount"
+            step="0.01"
+            min="0.01"
+            [class.error]="debitForm.get('amount')?.invalid && debitForm.get('amount')?.touched"
+          >
+          <div class="error-text" *ngIf="debitForm.get('amount')?.invalid && debitForm.get('amount')?.touched">
+            {{ getErrorMessage('amount') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>{{ 'PETTY_CASH.FIELDS.DESCRIPTION' | translate }}</h3>
+        
+        <div class="form-group">
+          <label for="description">{{ 'PETTY_CASH.FIELDS.DESCRIPTION' | translate }} *</label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            class="form-control"
+            placeholder="Enter description"
+            rows="4"
+            [class.error]="debitForm.get('description')?.invalid && debitForm.get('description')?.touched"
+          ></textarea>
+          <div class="error-text" *ngIf="debitForm.get('description')?.invalid && debitForm.get('description')?.touched">
+            {{ getErrorMessage('description') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="submitting">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="submit" class="btn btn-warning" [disabled]="debitForm.invalid || submitting">
+          <i class="fas fa-minus" *ngIf="!submitting"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+          {{ 'PETTY_CASH.ACTIONS.ADD_DEBIT' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i> {{ 'PETTY_CASH.LOADING' | translate }}
+    </div>
+  </ng-template>
+</div> 
