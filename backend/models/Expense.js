@@ -52,6 +52,11 @@ const expenseSchema = new mongoose.Schema({
   is_vat: {
     type: Boolean,
     default: false
+  },
+  vat_amount: {
+    type: Number,
+    default: 0,
+    min: [0, 'VAT amount cannot be negative']
   }
 }, {
   timestamps: true

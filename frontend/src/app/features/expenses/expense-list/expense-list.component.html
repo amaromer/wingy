@@ -171,13 +171,13 @@
   <div class="expenses-container" *ngIf="!loading">
     <!-- Mobile Card View -->
     <div class="expenses-cards" *ngIf="isMobile">
-      <div *ngFor="let expense of expenses || []" class="expense-card" [class.selected]="selectedExpenses.includes(expense.id)">
+      <div *ngFor="let expense of expenses || []" class="expense-card" [class.selected]="selectedExpenses.includes(expense._id || '')">
         <div class="card-header">
           <div class="card-checkbox">
             <input 
               type="checkbox" 
-              [checked]="selectedExpenses.includes(expense.id)"
-              (change)="onSelectExpense(expense.id)"
+              [checked]="selectedExpenses.includes(expense._id || '')"
+              (change)="onSelectExpense(expense._id || '')"
               class="expense-checkbox"
             >
           </div>
@@ -185,13 +185,13 @@
             <span class="amount">{{ expense.currency }} {{ expense.amount | number:'1.2-2' }}</span>
           </div>
           <div class="card-actions">
-            <button class="btn-icon" (click)="onViewExpense(expense.id)" [title]="'COMMON.VIEW' | translate">
+            <button class="btn-icon" (click)="onViewExpense(expense._id || '')" [title]="'COMMON.VIEW' | translate">
               👁️
             </button>
-            <button class="btn-icon" (click)="onEditExpense(expense.id)" [title]="'COMMON.EDIT' | translate" *ngIf="!authService.hasRole('Engineer')">
+            <button class="btn-icon" (click)="onEditExpense(expense._id || '')" [title]="'COMMON.EDIT' | translate" *ngIf="!authService.hasRole('Engineer')">
               ✏️
             </button>
-            <button class="btn-icon" (click)="onDeleteExpense(expense.id)" title="Delete" *ngIf="!authService.hasRole('Engineer')">
+            <button class="btn-icon" (click)="onDeleteExpense(expense._id || '')" title="Delete" *ngIf="!authService.hasRole('Engineer')">
               🗑️
             </button>
           </div>
@@ -283,12 +283,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let expense of expenses || []" class="expense-row" [class.selected]="selectedExpenses.includes(expense.id)">
+          <tr *ngFor="let expense of expenses || []" class="expense-row" [class.selected]="selectedExpenses.includes(expense._id || '')">
             <td class="checkbox-cell">
               <input 
                 type="checkbox" 
-                [checked]="selectedExpenses.includes(expense.id)"
-                (change)="onSelectExpense(expense.id)"
+                [checked]="selectedExpenses.includes(expense._id || '')"
+                (change)="onSelectExpense(expense._id || '')"
                 class="expense-checkbox"
               >
             </td>
@@ -298,8 +298,14 @@
                 <span class="currency-badge">{{ expense.currency }}</span>
               </div>
             </td>
-            <td class="amount-cell">
-              <span class="amount">{{ expense.currency }} {{ expense.amount | number:'1.2-2' }}</span>
+            <td class="amount">
+              <div class="amount-info">
+                <div class="base-amount">{{ formatCurrency(expense.amount, expense.currency) }}</div>
+                <div class="vat-info" *ngIf="expense.is_vat">
+                  <span class="vat-badge">VAT {{ formatCurrency(expense.vat_amount || 0, expense.currency) }}</span>
+                  <div class="base-amount-info">Base: {{ formatCurrency(expense.amount - (expense.vat_amount || 0), expense.currency) }}</div>
+                </div>
+              </div>
             </td>
             <td class="date-cell">
               {{ expense.date | date:'shortDate' }}
@@ -335,14 +341,14 @@
               <div class="action-buttons">
                 <button 
                   class="btn btn-icon btn-view" 
-                  (click)="onViewExpense(expense.id)"
+                  (click)="onViewExpense(expense._id || '')"
                   [title]="'COMMON.VIEW' | translate"
                 >
                   👁️
                 </button>
                 <button 
                   class="btn btn-icon btn-edit" 
-                  (click)="onEditExpense(expense.id)"
+                  (click)="onEditExpense(expense._id || '')"
                   [title]="'COMMON.EDIT' | translate"
                   *ngIf="!authService.hasRole('Engineer')"
                 >
@@ -350,7 +356,7 @@
                 </button>
                 <button 
                   class="btn btn-icon btn-delete" 
-                  (click)="onDeleteExpense(expense.id)"
+                  (click)="onDeleteExpense(expense._id || '')"
                   [title]="'COMMON.DELETE' | translate"
                   *ngIf="!authService.hasRole('Engineer')"
                 >

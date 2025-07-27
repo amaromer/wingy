@@ -36,9 +36,22 @@
             <label>{{ 'EXPENSE.FIELDS.DESCRIPTION' | translate }}</label>
             <span class="value">{{ expense.description }}</span>
           </div>
-          <div class="detail-item">
-            <label>{{ 'EXPENSE.FIELDS.AMOUNT' | translate }}</label>
-            <span class="value amount">{{ formatAmount(expense.amount, expense.currency) }}</span>
+          <div class="info-row">
+            <div class="info-label">{{ 'EXPENSE.FIELDS.AMOUNT' | translate }}</div>
+            <div class="info-value">
+              <div class="amount-info">
+                <div class="base-amount">{{ formatCurrency(expense.amount, expense.currency) }}</div>
+                <div class="vat-info" *ngIf="expense.is_vat">
+                  <div class="vat-details">
+                    <span class="vat-label">{{ 'EXPENSE.VAT.RATE' | translate }}: 5%</span>
+                    <span class="vat-amount">{{ 'EXPENSE.VAT.AMOUNT' | translate }}: {{ formatCurrency(expense.vat_amount || 0, expense.currency) }}</span>
+                  </div>
+                  <div class="total-with-vat">
+                    <strong>{{ 'EXPENSE.VAT.TOTAL_WITH_VAT' | translate }}: {{ formatCurrency(expense.amount + (expense.vat_amount || 0), expense.currency) }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="detail-item">
             <label>{{ 'EXPENSE.FIELDS.DATE' | translate }}</label>
@@ -103,13 +116,13 @@
       <div class="detail-section">
         <h3>{{ 'COMMON.METADATA' | translate }}</h3>
         <div class="detail-row">
-          <div class="detail-item" *ngIf="expense.created_at">
-            <label>{{ 'COMMON.CREATED_AT' | translate }}</label>
-            <span class="value">{{ formatDate(expense.created_at) }}</span>
+          <div class="detail-item" *ngIf="expense.createdAt">
+            <span class="label">{{ 'COMMON.CREATED_AT' | translate }}:</span>
+            <span class="value">{{ formatDate(expense.createdAt) }}</span>
           </div>
-          <div class="detail-item" *ngIf="expense.updated_at">
-            <label>{{ 'COMMON.UPDATED_AT' | translate }}</label>
-            <span class="value">{{ formatDate(expense.updated_at) }}</span>
+          <div class="detail-item" *ngIf="expense.updatedAt">
+            <span class="label">{{ 'COMMON.UPDATED_AT' | translate }}:</span>
+            <span class="value">{{ formatDate(expense.updatedAt) }}</span>
           </div>
         </div>
       </div>

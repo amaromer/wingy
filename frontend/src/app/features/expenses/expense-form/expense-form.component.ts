@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Expense, CreateExpenseRequest, UpdateExpenseRequest, Project, Category, Supplier } from '../../../core/models/expense.model';
 import { ExpenseService } from '../../../core/services/expense.service';
 import { MainCategory } from '../../../core/models/main-category.model';
 import { Employee } from '../../../core/models/employee.model';
+import { VatCalculator } from '../../../core/utils/vat-calculator';
 
 @Component({
   selector: 'app-expense-form',
@@ -18,15 +19,23 @@ import { Employee } from '../../../core/models/employee.model';
   styleUrls: ['./expense-form.component.scss']
 })
 export class ExpenseFormComponent implements OnInit {
-  expenseId?: string;
-  
+  // Form properties
   expenseForm: FormGroup;
   loading = false;
   submitting = false;
-  error = '';
   success = '';
+  error = '';
+  errorDetails: any = null;
+  showErrorDetails = false;
   isEditMode = false;
-  activeSection = 'basic'; // Default active section
+  isViewMode = false;
+  expenseId: string | null = null;
+  activeSection = 'basic';
+
+  // VAT calculation properties
+  vatAmount = 0;
+  totalWithVat = 0;
+  vatRate = VatCalculator.getVatRatePercentage();
   
   categories: Category[] = [];
   projects: Project[] = [];
@@ -36,8 +45,6 @@ export class ExpenseFormComponent implements OnInit {
   
   selectedFile: File | null = null;
   filePreview: string | null = null;
-  showErrorDetails = false;
-  errorDetails: any = null;
   isSupplierOptional: boolean = true;
   
   // Compression properties
@@ -78,6 +85,19 @@ export class ExpenseFormComponent implements OnInit {
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       invoice_number: [''],
       is_vat: [false]
+    });
+
+    // Add VAT calculation listeners
+    this.expenseForm.get('amount')?.valueChanges.subscribe(() => {
+      this.calculateVat();
+    });
+
+    this.expenseForm.get('is_vat')?.valueChanges.subscribe(() => {
+      this.calculateVat();
+    });
+
+    this.expenseForm.get('currency')?.valueChanges.subscribe(() => {
+      this.calculateVat();
     });
   }
 
@@ -728,5 +748,37 @@ export class ExpenseFormComponent implements OnInit {
   getCompressionRatio(): number {
     if (this.originalFileSize === 0) return 0;
     return Math.round(((this.originalFileSize - this.optimizedFileSize) / this.originalFileSize) * 100);
+  }
+
+  calculateVat(): void {
+    const amount = this.expenseForm.get('amount')?.value || 0;
+    const isVat = this.expenseForm.get('is_vat')?.value || false;
+    
+    this.vatAmount = VatCalculator.calculateVat(amount, isVat);
+    this.totalWithVat = VatCalculator.calculateTotalWithVat(amount, isVat);
+  }
+
+  formatVatAmount(): string {
+    const currency = this.expenseForm.get('currency')?.value || 'AED';
+    return VatCalculator.formatVatAmount(this.vatAmount, currency);
+  }
+
+  formatBaseAmount(): string {
+    const amount = this.expenseForm.get('amount')?.value || 0;
+    const isVat = this.expenseForm.get('is_vat')?.value || false;
+    const baseAmount = VatCalculator.calculateBaseAmount(amount, isVat);
+    const currency = this.expenseForm.get('currency')?.value || 'AED';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency
+    }).format(baseAmount);
+  }
+
+  formatTotalWithVat(): string {
+    const currency = this.expenseForm.get('currency')?.value || 'AED';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency
+    }).format(this.totalWithVat);
   }
 } 

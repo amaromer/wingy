@@ -68,7 +68,33 @@
           <div class="vat-card">
             <div class="vat-icon">🧾</div>
             <div class="vat-content">
-              <h3 class="vat-value">{{ getVATNetAmount() }}</h3>
+              <h3 class="vat-value">{{ getTotalVATDisplay() }}</h3>
+              <p class="vat-label">{{ 'DASHBOARD.TOTAL_VAT' | translate }}</p>
+            </div>
+          </div>
+          
+          <div class="vat-card">
+            <div class="vat-icon">💰</div>
+            <div class="vat-content">
+              <h3 class="vat-value">{{ getExpensesVATDisplay() }}</h3>
+              <p class="vat-label">{{ 'DASHBOARD.EXPENSES_VAT' | translate }}</p>
+            </div>
+          </div>
+          
+          <div class="vat-card">
+            <div class="vat-icon">💳</div>
+            <div class="vat-content">
+              <h3 class="vat-value">{{ getPaymentsVATDisplay() }}</h3>
+              <p class="vat-label">{{ 'DASHBOARD.PAYMENTS_VAT' | translate }}</p>
+            </div>
+          </div>
+          
+          <div class="vat-card net-vat">
+            <div class="vat-icon">📊</div>
+            <div class="vat-content">
+              <h3 class="vat-value" [class.positive]="getNetVATDisplay().includes('+')" [class.negative]="getNetVATDisplay().includes('-')">
+                {{ getNetVATDisplay() }}
+              </h3>
               <p class="vat-label">{{ 'DASHBOARD.NET_VAT' | translate }}</p>
             </div>
           </div>

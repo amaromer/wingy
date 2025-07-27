@@ -73,13 +73,13 @@ router.get('/overview', auth, async (req, res) => {
       
       // VAT statistics
       Promise.all([
-        // Expenses VAT
+        // Expenses VAT - Extract VAT from VAT-inclusive amounts
         Expense.aggregate([
           { $match: { ...matchStage, is_vat: true } },
           {
             $group: {
               _id: null,
-              total: { $sum: '$amount' }
+              total: { $sum: { $multiply: ['$amount', 0.05, { $divide: [1, 1.05] }] } }
             }
           }
         ]),

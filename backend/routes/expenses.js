@@ -341,8 +341,16 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
       attachment_url,
       is_vat: is_vat === 'true' || is_vat === true
     });
-    
+
+    // Calculate VAT amount if applicable
+    let vatAmount = 0;
+    if (expense.is_vat) {
+      vatAmount = expense.amount * 0.05; // 5% VAT
+      expense.vat_amount = vatAmount;
+    }
+
     console.log('Creating expense - Expense object:', expense);
+    console.log('Creating expense - VAT amount:', vatAmount);
     
     await expense.save();
     

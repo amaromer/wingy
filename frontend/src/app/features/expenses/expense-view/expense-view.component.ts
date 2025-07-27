@@ -144,6 +144,13 @@ export class ExpenseViewComponent implements OnInit {
     return `${currency} ${amount.toFixed(2)}`;
   }
 
+  formatCurrency(amount: number, currency: string = 'AED'): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
+  }
+
   getFileType(attachmentUrl: string): string {
     const extension = attachmentUrl.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '')) {

@@ -326,7 +326,9 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   // Bulk actions
   onSelectAll() {
     if (this.selectAll) {
-      this.selectedExpenses = this.expenses.map(expense => expense.id);
+      this.selectedExpenses = this.expenses
+        .map(expense => expense._id)
+        .filter((id): id is string => id !== undefined);
     } else {
       this.selectedExpenses = [];
     }
@@ -366,8 +368,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getExpenseById(id: string): Expense | undefined {
-    return this.expenses.find(expense => expense.id === id);
+  findExpenseById(id: string): Expense | undefined {
+    return this.expenses.find(expense => expense._id === id);
   }
 
   getCategoryName(categoryId: string | Category | null | undefined): string {
@@ -406,8 +408,11 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     return supplierId.name || this.translateService.instant('DASHBOARD.UNKNOWN_SUPPLIER');
   }
 
-  formatCurrency(amount: number, currency: string): string {
-    return this.expenseService.formatCurrency(amount, currency);
+  formatCurrency(amount: number, currency: string = 'AED'): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
   }
 
   formatDate(date: string): string {

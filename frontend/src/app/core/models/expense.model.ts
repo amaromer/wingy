@@ -1,22 +1,22 @@
 import { Employee } from './employee.model';
 
 export interface Expense {
-  id: string;
   _id?: string;
-  project_id: string | Project;
-  supplier_id: string | Supplier;
-  employee_id?: string | Employee;
-  category_id: string | Category;
+  id?: string; // Alias for _id for compatibility
+  project_id: Project | string;
+  supplier_id?: Supplier | string;
+  employee_id?: Employee | string;
+  category_id?: Category | string;
   amount: number;
-  currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
+  currency: string;
   date: string;
   description: string;
   invoice_number?: string;
   attachment_url?: string;
-  is_vat?: boolean;
-  formattedAmount?: string;
-  created_at?: string;
-  updated_at?: string;
+  is_vat: boolean;
+  vat_amount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CreateExpenseRequest {

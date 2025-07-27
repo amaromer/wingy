@@ -78,6 +78,20 @@
               <div class="error-message" *ngIf="getFieldError('amount')">
                 {{ getFieldError('amount') | translate }}
               </div>
+              
+              <!-- VAT Calculation Display -->
+              <div class="vat-calculation" *ngIf="expenseForm.get('is_vat')?.value">
+                <div class="vat-info">
+                  <span class="vat-label">{{ 'EXPENSE.VAT.RATE' | translate }}: {{ vatRate }}</span>
+                  <span class="vat-amount">{{ 'EXPENSE.VAT.AMOUNT' | translate }}: {{ formatVatAmount() }}</span>
+                </div>
+                <div class="base-amount-info">
+                  <span class="base-label">{{ 'EXPENSE.VAT.BASE_AMOUNT' | translate }}: {{ formatBaseAmount() }}</span>
+                </div>
+                <div class="total-with-vat">
+                  <strong>{{ 'EXPENSE.VAT.TOTAL_INCLUDING_VAT' | translate }}: {{ formatTotalWithVat() }}</strong>
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
