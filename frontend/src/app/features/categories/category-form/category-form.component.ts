@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../../../core/models/category.model';
@@ -30,6 +30,12 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   // Destroy subject for cleanup
   private destroy$ = new Subject<void>();
+  
+  // Submit subject for debouncing
+  private submitSubject = new Subject<void>();
+  
+  // Track last submission time to prevent rapid successive submissions
+  private lastSubmissionTime = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +64,17 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
             codeControl.setValue(code);
           }
         }
+      });
+      
+    // Debounced submit to prevent rapid successive submissions
+    this.submitSubject
+      .pipe(
+        debounceTime(1000), // Increased to 1 second debounce
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.performSubmit();
       });
   }
 
@@ -184,11 +201,38 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    console.log('onSubmit called - Form valid:', this.categoryForm.valid, 'Submitting:', this.submitting);
+    
     if (this.categoryForm.invalid || this.submitting) {
+      console.log('Form submission blocked - invalid or already submitting');
       this.markFormGroupTouched();
       return;
     }
 
+    console.log('Triggering debounced submit');
+    // Trigger debounced submit
+    this.submitSubject.next();
+  }
+
+  private performSubmit() {
+    console.log('performSubmit called - Form valid:', this.categoryForm.valid, 'Submitting:', this.submitting);
+    
+    // Check if we're already submitting or form is invalid
+    if (this.categoryForm.invalid || this.submitting) {
+      console.log('performSubmit blocked - invalid or already submitting');
+      this.markFormGroupTouched();
+      return;
+    }
+
+    // Check if we've submitted recently (within 2 seconds)
+    const now = Date.now();
+    if (now - this.lastSubmissionTime < 2000) {
+      console.log('performSubmit blocked - too soon since last submission');
+      return;
+    }
+
+    console.log('Starting form submission');
+    this.lastSubmissionTime = now;
     this.submitting = true;
     this.error = '';
     this.success = '';
@@ -234,6 +278,9 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
         this.success = this.isEditMode ? 'CATEGORIES.MESSAGES.UPDATE_SUCCESS' : 'CATEGORIES.MESSAGES.CREATE_SUCCESS';
         this.submitting = false;
         
+        // Reset submission time
+        this.lastSubmissionTime = 0;
+        
         // Redirect after a short delay
         setTimeout(() => {
           this.router.navigate(['/categories']);
@@ -247,8 +294,10 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
           error: err.error
         });
         
-        // Show specific validation errors if available
-        if (err.error?.errors && Array.isArray(err.error.errors)) {
+        // Show specific error messages based on status code
+        if (err.status === 429) {
+          this.error = 'COMMON.ERROR.TOO_MANY_REQUESTS';
+        } else if (err.error?.errors && Array.isArray(err.error.errors)) {
           const validationErrors = err.error.errors.map((e: any) => `${e.param}: ${e.msg}`).join(', ');
           this.error = `Validation errors: ${validationErrors}`;
         } else if (err.error?.message) {
@@ -258,6 +307,9 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
         }
         
         this.submitting = false;
+        
+        // Reset submission time on error
+        this.lastSubmissionTime = 0;
       }
     });
   }

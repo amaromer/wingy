@@ -831,4 +831,26 @@ router.get('/stats/totals', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/expenses/bulk-delete
+// @desc    Bulk delete expenses
+// @access  Private (Admin, Accountant)
+router.post('/bulk-delete', auth, requireExpenseAccess, async (req, res) => {
+  try {
+    const { ids } = req.body;
+    
+    if (!ids || !Array.isArray(ids)) {
+      return res.status(400).json({ message: 'Expense IDs are required' });
+    }
+
+    const result = await Expense.deleteMany({ _id: { $in: ids } });
+    
+    res.json({ 
+      message: `${result.deletedCount} expenses deleted successfully` 
+    });
+  } catch (error) {
+    console.error('Error bulk deleting expenses:', error);
+    res.status(500).json({ message: 'Error deleting expenses' });
+  }
+});
+
 module.exports = router; 

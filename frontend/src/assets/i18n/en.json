@@ -421,6 +421,7 @@
       "CREATE_FAILED": "Failed to create expense. Please try again.",
       "UPDATE_FAILED": "Failed to update expense. Please try again.",
       "DELETE_FAILED": "Failed to delete expense. Please try again.",
+      "BULK_DELETE_FAILED": "Failed to delete selected expenses. Please try again.",
       "INVALID_FILE_TYPE": "Invalid file type. Please upload JPEG, PNG, GIF, or PDF files only.",
       "FILE_TOO_LARGE": "File is too large. Maximum size is 10MB.",
       "FILE_OPTIMIZATION_FAILED": "Failed to optimize image. Please try again."
@@ -428,7 +429,8 @@
     "SUCCESS": {
       "CREATED": "Expense created successfully!",
       "UPDATED": "Expense updated successfully!",
-      "DELETED": "Expense deleted successfully!"
+      "DELETED": "Expense deleted successfully!",
+      "BULK_DELETED": "Selected expenses deleted successfully!"
     },
     "SECTIONS": {
       "BASIC_INFO": "Basic Information",
@@ -518,6 +520,10 @@
     "MAIN_CATEGORY_HELP": "Select a main category to filter suppliers. Only suppliers assigned to this category will be shown.",
     "SUPPLIER_OPTIONAL_HELP": "Supplier is optional for this category",
     "EMPLOYEE_HELP": "Link expense to employee for petty cash tracking",
+    "CONFIRM": {
+      "DELETE_SINGLE": "Are you sure you want to delete this expense?",
+      "DELETE_MULTIPLE": "Are you sure you want to delete {{count}} expense(s)?"
+    },
     "VIEW_TITLE": "Expense Details",
     "NOT_FOUND": "Expense Not Found",
     "NOT_FOUND_DESC": "The expense you're looking for doesn't exist or has been removed."

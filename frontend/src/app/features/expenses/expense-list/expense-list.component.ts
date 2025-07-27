@@ -210,6 +210,11 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       });
   }
 
+  private resetSelection() {
+    this.selectedExpenses = [];
+    this.selectAll = false;
+  }
+
   loadExpenses() {
     this.loading = true;
     this.error = '';
@@ -248,6 +253,10 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
         this.totalItems = response.total || 0;
         this.totalPages = response.pages || 1;
         this.currentPage = response.page || 1;
+        
+        // Reset selection when loading new data
+        this.resetSelection();
+        
         this.loading = false;
       },
       error: (err) => {
@@ -367,11 +376,16 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   // Bulk actions
   onSelectAll() {
+    // Toggle the selectAll state
+    this.selectAll = !this.selectAll;
+    
     if (this.selectAll) {
+      // Select all expenses
       this.selectedExpenses = this.expenses
         .map(expense => expense._id)
         .filter((id): id is string => id !== undefined);
     } else {
+      // Deselect all expenses
       this.selectedExpenses = [];
     }
   }
@@ -383,7 +397,9 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     } else {
       this.selectedExpenses.push(expenseId);
     }
-    this.selectAll = this.selectedExpenses.length === this.expenses.length;
+    
+    // Update selectAll state - only true if all expenses on current page are selected
+    this.selectAll = this.expenses.length > 0 && this.selectedExpenses.length === this.expenses.length;
   }
 
   onBulkDelete() {

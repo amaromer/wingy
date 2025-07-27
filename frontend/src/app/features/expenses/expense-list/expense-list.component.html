@@ -185,6 +185,18 @@
   <div class="expenses-container" *ngIf="!loading">
     <!-- Mobile Card View -->
     <div class="expenses-cards" *ngIf="isMobile">
+      <!-- Mobile Select All Header -->
+      <div class="mobile-select-header" *ngIf="expenses && expenses.length > 0">
+        <div class="select-all-container">
+          <input 
+            type="checkbox" 
+            [checked]="selectAll"
+            (change)="onSelectAll()"
+            class="select-all-checkbox"
+          >
+          <span class="select-all-text">{{ 'EXPENSE.BULK.SELECTED' | translate: { count: selectedExpenses.length } }}</span>
+        </div>
+      </div>
       <div *ngFor="let expense of expenses || []" class="expense-card" [class.selected]="selectedExpenses.includes(expense._id || '')">
         <div class="card-header">
           <div class="card-checkbox">
