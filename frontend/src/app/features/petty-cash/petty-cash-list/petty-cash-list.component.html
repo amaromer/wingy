@@ -125,7 +125,8 @@
             </td>
             <td>
               <div class="btn-group">
-                <button class="btn btn-sm btn-danger" (click)="deleteTransaction(transaction._id)" title="Delete">
+                <button class="btn btn-sm btn-danger" (click)="deleteTransaction(transaction._id)" 
+                        [title]="'PETTY_CASH.ACTIONS.DELETE' | translate">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>

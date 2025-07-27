@@ -320,7 +320,8 @@
       "ADD_CREDIT": "Add Credit",
       "ADD_DEBIT": "Add Debit",
       "TRANSFER": "Transfer",
-      "VIEW_BALANCES": "View Balances"
+      "VIEW_BALANCES": "View Balances",
+      "DELETE": "Delete"
     },
     "FILTERS": {
       "EMPLOYEE": "Employee",
@@ -351,6 +352,14 @@
       "TOTAL_CREDITS": "Total Credits",
       "TOTAL_DEBITS": "Total Debits",
       "NET_BALANCE": "Net Balance"
+    },
+    "DELETE": {
+      "CONFIRMATION": "Are you sure you want to delete this transaction?",
+      "SUCCESS": "Transaction deleted successfully",
+      "ERROR": "Failed to delete transaction",
+      "NOT_FOUND": "Transaction not found",
+      "LINKED_TO_EXPENSE": "Cannot delete transaction linked to an expense. Delete the expense first.",
+      "CANCELED": "Delete operation canceled"
     }
   },
   "EXPENSE": {

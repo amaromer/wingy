@@ -253,7 +253,8 @@
       "DESCRIPTION": "الوصف",
       "DESCRIPTION_PLACEHOLDER": "أدخل وصف المشروع",
       "STATUS": "الحالة",
-      "PRIORITY": "الأولوية",
+      "PRIORITY": "الأولوية"
+    }
   },
   "PETTY_CASH": {
     "LIST_TITLE": "إدارة النقد الصغير",
@@ -266,7 +267,8 @@
       "ADD_CREDIT": "إضافة رصيد",
       "ADD_DEBIT": "إضافة خصم",
       "TRANSFER": "تحويل",
-      "VIEW_BALANCES": "عرض الأرصدة"
+      "VIEW_BALANCES": "عرض الأرصدة",
+      "DELETE": "حذف"
     },
     "FILTERS": {
       "EMPLOYEE": "الموظف",
@@ -276,6 +278,8 @@
     },
     "FIELDS": {
       "EMPLOYEE": "الموظف",
+      "FROM_EMPLOYEE": "من الموظف",
+      "TO_EMPLOYEE": "إلى الموظف",
       "TYPE": "النوع",
       "AMOUNT": "المبلغ",
       "BALANCE_AFTER": "الرصيد بعد",
@@ -283,65 +287,27 @@
       "REFERENCE_TYPE": "نوع المرجع",
       "DATE": "التاريخ",
       "PROCESSED_BY": "تمت المعالجة بواسطة"
+    },
+    "BALANCES": {
+      "EMPLOYEE_BALANCES": "أرصدة الموظفين",
+      "RECENT_TRANSACTIONS": "المعاملات الأخيرة",
+      "TOTAL_EXPENSES": "إجمالي المصروفات",
+      "EXPENSE_CREDIT_DIFFERENCE": "المصروفات مقابل الرصيد"
+    },
+    "SUMMARY": {
+      "TOTAL_EMPLOYEES": "إجمالي الموظفين",
+      "TOTAL_CREDITS": "إجمالي الأرصدة",
+      "TOTAL_DEBITS": "إجمالي الخصومات",
+      "NET_BALANCE": "صافي الرصيد"
+    },
+    "DELETE": {
+      "CONFIRMATION": "هل أنت متأكد من حذف هذه المعاملة؟",
+      "SUCCESS": "تم حذف المعاملة بنجاح",
+      "ERROR": "فشل في حذف المعاملة",
+      "NOT_FOUND": "المعاملة غير موجودة",
+      "LINKED_TO_EXPENSE": "لا يمكن حذف المعاملة المرتبطة بمصروف. احذف المصروف أولاً.",
+      "CANCELED": "تم إلغاء عملية الحذف"
     }
-      "START_DATE": "تاريخ البدء",
-      "END_DATE": "تاريخ الانتهاء",
-      "BUDGET": "الميزانية الإجمالية",
-      "BUDGET_PLACEHOLDER": "أدخل الميزانية الإجمالية",
-      "LOCATION": "الموقع",
-      "LOCATION_PLACEHOLDER": "أدخل موقع المشروع",
-      "CLIENT_NAME": "اسم العميل",
-      "CLIENT_NAME_PLACEHOLDER": "أدخل اسم العميل",
-      "PROJECT_MANAGER": "مدير المشروع",
-      "PROJECT_MANAGER_PLACEHOLDER": "أدخل اسم مدير المشروع",
-      "EXPENSES": "إجمالي المصروفات",
-      "PHASE_NAME": "اسم المرحلة",
-      "PHASE_NAME_PLACEHOLDER": "أدخل اسم المرحلة",
-      "PHASE_DESCRIPTION": "وصف المرحلة",
-      "PHASE_DESCRIPTION_PLACEHOLDER": "أدخل وصف المرحلة",
-      "PHASE_START_DATE": "تاريخ البدء",
-      "PHASE_END_DATE": "تاريخ الانتهاء",
-      "PHASE_BUDGET": "ميزانية المرحلة",
-      "PHASE_BUDGET_PLACEHOLDER": "أدخل ميزانية المرحلة",
-      "PHASE_STATUS": "حالة المرحلة",
-      "MEMBER_NAME": "اسم العضو",
-      "MEMBER_NAME_PLACEHOLDER": "أدخل اسم العضو",
-      "MEMBER_ROLE": "الدور",
-      "MEMBER_EMAIL": "البريد الإلكتروني",
-      "MEMBER_EMAIL_PLACEHOLDER": "أدخل عنوان البريد الإلكتروني",
-      "MEMBER_PHONE": "الهاتف",
-      "MEMBER_PHONE_PLACEHOLDER": "أدخل رقم الهاتف",
-      "SELECT_ROLE": "اختر دوراً"
-    },
-    "ACTIONS": {
-      "ADD_PHASE": "إضافة مرحلة",
-      "REMOVE_PHASE": "إزالة مرحلة",
-      "ADD_MEMBER": "إضافة عضو",
-      "REMOVE_MEMBER": "إزالة عضو"
-    },
-    "FILTERS": {
-      "STATUS": "تصفية حسب الحالة",
-      "LOCATION": "تصفية حسب الموقع",
-      "LOCATION_PLACEHOLDER": "أدخل الموقع للتصفية"
-    },
-    "SORT": {
-      "BY": "ترتيب حسب",
-      "ORDER": "ترتيب",
-      "ASC": "تصاعدي",
-      "DESC": "تنازلي",
-      "NAME": "الاسم",
-      "STATUS": "الحالة",
-      "START_DATE": "تاريخ البدء",
-      "BUDGET": "الميزانية",
-      "PROGRESS": "التقدم"
-    },
-    "BUDGET": {
-      "TOTAL_PROJECT": "إجمالي ميزانية المشروع",
-      "TOTAL_PHASES": "إجمالي ميزانية المراحل",
-      "DIFFERENCE": "فرق الميزانية"
-    },
-    "PHASE": "المرحلة",
-    "TEAM_MEMBER": "عضو الفريق"
   },
   "ALL_STATUSES": "جميع الحالات",
   "FORM": {

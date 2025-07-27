@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PettyCashService } from '../../../core/services/petty-cash.service';
 import { EmployeeService } from '../../../core/services/employee.service';
 import { PettyCash } from '../../../core/models/petty-cash.model';
@@ -47,7 +47,8 @@ export class PettyCashListComponent implements OnInit {
   constructor(
     private pettyCashService: PettyCashService,
     private employeeService: EmployeeService,
-    private router: Router
+    private router: Router,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -118,15 +119,50 @@ export class PettyCashListComponent implements OnInit {
   }
 
   deleteTransaction(id: string): void {
-    if (confirm('Are you sure you want to delete this transaction?')) {
+    // Get transaction details for better confirmation
+    const transaction = this.transactions.find(t => t._id === id);
+    if (!transaction) {
+      console.error('Transaction not found');
+      return;
+    }
+
+    const employeeName = this.getEmployeeName(transaction.employee_id);
+    const amount = this.formatCurrency(transaction.amount);
+    const type = this.getTypeText(transaction.type);
+    
+    // Use translation for confirmation message
+    const confirmMessage = this.translateService.instant('PETTY_CASH.DELETE.CONFIRMATION') + 
+      `\n\nEmployee: ${employeeName}\nAmount: ${amount}\nType: ${type}\nDescription: ${transaction.description}`;
+    
+    if (confirm(confirmMessage)) {
+      this.loading = true;
+      
       this.pettyCashService.deleteTransaction(id).subscribe({
-        next: () => {
-          this.loadTransactions();
+        next: (response) => {
+          console.log('Transaction deleted successfully:', response.message);
+          this.loadTransactions(); // Reload the list
+          // Show success message
+          alert(this.translateService.instant('PETTY_CASH.DELETE.SUCCESS'));
         },
         error: (error) => {
           console.error('Error deleting transaction:', error);
+          let errorMessage = this.translateService.instant('PETTY_CASH.DELETE.ERROR');
+          
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.status === 404) {
+            errorMessage = this.translateService.instant('PETTY_CASH.DELETE.NOT_FOUND');
+          } else if (error.status === 400) {
+            errorMessage = error.error?.message || this.translateService.instant('PETTY_CASH.DELETE.LINKED_TO_EXPENSE');
+          }
+          
+          alert(`Error: ${errorMessage}`);
+          this.loading = false;
         }
       });
+    } else {
+      // User canceled
+      console.log('Delete operation canceled by user');
     }
   }
 

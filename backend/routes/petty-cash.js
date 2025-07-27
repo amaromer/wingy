@@ -117,6 +117,51 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+// Delete transaction
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const transaction = await PettyCash.findById(req.params.id);
+    
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    // Check if transaction is linked to an expense (prevent deletion of expense-linked transactions)
+    if (transaction.reference_type === 'expense' && transaction.reference_id) {
+      return res.status(400).json({ 
+        message: 'Cannot delete transaction linked to an expense. Delete the expense first.' 
+      });
+    }
+
+    // For transfers, we need to handle both transactions
+    if (transaction.type === 'transfer_out' || transaction.type === 'transfer_in') {
+      // Find the corresponding transfer transaction
+      const transferQuery = {
+        $or: [
+          { reference_id: transaction._id },
+          { _id: transaction.reference_id }
+        ],
+        type: { $in: ['transfer_out', 'transfer_in'] }
+      };
+      
+      const relatedTransactions = await PettyCash.find(transferQuery);
+      
+      // Delete all related transfer transactions
+      await PettyCash.deleteMany(transferQuery);
+      
+      console.log(`Deleted ${relatedTransactions.length} transfer transactions`);
+    } else {
+      // Delete single transaction
+      await PettyCash.findByIdAndDelete(req.params.id);
+    }
+
+    res.json({ message: 'Transaction deleted successfully' });
+  } catch (error) {
+    console.error('Delete transaction error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Add credit to employee
 router.post('/credit', auth, async (req, res) => {
   try {
