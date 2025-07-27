@@ -129,4 +129,8 @@ export class DashboardService {
   getRecentActivity(limit: number = 20): Observable<RecentActivity[]> {
     return this.http.get<RecentActivity[]>(`${this.apiUrl}/recent-activity`, { params: { limit: limit.toString() } });
   }
+
+  getFirstExpenseDate(): Observable<{ firstExpenseDate: string | null }> {
+    return this.http.get<{ firstExpenseDate: string | null }>(`${this.apiUrl}/first-expense-date`);
+  }
 } 

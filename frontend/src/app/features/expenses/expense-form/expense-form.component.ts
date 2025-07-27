@@ -197,6 +197,7 @@ export class ExpenseFormComponent implements OnInit {
           supplier_id: supplierId,
           employee_id: employeeId,
           category_id: categoryId,
+          main_category_id: expense.main_category_id || '',
           amount: expense.amount,
           currency: expense.currency,
           date: this.formatDateForInput(expense.date),

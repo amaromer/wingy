@@ -148,11 +148,13 @@ router.get('/', auth, requireExpenseAccess, async (req, res) => {
       project_id, 
       supplier_id, 
       category_id, 
+      main_category_id,
       date_from, 
       date_to, 
       amount_min, 
       amount_max,
       currency,
+      is_vat,
       search,
       sort = 'date', 
       order = 'desc' 
@@ -173,6 +175,16 @@ router.get('/', auth, requireExpenseAccess, async (req, res) => {
     // Filter by category
     if (category_id) {
       query.category_id = category_id;
+    }
+    
+    // Filter by main category
+    if (main_category_id) {
+      query.main_category_id = main_category_id;
+    }
+    
+    // Filter by VAT status
+    if (is_vat !== undefined && is_vat !== '') {
+      query.is_vat = is_vat === 'true' || is_vat === true;
     }
     
     // Filter by date range
@@ -211,6 +223,7 @@ router.get('/', auth, requireExpenseAccess, async (req, res) => {
       .populate('project_id', 'name code')
       .populate('supplier_id', 'name contact_person')
       .populate('category_id', 'name')
+      .populate('main_category_id', 'name')
       .sort(sortOptions)
       .limit(parseInt(req.query.limit) || 50)
       .skip(parseInt(req.query.skip) || 0);
@@ -267,6 +280,7 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
       supplier_id, 
       employee_id,
       category_id, 
+      main_category_id,
       amount, 
       currency, 
       date, 
@@ -333,6 +347,7 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
       supplier_id: supplier_id || null,
       employee_id: employee_id || null,
       category_id: category_id || null,
+      main_category_id: main_category_id || null,
       amount: parseFloat(amount),
       currency,
       date,
@@ -345,7 +360,8 @@ router.post('/', auth, requireExpenseAccess, upload.single('attachment'), handle
     // Calculate VAT amount if applicable
     let vatAmount = 0;
     if (expense.is_vat) {
-      vatAmount = expense.amount * 0.05; // 5% VAT
+      // VAT is included in the amount, so extract it
+      vatAmount = expense.amount * 0.05 / 1.05; // 5% VAT from VAT-inclusive amount
       expense.vat_amount = vatAmount;
     }
 
@@ -450,6 +466,7 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
       supplier_id, 
       employee_id,
       category_id, 
+      main_category_id,
       amount, 
       currency, 
       date, 
@@ -499,12 +516,20 @@ router.put('/:id', auth, requireExpenseCreateOnly, upload.single('attachment'), 
     if (supplier_id !== undefined) expense.supplier_id = supplier_id || null;
     if (employee_id !== undefined) expense.employee_id = employee_id || null;
     if (category_id !== undefined) expense.category_id = category_id || null;
+    if (main_category_id !== undefined) expense.main_category_id = main_category_id || null;
     if (amount) expense.amount = parseFloat(amount);
     if (currency) expense.currency = currency;
     if (date) expense.date = date;
     if (description) expense.description = description;
     if (invoice_number !== undefined) expense.invoice_number = invoice_number;
     if (is_vat !== undefined) expense.is_vat = is_vat === 'true' || is_vat === true;
+    
+    // Recalculate VAT amount if VAT status or amount changed
+    if (expense.is_vat) {
+      expense.vat_amount = expense.amount * 0.05 / 1.05; // 5% VAT from VAT-inclusive amount
+    } else {
+      expense.vat_amount = 0;
+    }
     
     await expense.save();
     

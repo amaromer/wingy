@@ -36,6 +36,20 @@
 
   <!-- Search and Filters -->
   <div class="filters-section">
+    <!-- Active Filter Indicator -->
+    <div class="active-filter-indicator" *ngIf="isVATFilterActive()">
+      <span class="filter-badge">
+        🧾 {{ 'EXPENSE.FILTERS.VAT_APPLICABLE' | translate }}
+      </span>
+      <button 
+        class="clear-filter-btn" 
+        (click)="clearFilters()"
+        [title]="'EXPENSE.FILTERS.CLEAR' | translate"
+      >
+        ✕
+      </button>
+    </div>
+
     <!-- Search Bar -->
     <div class="search-container">
       <div class="search-box">
@@ -191,7 +205,7 @@
             <button class="btn-icon" (click)="onEditExpense(expense._id || '')" [title]="'COMMON.EDIT' | translate" *ngIf="!authService.hasRole('Engineer')">
               ✏️
             </button>
-            <button class="btn-icon" (click)="onDeleteExpense(expense._id || '')" title="Delete" *ngIf="!authService.hasRole('Engineer')">
+            <button class="btn-icon" (click)="onDeleteExpense(expense._id || '')" [title]="'COMMON.DELETE' | translate" *ngIf="!authService.hasRole('Engineer')">
               🗑️
             </button>
           </div>
@@ -275,8 +289,10 @@
             </th>
             <th>{{ 'EXPENSE.FIELDS.PROJECT' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.CATEGORY' | translate }}</th>
+            <th>{{ 'MAIN_CATEGORIES.FIELDS.NAME' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.SUPPLIER' | translate }}</th>
-            <th>{{ 'EXPENSE.FIELDS.VAT' | translate }}</th>
+            <th>{{ 'EXPENSE.FIELDS.IS_VAT' | translate }}</th>
+            <th>{{ 'EXPENSE.FIELDS.VAT_AMOUNT' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.INVOICE' | translate }}</th>
             <th>{{ 'EXPENSE.FIELDS.ATTACHMENT' | translate }}</th>
             <th class="actions-header">{{ 'COMMON.ACTIONS' | translate }}</th>
@@ -316,12 +332,24 @@
             <td class="category-cell">
               {{ getCategoryName(expense.category_id) }}
             </td>
+            <td class="main-category-cell">
+              <span *ngIf="expense.main_category_id" class="main-category-badge">
+                {{ getMainCategoryName(expense.main_category_id) }}
+              </span>
+              <span *ngIf="!expense.main_category_id" class="no-main-category">-</span>
+            </td>
             <td class="supplier-cell">
               {{ getSupplierName(expense.supplier_id) }}
             </td>
             <td class="vat-cell">
               <span *ngIf="expense.is_vat" class="vat-badge">🧾 VAT</span>
               <span *ngIf="!expense.is_vat" class="no-vat">-</span>
+            </td>
+            <td class="vat-amount-cell">
+              <span *ngIf="expense.is_vat && expense.vat_amount" class="vat-amount">
+                {{ formatCurrency(expense.vat_amount, expense.currency) }}
+              </span>
+              <span *ngIf="!expense.is_vat || !expense.vat_amount" class="no-vat-amount">-</span>
             </td>
             <td class="invoice-cell">
               {{ expense.invoice_number || '-' }}

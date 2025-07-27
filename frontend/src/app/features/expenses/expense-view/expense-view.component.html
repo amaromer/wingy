@@ -46,8 +46,11 @@
                     <span class="vat-label">{{ 'EXPENSE.VAT.RATE' | translate }}: 5%</span>
                     <span class="vat-amount">{{ 'EXPENSE.VAT.AMOUNT' | translate }}: {{ formatCurrency(expense.vat_amount || 0, expense.currency) }}</span>
                   </div>
+                  <div class="base-amount-info">
+                    <span class="base-label">{{ 'EXPENSE.VAT.BASE_AMOUNT' | translate }}: {{ formatCurrency(expense.amount - (expense.vat_amount || 0), expense.currency) }}</span>
+                  </div>
                   <div class="total-with-vat">
-                    <strong>{{ 'EXPENSE.VAT.TOTAL_WITH_VAT' | translate }}: {{ formatCurrency(expense.amount + (expense.vat_amount || 0), expense.currency) }}</strong>
+                    <strong>{{ 'EXPENSE.VAT.TOTAL_WITH_VAT' | translate }}: {{ formatCurrency(expense.amount, expense.currency) }}</strong>
                   </div>
                 </div>
               </div>

@@ -18,6 +18,10 @@ const expenseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   },
+  main_category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MainCategory'
+  },
   amount: {
     type: Number,
     required: [true, 'Amount is required'],
@@ -67,6 +71,7 @@ expenseSchema.index({ project_id: 1 });
 expenseSchema.index({ supplier_id: 1 });
 expenseSchema.index({ employee_id: 1 });
 expenseSchema.index({ category_id: 1 });
+expenseSchema.index({ main_category_id: 1 });
 expenseSchema.index({ date: 1 });
 expenseSchema.index({ amount: 1 });
 

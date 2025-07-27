@@ -22,6 +22,22 @@
     </div>
   </div>
 
+  <!-- Selected Main Category Indicator -->
+  <div class="selected-main-category" *ngIf="selectedMainCategory">
+    <div class="selected-category-badge">
+      <span class="category-icon">{{ selectedMainCategory.icon || '📁' }}</span>
+      <span class="category-name">{{ selectedMainCategory.name }}</span>
+      <button 
+        type="button" 
+        class="btn-clear-category" 
+        (click)="clearSelectedMainCategory()"
+        [title]="'COMMON.CLEAR' | translate"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+
   <!-- No Main Categories Message -->
   <div class="no-main-categories" *ngIf="mainCategories.length === 0 && !loading">
     <div class="empty-state">

@@ -3,39 +3,39 @@ export class VatCalculator {
 
   /**
    * Calculate VAT amount from a VAT-inclusive amount
-   * @param totalAmount - The total amount including VAT
+   * @param amount - The amount including VAT
    * @param isVat - Whether the expense is subject to VAT
    * @returns The VAT amount (0 if not subject to VAT)
    */
-  static calculateVat(totalAmount: number, isVat: boolean): number {
-    if (!isVat || totalAmount <= 0) {
+  static calculateVat(amount: number, isVat: boolean): number {
+    if (!isVat || amount <= 0) {
       return 0;
     }
     // VAT is included in the amount, so extract it
-    return totalAmount * this.VAT_RATE / (1 + this.VAT_RATE);
+    return amount * this.VAT_RATE / (1 + this.VAT_RATE);
   }
 
   /**
-   * Calculate base amount (excluding VAT) from total amount
-   * @param totalAmount - The total amount including VAT
+   * Calculate base amount (excluding VAT) from VAT-inclusive amount
+   * @param amount - The amount including VAT
    * @param isVat - Whether the expense is subject to VAT
    * @returns The base amount excluding VAT
    */
-  static calculateBaseAmount(totalAmount: number, isVat: boolean): number {
-    if (!isVat || totalAmount <= 0) {
-      return totalAmount;
+  static calculateBaseAmount(amount: number, isVat: boolean): number {
+    if (!isVat || amount <= 0) {
+      return amount;
     }
-    return totalAmount / (1 + this.VAT_RATE);
+    return amount / (1 + this.VAT_RATE); // Extract base amount from VAT-inclusive amount
   }
 
   /**
    * Get total amount (same as input since VAT is included)
-   * @param totalAmount - The total amount including VAT
+   * @param amount - The amount including VAT
    * @param isVat - Whether the expense is subject to VAT
    * @returns The total amount (same as input)
    */
-  static calculateTotalWithVat(totalAmount: number, isVat: boolean): number {
-    return totalAmount; // VAT is already included
+  static calculateTotalWithVat(amount: number, isVat: boolean): number {
+    return amount; // VAT is already included
   }
 
   /**

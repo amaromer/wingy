@@ -14,6 +14,7 @@ interface StatItem {
   route?: string;
   trend?: number;
   trendIcon?: string;
+  type?: string; // Add type to identify specific stat cards
 }
 
 @Component({
@@ -49,8 +50,43 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadDashboard();
-    this.loadAnalytics();
+    this.setDefaultDateFilter();
+  }
+
+  setDefaultDateFilter() {
+    // Get the first expense date and set default filter
+    this.dashboardService.getFirstExpenseDate().subscribe({
+      next: (response: { firstExpenseDate: string | null }) => {
+        if (response.firstExpenseDate) {
+          this.dateFrom = response.firstExpenseDate;
+          this.dateTo = new Date().toISOString().split('T')[0]; // Today
+          console.log('Default date filter set:', { from: this.dateFrom, to: this.dateTo });
+        } else {
+          // If no expenses, set to last 30 days
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          this.dateFrom = thirtyDaysAgo.toISOString().split('T')[0];
+          this.dateTo = new Date().toISOString().split('T')[0];
+          console.log('No expenses found, using last 30 days:', { from: this.dateFrom, to: this.dateTo });
+        }
+        
+        // Reload dashboard data with the new date filter
+        this.loadDashboard();
+        this.loadAnalytics();
+      },
+      error: (error: any) => {
+        console.error('Error getting first expense date:', error);
+        // Fallback to last 30 days
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        this.dateFrom = thirtyDaysAgo.toISOString().split('T')[0];
+        this.dateTo = new Date().toISOString().split('T')[0];
+        
+        // Reload dashboard data with fallback filter
+        this.loadDashboard();
+        this.loadAnalytics();
+      }
+    });
   }
 
   loadDashboard() {
@@ -141,7 +177,8 @@ export class DashboardComponent implements OnInit {
         icon: '🧾',
         value: VatCalculator.formatVatAmount(this.stats.overview.totalVAT || 0),
         label: 'DASHBOARD.TOTAL_VAT',
-        route: '/expenses'
+        route: '/expenses',
+        type: 'vat'
       },
       {
         icon: '💳',
@@ -152,14 +189,132 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  onStatCardClick(route: string) {
+  onStatCardClick(route: string, statItem?: StatItem) {
     if (route) {
-      this.router.navigate([route]);
+      // Special handling for VAT stat card
+      if (statItem?.type === 'vat') {
+        this.onVATCardClick('total');
+      } else {
+        this.router.navigate([route]);
+      }
     }
+  }
+
+  onVATCardClick(type: 'total' | 'expenses' | 'payments' | 'net') {
+    // Navigate to expense list with VAT filter enabled
+    const queryParams: any = {
+      is_vat: 'true'
+    };
+    
+    // Add date range if set
+    if (this.dateFrom && this.dateTo) {
+      queryParams.date_from = this.dateFrom;
+      queryParams.date_to = this.dateTo;
+    }
+    
+    this.router.navigate(['/expenses'], { queryParams });
+  }
+
+  getFormattedDateRange(): string {
+    if (this.dateFrom && this.dateTo) {
+      const fromDate = new Date(this.dateFrom).toLocaleDateString();
+      const toDate = new Date(this.dateTo).toLocaleDateString();
+      return `${fromDate} - ${toDate}`;
+    }
+    return 'All Time';
   }
 
   getCurrentTaxCycle(): string {
     return 'Current Period'; // Simplified for now
+  }
+
+  setDateRange(range: string): void {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    
+    switch (range) {
+      case 'today':
+        this.dateFrom = todayStr;
+        this.dateTo = todayStr;
+        break;
+      case 'yesterday':
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        this.dateFrom = yesterday.toISOString().split('T')[0];
+        this.dateTo = yesterday.toISOString().split('T')[0];
+        break;
+      case 'week':
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        this.dateFrom = weekAgo.toISOString().split('T')[0];
+        this.dateTo = todayStr;
+        break;
+      case 'month':
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        this.dateFrom = monthAgo.toISOString().split('T')[0];
+        this.dateTo = todayStr;
+        break;
+      case 'quarter':
+        const quarterAgo = new Date(today);
+        quarterAgo.setMonth(quarterAgo.getMonth() - 3);
+        this.dateFrom = quarterAgo.toISOString().split('T')[0];
+        this.dateTo = todayStr;
+        break;
+      case 'year':
+        const yearAgo = new Date(today);
+        yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+        this.dateFrom = yearAgo.toISOString().split('T')[0];
+        this.dateTo = todayStr;
+        break;
+    }
+    
+    this.loadDashboard();
+    this.loadAnalytics();
+  }
+
+  isTodayRange(): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return this.dateFrom === today && this.dateTo === today;
+  }
+
+  isYesterdayRange(): boolean {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    return this.dateFrom === yesterdayStr && this.dateTo === yesterdayStr;
+  }
+
+  isWeekRange(): boolean {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekAgoStr = weekAgo.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return this.dateFrom === weekAgoStr && this.dateTo === today;
+  }
+
+  isMonthRange(): boolean {
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    const monthAgoStr = monthAgo.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return this.dateFrom === monthAgoStr && this.dateTo === today;
+  }
+
+  isQuarterRange(): boolean {
+    const quarterAgo = new Date();
+    quarterAgo.setMonth(quarterAgo.getMonth() - 3);
+    const quarterAgoStr = quarterAgo.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return this.dateFrom === quarterAgoStr && this.dateTo === today;
+  }
+
+  isYearRange(): boolean {
+    const yearAgo = new Date();
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+    const yearAgoStr = yearAgo.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return this.dateFrom === yearAgoStr && this.dateTo === today;
   }
 
   getVATNetAmount(): string {

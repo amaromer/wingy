@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { Expense, ExpenseListResponse, ExpenseFilters, Project, Category, Supplier } from '../../../core/models/expense.model';
+import { MainCategory } from '../../../core/models/main-category.model';
 import { ExpenseService } from '../../../core/services/expense.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -22,6 +23,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   projects: Project[] = [];
   suppliers: Supplier[] = [];
+  mainCategories: MainCategory[] = [];
   
   loading = false;
   submitting = false;
@@ -55,6 +57,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private expenseService: ExpenseService,
     private translateService: TranslateService,
@@ -86,9 +89,24 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadFilters();
-    this.loadExpenses();
     this.setupSearch();
     this.setupFilterListeners();
+    
+    // Handle query parameters from dashboard navigation
+    this.route.queryParams.subscribe(params => {
+      if (params['is_vat'] !== undefined) {
+        this.filterForm.patchValue({ is_vat: params['is_vat'] });
+      }
+      if (params['date_from']) {
+        this.filterForm.patchValue({ date_from: params['date_from'] });
+      }
+      if (params['date_to']) {
+        this.filterForm.patchValue({ date_to: params['date_to'] });
+      }
+      
+      // Load expenses after setting filters
+      this.loadExpenses();
+    });
   }
 
   ngOnDestroy() {
@@ -173,6 +191,23 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
           this.suppliers = [];
         }
       });
+
+    // Load main categories
+    this.http.get<any>('/api/main-categories')
+      .subscribe({
+        next: (response) => {
+          console.log('Main Categories API response:', response);
+          this.mainCategories = Array.isArray(response.mainCategories) ? response.mainCategories : [];
+          console.log('Loaded main categories count:', this.mainCategories.length);
+          if (this.mainCategories.length > 0) {
+            console.log('First main category:', this.mainCategories[0]);
+          }
+        },
+        error: (err) => {
+          console.error('Error loading main categories:', err);
+          this.mainCategories = [];
+        }
+      });
   }
 
   loadExpenses() {
@@ -203,6 +238,13 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
         console.log('Response.expenses is array:', Array.isArray(response.expenses));
         
         this.expenses = Array.isArray(response.expenses) ? response.expenses : [];
+        
+        // Debug: Check if expenses have main_category_id
+        if (this.expenses.length > 0) {
+          console.log('First expense main_category_id:', this.expenses[0].main_category_id);
+          console.log('First expense main_category_id type:', typeof this.expenses[0].main_category_id);
+        }
+        
         this.totalItems = response.total || 0;
         this.totalPages = response.pages || 1;
         this.currentPage = response.page || 1;
@@ -408,6 +450,30 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     return supplierId.name || this.translateService.instant('DASHBOARD.UNKNOWN_SUPPLIER');
   }
 
+  getMainCategoryName(mainCategoryId: string | MainCategory | null | undefined): string {
+    if (!mainCategoryId) {
+      return '-';
+    }
+    
+    // If mainCategoryId is already an object (populated), return its name
+    if (typeof mainCategoryId === 'object' && mainCategoryId !== null) {
+      return mainCategoryId.name || '-';
+    }
+    
+    // If mainCategoryId is a string (ID), look it up in mainCategories array
+    if (typeof mainCategoryId === 'string') {
+      // If main categories haven't loaded yet, return the ID as fallback
+      if (this.mainCategories.length === 0) {
+        return mainCategoryId;
+      }
+      
+      const mainCategory = this.mainCategories.find(mc => mc._id === mainCategoryId);
+      return mainCategory ? mainCategory.name : mainCategoryId;
+    }
+    
+    return '-';
+  }
+
   formatCurrency(amount: number, currency: string = 'AED'): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -461,5 +527,9 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     }
     
     return pages;
+  }
+
+  isVATFilterActive(): boolean {
+    return this.filterForm.get('is_vat')?.value === 'true' || this.filterForm.get('is_vat')?.value === true;
   }
 } 

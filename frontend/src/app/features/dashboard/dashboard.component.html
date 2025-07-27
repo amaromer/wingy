@@ -18,36 +18,93 @@
 
     <!-- Dashboard Content -->
     <div class="dashboard-main" *ngIf="stats && !loading && !error">
-      <!-- Date Filters -->
-      <section class="filters-section">
-        <div class="filters-container">
-          <div class="filter-group">
-            <label for="dateFrom" class="filter-label">{{ 'COMMON.DATE_FROM' | translate }}</label>
+      <!-- Date Filter -->
+      <div class="date-filter-section">
+        <div class="filter-header">
+          <h3>{{ 'DASHBOARD.DATE_FILTER' | translate }}</h3>
+          <p class="current-range">{{ 'DASHBOARD.CURRENT_RANGE' | translate }}: {{ getFormattedDateRange() }}</p>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('today')"
+            [class.active]="isTodayRange()"
+            [title]="'DASHBOARD.QUICK_TODAY' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_TODAY' | translate }}
+          </button>
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('yesterday')"
+            [class.active]="isYesterdayRange()"
+            [title]="'DASHBOARD.QUICK_YESTERDAY' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_YESTERDAY' | translate }}
+          </button>
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('week')"
+            [class.active]="isWeekRange()"
+            [title]="'DASHBOARD.QUICK_WEEK' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_WEEK' | translate }}
+          </button>
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('month')"
+            [class.active]="isMonthRange()"
+            [title]="'DASHBOARD.QUICK_MONTH' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_MONTH' | translate }}
+          </button>
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('quarter')"
+            [class.active]="isQuarterRange()"
+            [title]="'DASHBOARD.QUICK_QUARTER' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_QUARTER' | translate }}
+          </button>
+          <button 
+            class="quick-btn" 
+            (click)="setDateRange('year')"
+            [class.active]="isYearRange()"
+            [title]="'DASHBOARD.QUICK_YEAR' | translate"
+          >
+            {{ 'DASHBOARD.QUICK_YEAR' | translate }}
+          </button>
+        </div>
+        
+        <div class="filter-controls">
+          <div class="date-inputs">
+            <label for="dateFrom">{{ 'DASHBOARD.DATE_FROM' | translate }}</label>
             <input 
               type="date" 
-              id="dateFrom" 
-              [(ngModel)]="dateFrom" 
+              id="dateFrom"
+              [(ngModel)]="dateFrom"
               (change)="onDateFilterChange()"
-              class="filter-input"
+              class="date-input"
             >
           </div>
-          <div class="filter-group">
-            <label for="dateTo" class="filter-label">{{ 'COMMON.DATE_TO' | translate }}</label>
+          <div class="date-inputs">
+            <label for="dateTo">{{ 'DASHBOARD.DATE_TO' | translate }}</label>
             <input 
               type="date" 
-              id="dateTo" 
-              [(ngModel)]="dateTo" 
+              id="dateTo"
+              [(ngModel)]="dateTo"
               (change)="onDateFilterChange()"
-              class="filter-input"
+              class="date-input"
             >
           </div>
         </div>
-      </section>
+      </div>
 
       <!-- Statistics Cards -->
       <section class="stats-section">
         <div class="stats-grid">
-          <div class="stat-card" *ngFor="let stat of getStats()" (click)="onStatCardClick(stat.route || '')" [class.clickable]="stat.route">
+          <div class="stat-card" *ngFor="let stat of getStats()" (click)="onStatCardClick(stat.route || '', stat)" [class.clickable]="stat.route">
             <div class="stat-icon">{{ stat.icon }}</div>
             <div class="stat-content">
               <h3 class="stat-value">{{ stat.value }}</h3>
@@ -65,7 +122,7 @@
         </div>
         
         <div class="vat-summary">
-          <div class="vat-card">
+          <div class="vat-card clickable" (click)="onVATCardClick('total')">
             <div class="vat-icon">🧾</div>
             <div class="vat-content">
               <h3 class="vat-value">{{ getTotalVATDisplay() }}</h3>
@@ -73,7 +130,7 @@
             </div>
           </div>
           
-          <div class="vat-card">
+          <div class="vat-card clickable" (click)="onVATCardClick('expenses')">
             <div class="vat-icon">💰</div>
             <div class="vat-content">
               <h3 class="vat-value">{{ getExpensesVATDisplay() }}</h3>
@@ -81,7 +138,7 @@
             </div>
           </div>
           
-          <div class="vat-card">
+          <div class="vat-card clickable" (click)="onVATCardClick('payments')">
             <div class="vat-icon">💳</div>
             <div class="vat-content">
               <h3 class="vat-value">{{ getPaymentsVATDisplay() }}</h3>
@@ -89,7 +146,7 @@
             </div>
           </div>
           
-          <div class="vat-card net-vat">
+          <div class="vat-card net-vat clickable" (click)="onVATCardClick('net')">
             <div class="vat-icon">📊</div>
             <div class="vat-content">
               <h3 class="vat-value" [class.positive]="getNetVATDisplay().includes('+')" [class.negative]="getNetVATDisplay().includes('-')">

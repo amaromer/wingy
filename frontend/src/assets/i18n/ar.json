@@ -73,7 +73,38 @@
     "CATEGORIES": "الفئات",
     "ACTIVE_USERS": "المستخدمون النشطون",
     "VAT_SUMMARY": "ملخص ضريبة القيمة المضافة",
-    "TAX_CYCLE": "دورة الضريبة"
+    "TAX_CYCLE": "دورة الضريبة",
+    "DATE_FILTER": "فلتر التاريخ",
+    "CURRENT_RANGE": "النطاق الحالي",
+    "DATE_FROM": "من تاريخ",
+    "DATE_TO": "إلى تاريخ",
+    "QUICK_TODAY": "اليوم",
+    "QUICK_YESTERDAY": "أمس",
+    "QUICK_WEEK": "آخر 7 أيام",
+    "QUICK_MONTH": "آخر 30 يوم",
+    "QUICK_QUARTER": "آخر 3 أشهر",
+    "QUICK_YEAR": "آخر سنة",
+    "UNCATEGORIZED": "غير مصنف",
+    "UNKNOWN_SUPPLIER": "مورد غير معروف",
+    "LOADING_DASHBOARD": "جاري تحميل لوحة التحكم...",
+    "FAILED_TO_LOAD": "فشل في تحميل لوحة التحكم",
+    "MONTHLY_TREND": "الاتجاه الشهري",
+    "EXPENSE_TREND": "اتجاه المصروفات",
+    "PROJECT_DISTRIBUTION": "توزيع المشاريع",
+    "EXPENSES_BY_PROJECT": "المصروفات حسب المشروع",
+    "CATEGORY_EXPENSES": "مصروفات الفئات",
+    "EXPENSES_BY_CATEGORY": "المصروفات حسب الفئة",
+    "TOP_SUPPLIERS": "أفضل الموردين",
+    "BY_EXPENSE_AMOUNT": "حسب مبلغ المصروفات",
+    "RECENT_ACTIVITY": "النشاط الأخير",
+    "LATEST_UPDATES": "آخر التحديثات",
+    "TOTAL_PROJECTS": "إجمالي المشاريع",
+    "TOTAL_EXPENSES": "إجمالي المصروفات",
+    "EXPENSE_COUNT": "عدد المصروفات",
+    "SUPPLIERS": "الموردون",
+    "CATEGORIES": "الفئات",
+    "ACTIVE_USERS": "المستخدمون النشطون",
+    "TOTAL_PAYMENTS": "إجمالي المدفوعات"
   },
   "NAVIGATION": {
     "DASHBOARD": "لوحة التحكم",
@@ -243,13 +274,76 @@
       "PHASES_DESCRIPTION": "أضف مراحل المشروع لتقسيم أعمال البناء إلى مراحل قابلة للإدارة. يمكن أن يكون لكل مرحلة جدولها الزمني وميزانيتها وحالتها الخاصة.",
       "TEAM_DESCRIPTION": "أضف أعضاء الفريق الذين سيعملون على هذا المشروع. شمل أدوارهم ومعلومات الاتصال ومسؤولياتهم."
     },
+    "SORT": {
+      "BY": "ترتيب حسب",
+      "ORDER": "ترتيب",
+      "ASC": "تصاعدي",
+      "DESC": "تنازلي",
+      "NAME": "الاسم",
+      "STATUS": "الحالة",
+      "START_DATE": "تاريخ البدء",
+      "BUDGET": "الميزانية",
+      "LOCATION": "الموقع"
+    },
     "FIELDS": {
       "NAME": "اسم المشروع",
       "NAME_PLACEHOLDER": "أدخل اسم المشروع",
       "DESCRIPTION": "الوصف",
       "DESCRIPTION_PLACEHOLDER": "أدخل وصف المشروع",
       "STATUS": "الحالة",
-      "PRIORITY": "الأولوية"
+      "PRIORITY": "الأولوية",
+      "START_DATE": "تاريخ البدء",
+      "END_DATE": "تاريخ الانتهاء",
+      "BUDGET": "الميزانية",
+      "BUDGET_PLACEHOLDER": "أدخل ميزانية المشروع",
+      "LOCATION": "الموقع",
+      "LOCATION_PLACEHOLDER": "أدخل موقع المشروع",
+      "CLIENT_NAME": "اسم العميل",
+      "CLIENT_NAME_PLACEHOLDER": "أدخل اسم العميل",
+      "PROJECT_MANAGER": "مدير المشروع",
+      "PROJECT_MANAGER_PLACEHOLDER": "اختر مدير المشروع",
+      "EXPENSES": "المصروفات",
+      "SELECT_ROLE": "اختر الدور"
+    },
+    "PHASES": {
+      "TITLE": "مراحل المشروع",
+      "ADD_PHASE": "إضافة مرحلة",
+      "PHASE_NAME": "اسم المرحلة",
+      "PHASE_NAME_PLACEHOLDER": "أدخل اسم المرحلة",
+      "PHASE_DESCRIPTION": "وصف المرحلة",
+      "PHASE_DESCRIPTION_PLACEHOLDER": "أدخل وصف المرحلة",
+      "PHASE_START_DATE": "تاريخ البدء",
+      "PHASE_END_DATE": "تاريخ الانتهاء",
+      "PHASE_BUDGET": "ميزانية المرحلة",
+      "PHASE_BUDGET_PLACEHOLDER": "أدخل ميزانية المرحلة",
+      "PHASE_STATUS": "حالة المرحلة",
+      "PHASE_STATUS_PLACEHOLDER": "اختر حالة المرحلة"
+    },
+    "TEAM": {
+      "TITLE": "أعضاء الفريق",
+      "ADD_MEMBER": "إضافة عضو فريق",
+      "MEMBER_NAME": "اسم العضو",
+      "MEMBER_NAME_PLACEHOLDER": "أدخل اسم العضو",
+      "MEMBER_ROLE": "الدور",
+      "MEMBER_ROLE_PLACEHOLDER": "اختر الدور",
+      "MEMBER_EMAIL": "البريد الإلكتروني",
+      "MEMBER_EMAIL_PLACEHOLDER": "أدخل عنوان البريد الإلكتروني",
+      "MEMBER_PHONE": "الهاتف",
+      "MEMBER_PHONE_PLACEHOLDER": "أدخل رقم الهاتف",
+      "MEMBER_RESPONSIBILITIES": "المسؤوليات",
+      "MEMBER_RESPONSIBILITIES_PLACEHOLDER": "أدخل المسؤوليات"
+    },
+    "FILTERS": {
+      "STATUS": "الحالة",
+      "LOCATION": "الموقع",
+      "LOCATION_PLACEHOLDER": "أدخل الموقع..."
+    },
+    "SORT": {
+      "BY": "ترتيب حسب",
+      "NAME": "الاسم",
+      "ORDER": "ترتيب",
+      "ASC": "تصاعدي",
+      "DESC": "تنازلي"
     }
   },
   "PETTY_CASH": {
@@ -852,13 +946,15 @@
       "EMPLOYEE": "الموظف",
       "INVOICE": "رقم الفاتورة",
       "ATTACHMENT": "المرفق",
-      "IS_VAT": "ضريبة القيمة المضافة"
+      "IS_VAT": "ضريبة القيمة المضافة",
+      "VAT_AMOUNT": "مبلغ ضريبة القيمة المضافة"
     },
     "VAT": {
       "RATE": "نسبة ضريبة القيمة المضافة",
       "AMOUNT": "مبلغ ضريبة القيمة المضافة",
       "BASE_AMOUNT": "المبلغ الأساسي (بدون ضريبة القيمة المضافة)",
       "TOTAL_INCLUDING_VAT": "الإجمالي (مع ضريبة القيمة المضافة)",
+      "TOTAL_WITH_VAT": "الإجمالي مع ضريبة القيمة المضافة",
       "CALCULATION": "حساب ضريبة القيمة المضافة",
       "SUBJECT_TO_VAT": "خاضع لضريبة القيمة المضافة"
     },
@@ -877,6 +973,7 @@
       "CATEGORY": "تصفية حسب الفئة",
       "SUPPLIER": "تصفية حسب المورد",
       "CURRENCY": "تصفية حسب العملة",
+      "VAT": "حالة ضريبة القيمة المضافة",
       "DATE_FROM": "التاريخ من",
       "DATE_TO": "التاريخ إلى",
       "AMOUNT_MIN": "الحد الأدنى للمبلغ",
@@ -885,7 +982,11 @@
       "ALL_CATEGORIES": "جميع الفئات",
       "ALL_SUPPLIERS": "جميع الموردين",
       "ALL_CURRENCIES": "جميع العملات",
-      "CLEAR": "مسح المرشحات"
+      "ALL_VAT": "جميع حالات ضريبة القيمة المضافة",
+      "VAT_APPLICABLE": "خاضع لضريبة القيمة المضافة",
+      "NO_VAT": "غير خاضع لضريبة القيمة المضافة",
+      "CLEAR": "مسح المرشحات",
+      "TOGGLE": "المرشحات"
     },
     "BULK": {
       "SELECTED": "{{count}} مصروف(ات) محدد(ة)",
@@ -949,7 +1050,11 @@
     "NO_MAIN_CATEGORIES_MESSAGE": "قم بإنشاء فئات المصروفات الرئيسية لتمكين الإجراءات السريعة للمصروفات. ستساعد هذه الفئات في تنظيم الموردين وتسريع إدخال المصروفات.",
     "CREATE_MAIN_CATEGORIES": "إنشاء الفئات الرئيسية",
     "MAIN_CATEGORY_HELP": "اختر فئة رئيسية لتصفية الموردين. سيتم عرض الموردين المخصصين لهذه الفئة فقط.",
-    "EMPLOYEE_HELP": "ربط المصروف بالموظف لتتبع الصندوق الصغير"
+    "SUPPLIER_OPTIONAL_HELP": "المورد اختياري لهذه الفئة",
+    "EMPLOYEE_HELP": "ربط المصروف بالموظف لتتبع الصندوق الصغير",
+    "VIEW_TITLE": "تفاصيل المصروف",
+    "NOT_FOUND": "المصروف غير موجود",
+    "NOT_FOUND_DESC": "المصروف الذي تبحث عنه غير موجود أو تم حذفه."
   },
   "RECEIVED_PAYMENT": {
     "LIST_TITLE": "المدفوعات المستلمة",

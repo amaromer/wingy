@@ -42,6 +42,8 @@
     "UPDATED_AT": "Updated At",
     "BACK_TO_LIST": "Back to List",
     "MB": "MB",
+    "UPDATING": "Updating...",
+    "CREATING": "Creating...",
     "DATE_FROM": "Date From",
     "DATE_TO": "Date To",
     "EXPENSES": "Expenses",
@@ -76,7 +78,38 @@
     "CATEGORIES": "Categories",
     "ACTIVE_USERS": "Active Users",
     "VAT_SUMMARY": "VAT Summary",
-    "TAX_CYCLE": "Tax Cycle"
+    "TAX_CYCLE": "Tax Cycle",
+    "DATE_FILTER": "Date Filter",
+    "CURRENT_RANGE": "Current Range",
+    "DATE_FROM": "From Date",
+    "DATE_TO": "To Date",
+    "QUICK_TODAY": "Today",
+    "QUICK_YESTERDAY": "Yesterday",
+    "QUICK_WEEK": "Last 7 Days",
+    "QUICK_MONTH": "Last 30 Days",
+    "QUICK_QUARTER": "Last 3 Months",
+    "QUICK_YEAR": "Last Year",
+    "UNCATEGORIZED": "Uncategorized",
+    "UNKNOWN_SUPPLIER": "Unknown Supplier",
+    "LOADING_DASHBOARD": "Loading dashboard...",
+    "FAILED_TO_LOAD": "Failed to load dashboard",
+    "MONTHLY_TREND": "Monthly Trend",
+    "EXPENSE_TREND": "Expense Trend",
+    "PROJECT_DISTRIBUTION": "Project Distribution",
+    "EXPENSES_BY_PROJECT": "Expenses by Project",
+    "CATEGORY_EXPENSES": "Category Expenses",
+    "EXPENSES_BY_CATEGORY": "Expenses by Category",
+    "TOP_SUPPLIERS": "Top Suppliers",
+    "BY_EXPENSE_AMOUNT": "By Expense Amount",
+    "RECENT_ACTIVITY": "Recent Activity",
+    "LATEST_UPDATES": "Latest Updates",
+    "TOTAL_PROJECTS": "Total Projects",
+    "TOTAL_EXPENSES": "Total Expenses",
+    "EXPENSE_COUNT": "Expense Count",
+    "SUPPLIERS": "Suppliers",
+    "CATEGORIES": "Categories",
+    "ACTIVE_USERS": "Active Users",
+    "TOTAL_PAYMENTS": "Total Payments"
   },
   "NAVIGATION": {
     "DASHBOARD": "Dashboard",
@@ -261,10 +294,15 @@
       "LOCATION_PLACEHOLDER": "Enter project location",
       "CLIENT": "Client",
       "CLIENT_PLACEHOLDER": "Enter client name",
+      "CLIENT_NAME": "Client Name",
+      "CLIENT_NAME_PLACEHOLDER": "Enter client name",
       "MANAGER": "Project Manager",
       "MANAGER_PLACEHOLDER": "Select project manager",
+      "PROJECT_MANAGER": "Project Manager",
+      "PROJECT_MANAGER_PLACEHOLDER": "Select project manager",
       "PHASES": "Project Phases",
-      "TEAM_MEMBERS": "Team Members"
+      "TEAM_MEMBERS": "Team Members",
+      "EXPENSES": "Expenses"
     },
     "PHASES": {
       "TITLE": "Project Phases",
@@ -293,6 +331,18 @@
       "MEMBER_PHONE_PLACEHOLDER": "Enter phone number",
       "MEMBER_RESPONSIBILITIES": "Responsibilities",
       "MEMBER_RESPONSIBILITIES_PLACEHOLDER": "Enter responsibilities"
+    },
+    "FILTERS": {
+      "STATUS": "Status",
+      "LOCATION": "Location",
+      "LOCATION_PLACEHOLDER": "Enter location..."
+    },
+    "SORT": {
+      "BY": "Sort By",
+      "NAME": "Name",
+      "ORDER": "Sort Order",
+      "ASC": "Ascending",
+      "DESC": "Descending"
     }
   },
   "PETTY_CASH": {
@@ -396,13 +446,15 @@
       "EMPLOYEE": "Employee",
       "INVOICE": "Invoice Number",
       "ATTACHMENT": "Attachment",
-      "IS_VAT": "Is VAT"
+      "IS_VAT": "Is VAT",
+      "VAT_AMOUNT": "VAT Amount"
     },
     "VAT": {
       "RATE": "VAT Rate",
       "AMOUNT": "VAT Amount",
       "BASE_AMOUNT": "Base Amount (excl. VAT)",
       "TOTAL_INCLUDING_VAT": "Total (incl. VAT)",
+      "TOTAL_WITH_VAT": "Total with VAT",
       "CALCULATION": "VAT Calculation",
       "SUBJECT_TO_VAT": "Subject to VAT"
     },
@@ -941,7 +993,8 @@
     "MIN_VALUE": "Value must be greater than 0",
     "INVALID_EMAIL": "Please enter a valid email address",
     "INVALID_DATE": "Please enter a valid date",
-    "FUTURE_DATE": "Date cannot be in the future"
+    "FUTURE_DATE": "Date cannot be in the future",
+    "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters"
   },
   "ERROR": {
     "LOADING_DATA": "Failed to load data. Please try again.",

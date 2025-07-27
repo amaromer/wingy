@@ -132,6 +132,47 @@
   }
 }
 
+/* Active Filter Indicator */
+.active-filter-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--radius-md);
+  
+  .filter-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+  }
+  
+  .clear-filter-btn {
+    background: rgba(251, 191, 36, 0.2);
+    border: none;
+    color: var(--primary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(251, 191, 36, 0.3);
+      transform: scale(1.1);
+    }
+  }
+}
+
 /* Search Container */
 .search-container {
   display: flex;
@@ -550,6 +591,28 @@
             }
           }
           
+          &.main-category-cell {
+            width: 12%;
+            min-width: 120px;
+            max-width: 150px;
+            
+            .main-category-badge {
+              background: var(--accent-color);
+              color: var(--text-on-accent);
+              padding: 0.25rem 0.5rem;
+              border-radius: var(--radius-sm);
+              font-size: 0.8rem;
+              font-weight: 600;
+              display: inline-block;
+              word-break: break-word;
+            }
+            
+            .no-main-category {
+              color: var(--text-muted);
+              font-style: italic;
+            }
+          }
+          
           &.supplier-cell {
             width: 15%;
             min-width: 150px;
@@ -559,6 +622,28 @@
               font-weight: 600;
               color: var(--text-primary);
               word-break: break-word;
+            }
+          }
+          
+          &.vat-amount-cell {
+            width: 12%;
+            min-width: 120px;
+            max-width: 150px;
+            text-align: right;
+            
+            .vat-amount {
+              font-weight: 600;
+              color: var(--success-color);
+              background: rgba(34, 197, 94, 0.1);
+              padding: 0.25rem 0.5rem;
+              border-radius: var(--radius-sm);
+              font-size: 0.85rem;
+              display: inline-block;
+            }
+            
+            .no-vat-amount {
+              color: var(--text-muted);
+              font-style: italic;
             }
           }
           

@@ -37,6 +37,7 @@ export class QuickExpenseComponent implements OnInit {
   compressionProgress: number = 0;
   isCompressing: boolean = false;
   isSupplierOptional: boolean = true;
+  selectedMainCategory: MainCategory | null = null;
   
   currencies = [
     { code: 'AED', symbol: 'د.إ' },
@@ -60,6 +61,7 @@ export class QuickExpenseComponent implements OnInit {
       date: [this.getTodayDate(), Validators.required],
       project_id: ['', Validators.required],
       category_id: [''],
+      main_category_id: [''],
       supplier_id: ['', Validators.required],
       employee_id: [''],
       invoice_number: [''],
@@ -436,8 +438,10 @@ export class QuickExpenseComponent implements OnInit {
 
   // Quick actions using main categories
   setQuickExpense(mainCategory: MainCategory): void {
+    this.selectedMainCategory = mainCategory;
     this.quickExpenseForm.patchValue({
-      description: mainCategory.name
+      description: mainCategory.name,
+      main_category_id: mainCategory._id
     });
     
     // Update supplier validation based on main category setting
@@ -538,6 +542,16 @@ export class QuickExpenseComponent implements OnInit {
   // Navigate to main categories
   navigateToMainCategories(): void {
     this.router.navigate(['/main-categories']);
+  }
+
+  clearSelectedMainCategory(): void {
+    this.selectedMainCategory = null;
+    this.quickExpenseForm.patchValue({
+      main_category_id: ''
+    });
+    // Reload all suppliers and categories
+    this.loadAllSuppliers();
+    this.loadAllCategories();
   }
 
   // Helper method to format file size

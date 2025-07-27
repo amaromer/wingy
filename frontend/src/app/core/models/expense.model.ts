@@ -7,6 +7,7 @@ export interface Expense {
   supplier_id?: Supplier | string;
   employee_id?: Employee | string;
   category_id?: Category | string;
+  main_category_id?: string;
   amount: number;
   currency: string;
   date: string;
@@ -24,6 +25,7 @@ export interface CreateExpenseRequest {
   supplier_id: string;
   employee_id?: string;
   category_id: string;
+  main_category_id?: string;
   amount: number;
   currency: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
   date: string;
@@ -38,6 +40,7 @@ export interface UpdateExpenseRequest {
   supplier_id?: string;
   employee_id?: string;
   category_id?: string;
+  main_category_id?: string;
   amount?: number;
   currency?: 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'AED' | 'SAR' | 'QAR' | 'KWD' | 'BHD' | 'OMR' | 'JOD';
   date?: string;
@@ -58,11 +61,13 @@ export interface ExpenseFilters {
   project_id?: string;
   supplier_id?: string;
   category_id?: string;
+  main_category_id?: string;
   date_from?: string;
   date_to?: string;
   amount_min?: number;
   amount_max?: number;
   currency?: string;
+  is_vat?: boolean;
   search?: string;
   sort?: string;
   order?: 'asc' | 'desc';

@@ -73,13 +73,13 @@ router.get('/overview', auth, async (req, res) => {
       
       // VAT statistics
       Promise.all([
-        // Expenses VAT - Extract VAT from VAT-inclusive amounts
+        // Expenses VAT - Use stored VAT amount
         Expense.aggregate([
           { $match: { ...matchStage, is_vat: true } },
           {
             $group: {
               _id: null,
-              total: { $sum: { $multiply: ['$amount', 0.05, { $divide: [1, 1.05] }] } }
+              total: { $sum: '$vat_amount' }
             }
           }
         ]),
@@ -450,6 +450,26 @@ router.get('/recent-activity', auth, async (req, res) => {
     res.json(activities);
   } catch (error) {
     console.error('Get recent activity error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   GET /api/dashboard/first-expense-date
+// @desc    Get the date of the first expense
+// @access  Private
+router.get('/first-expense-date', auth, async (req, res) => {
+  try {
+    const firstExpense = await Expense.findOne().sort({ date: 1 }).select('date');
+    
+    if (firstExpense) {
+      res.json({ 
+        firstExpenseDate: firstExpense.date.toISOString().split('T')[0] 
+      });
+    } else {
+      res.json({ firstExpenseDate: null });
+    }
+  } catch (error) {
+    console.error('Get first expense date error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
