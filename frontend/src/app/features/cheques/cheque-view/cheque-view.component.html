@@ -1,0 +1,185 @@
+<div class="cheque-view-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <div class="cheque-view-content" *ngIf="!loading && !error && cheque">
+    <!-- Header -->
+    <div class="view-header">
+      <div class="header-content">
+        <h1>{{ 'CHEQUE.VIEW_TITLE' | translate }}</h1>
+        <p>{{ 'CHEQUE.VIEW_SUBTITLE' | translate }}</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="onBack()">
+          {{ 'COMMON.BACK' | translate }}
+        </button>
+        <button class="btn btn-primary" (click)="onEdit()" *ngIf="cheque.status === 'Draft'">
+          {{ 'COMMON.EDIT' | translate }}
+        </button>
+        <button class="btn btn-primary" (click)="onPrint()">
+          {{ 'CHEQUE.PRINT_CHEQUE' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Cheque Details -->
+    <div class="cheque-details">
+      <!-- Status Badge -->
+      <div class="status-section">
+        <span class="status-badge" [ngClass]="getStatusClass(cheque.status)">
+          {{ getStatusIcon(cheque.status) }} {{ cheque.status }}
+        </span>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="detail-section">
+        <div class="section-title">
+          <span class="section-icon">📋</span>
+          {{ 'CHEQUE.SECTIONS.BASIC_INFO' | translate }}
+        </div>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.CHEQUE_NUMBER' | translate }}</label>
+            <span class="value">{{ cheque.cheque_number }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.PAYEE_NAME' | translate }}</label>
+            <span class="value">{{ cheque.payee_name }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.CHEQUE_DATE' | translate }}</label>
+            <span class="value">{{ formatDate(cheque.cheque_date) }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.ISSUE_DATE' | translate }}</label>
+            <span class="value">{{ formatDate(cheque.issue_date) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amount Information -->
+      <div class="detail-section">
+        <div class="section-title">
+          <span class="section-icon">💰</span>
+          {{ 'CHEQUE.SECTIONS.AMOUNT' | translate }}
+        </div>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.AMOUNT' | translate }}</label>
+            <span class="value amount">{{ formatCurrency(cheque.amount, cheque.currency) }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.CURRENCY' | translate }}</label>
+            <span class="value">{{ cheque.currency }}</span>
+          </div>
+        </div>
+
+        <!-- Amount in Words -->
+        <div class="amount-words-section" *ngIf="cheque.amount_in_words">
+          <div class="amount-words-title">
+            <span class="section-icon">📝</span>
+            {{ 'CHEQUE.FIELDS.AMOUNT_IN_WORDS' | translate }}
+          </div>
+          <div class="amount-words-content">
+            <div class="words-box">
+              <div class="words-label">{{ 'COMMON.ENGLISH' | translate }}</div>
+              <div class="words-text">{{ cheque.amount_in_words }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank Information -->
+      <div class="detail-section">
+        <div class="section-title">
+          <span class="section-icon">🏦</span>
+          {{ 'CHEQUE.SECTIONS.BANK_INFO' | translate }}
+        </div>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.BANK_NAME' | translate }}</label>
+            <span class="value">{{ cheque.bank_name }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.BRANCH_NAME' | translate }}</label>
+            <span class="value">{{ cheque.branch_name }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.ACCOUNT_NUMBER' | translate }}</label>
+            <span class="value">{{ cheque.account_number }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.IBAN' | translate }}</label>
+            <span class="value">{{ cheque.iban }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'CHEQUE.FIELDS.ACCOUNT_HOLDER' | translate }}</label>
+            <span class="value">{{ cheque.account_holder }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="detail-section" *ngIf="cheque.project_id || cheque.supplier_id || cheque.description">
+        <div class="section-title">
+          <span class="section-icon">ℹ️</span>
+          {{ 'CHEQUE.SECTIONS.ADDITIONAL_INFO' | translate }}
+        </div>
+        
+        <div class="detail-grid">
+          <div class="detail-item" *ngIf="cheque.project_id">
+            <label>{{ 'CHEQUE.FIELDS.PROJECT' | translate }}</label>
+            <span class="value">{{ cheque.project_id }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="cheque.supplier_id">
+            <label>{{ 'CHEQUE.FIELDS.SUPPLIER' | translate }}</label>
+            <span class="value">{{ cheque.supplier_id }}</span>
+          </div>
+          
+          <div class="detail-item full-width" *ngIf="cheque.description">
+            <label>{{ 'CHEQUE.FIELDS.DESCRIPTION' | translate }}</label>
+            <span class="value">{{ cheque.description }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="detail-section">
+        <div class="section-title">
+          <span class="section-icon">🕒</span>
+          {{ 'COMMON.METADATA' | translate }}
+        </div>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'COMMON.CREATED_AT' | translate }}</label>
+            <span class="value">{{ cheque.createdAt ? formatDate(cheque.createdAt) : 'N/A' }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'COMMON.UPDATED_AT' | translate }}</label>
+            <span class="value">{{ cheque.updatedAt ? formatDate(cheque.updatedAt) : 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

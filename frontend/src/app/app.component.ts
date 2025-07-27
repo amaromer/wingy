@@ -84,20 +84,25 @@ export class AppComponent implements OnInit, OnDestroy {
         return 'NAVIGATION.CATEGORIES';
       case '/expenses':
         return 'NAVIGATION.EXPENSES';
+          case '/cheques':
+        return 'NAVIGATION.CHEQUES';
       case '/users':
         return 'NAVIGATION.USERS';
       case '/profile':
         return 'NAVIGATION.PROFILE';
-              case '/employees':
-          return 'NAVIGATION.EMPLOYEES';
-        case '/payroll':
-        case '/payroll/create':
-          return 'NAVIGATION.PAYROLL';
-        case '/overtime':
-          return 'NAVIGATION.OVERTIME';
-        case '/petty-cash':
-          return 'NAVIGATION.PETTY_CASH';
+      case '/employees':
+        return 'NAVIGATION.EMPLOYEES';
+      case '/payroll':
+      case '/payroll/create':
+        return 'NAVIGATION.PAYROLL';
+      case '/overtime':
+        return 'NAVIGATION.OVERTIME';
+      case '/petty-cash':
+        return 'NAVIGATION.PETTY_CASH';
       default:
+        if (currentRoute.match(/^\/cheques\/[^\/]+$/)) {
+          return 'CHEQUE.VIEW_TITLE';
+        }
         return 'DASHBOARD.TITLE';
     }
   }

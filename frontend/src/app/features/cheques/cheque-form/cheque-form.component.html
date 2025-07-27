@@ -1,0 +1,211 @@
+<div class="cheque-form-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="alert alert-success" *ngIf="success">
+    <span>{{ success | translate }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+    <button class="error-details-toggle" (click)="showErrorDetails = !showErrorDetails" *ngIf="errorDetails">
+      {{ showErrorDetails ? 'Hide' : 'Show' }} Details
+    </button>
+  </div>
+
+  <div class="error-details" *ngIf="showErrorDetails && errorDetails">
+    <pre>{{ errorDetails | json }}</pre>
+  </div>
+
+  <form [formGroup]="chequeForm" (ngSubmit)="onSubmit()" class="cheque-form" *ngIf="!loading">
+    <!-- Header -->
+    <div class="form-header">
+      <h1>{{ isEditMode ? 'CHEQUE.EDIT_TITLE' : 'CHEQUE.CREATE_TITLE' | translate }}</h1>
+      <p>{{ isEditMode ? 'CHEQUE.EDIT_SUBTITLE' : 'CHEQUE.CREATE_SUBTITLE' | translate }}</p>
+    </div>
+
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <div class="section-title">
+        <span class="section-icon">📋</span>
+        {{ 'CHEQUE.SECTIONS.BASIC_INFO' | translate }}
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cheque_number">{{ 'CHEQUE.FIELDS.CHEQUE_NUMBER' | translate }} *</label>
+          <input 
+            type="text" 
+            id="cheque_number"
+            formControlName="cheque_number"
+            [placeholder]="'CHEQUE.FIELDS.CHEQUE_NUMBER_PLACEHOLDER' | translate"
+            [class.error]="isFieldInvalid('cheque_number')"
+          >
+          <div class="error-message" *ngIf="getFieldError('cheque_number')">
+            {{ getFieldError('cheque_number')! | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cheque_date">{{ 'CHEQUE.FIELDS.CHEQUE_DATE' | translate }} *</label>
+          <input 
+            type="date" 
+            id="cheque_date"
+            formControlName="cheque_date"
+            [class.error]="isFieldInvalid('cheque_date')"
+          >
+          <div class="error-message" *ngIf="getFieldError('cheque_date')">
+            {{ getFieldError('cheque_date')! | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="payee_name">{{ 'CHEQUE.FIELDS.PAYEE_NAME' | translate }} *</label>
+        <input 
+          type="text" 
+          id="payee_name"
+          formControlName="payee_name"
+          [placeholder]="'CHEQUE.FIELDS.PAYEE_NAME_PLACEHOLDER' | translate"
+          [class.error]="isFieldInvalid('payee_name')"
+        >
+        <div class="error-message" *ngIf="getFieldError('payee_name')">
+          {{ getFieldError('payee_name')! | translate }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Amount Section -->
+    <div class="form-section">
+      <div class="section-title">
+        <span class="section-icon">💰</span>
+        {{ 'CHEQUE.SECTIONS.AMOUNT' | translate }}
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="amount">{{ 'CHEQUE.FIELDS.AMOUNT' | translate }} *</label>
+          <div class="amount-input-group">
+            <select formControlName="currency" class="currency-select">
+              <option *ngFor="let currency of currencies" [value]="currency.code">
+                {{ currency.code }} ({{ currency.symbol }})
+              </option>
+            </select>
+            <input 
+              type="number" 
+              id="amount"
+              formControlName="amount"
+              step="0.01"
+              min="0.01"
+              [placeholder]="'CHEQUE.FIELDS.AMOUNT_PLACEHOLDER' | translate"
+              [class.error]="isFieldInvalid('amount')"
+              class="amount-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="getFieldError('amount')">
+            {{ getFieldError('amount')! | translate }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Amount in Words Preview -->
+      <div class="amount-in-words-section" *ngIf="amountInWords || amountInWordsArabic">
+        <div class="amount-words-title">
+          <span class="section-icon">📝</span>
+          {{ 'CHEQUE.FIELDS.AMOUNT_IN_WORDS' | translate }}
+        </div>
+        <div class="amount-words-content">
+          <div class="words-box" *ngIf="amountInWords">
+            <div class="words-label">{{ 'COMMON.ENGLISH' | translate }}</div>
+            <div class="words-text">{{ amountInWords }}</div>
+          </div>
+          <div class="words-box" *ngIf="amountInWordsArabic">
+            <div class="words-label">{{ 'COMMON.ARABIC' | translate }}</div>
+            <div class="words-text">{{ amountInWordsArabic }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="form-section">
+      <div class="section-title">
+        <span class="section-icon">ℹ️</span>
+        {{ 'CHEQUE.SECTIONS.ADDITIONAL_INFO' | translate }}
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="project_id">{{ 'CHEQUE.FIELDS.PROJECT' | translate }}</label>
+          <select 
+            id="project_id"
+            formControlName="project_id"
+            [class.error]="isFieldInvalid('project_id')"
+          >
+            <option value="">{{ 'CHEQUE.FIELDS.SELECT_PROJECT' | translate }}</option>
+            <option *ngFor="let project of projects" [value]="project._id">
+              {{ project.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('project_id')">
+            {{ getFieldError('project_id')! | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="supplier_id">{{ 'CHEQUE.FIELDS.SUPPLIER' | translate }}</label>
+          <select 
+            id="supplier_id"
+            formControlName="supplier_id"
+            [class.error]="isFieldInvalid('supplier_id')"
+          >
+            <option value="">{{ 'CHEQUE.FIELDS.SELECT_SUPPLIER' | translate }}</option>
+            <option *ngFor="let supplier of suppliers" [value]="supplier._id">
+              {{ supplier.name }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('supplier_id')">
+            {{ getFieldError('supplier_id')! | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">{{ 'CHEQUE.FIELDS.DESCRIPTION' | translate }}</label>
+        <textarea 
+          id="description"
+          formControlName="description"
+          [placeholder]="'CHEQUE.FIELDS.DESCRIPTION_PLACEHOLDER' | translate"
+          rows="3"
+          [class.error]="isFieldInvalid('description')"
+        ></textarea>
+        <div class="error-message" *ngIf="getFieldError('description')">
+          {{ getFieldError('description')! | translate }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="chequeForm.invalid || submitting"
+      >
+        <span class="spinner" *ngIf="submitting"></span>
+        {{ submitting ? 'COMMON.SAVING' : (isEditMode ? 'COMMON.UPDATE' : 'COMMON.CREATE') | translate }}
+      </button>
+    </div>
+  </form>
+</div> 

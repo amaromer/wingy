@@ -20,6 +20,7 @@ const employeeRoutes = require('./routes/employees');
 const payrollRoutes = require('./routes/payroll');
 const overtimeRoutes = require('./routes/overtime');
 const pettyCashRoutes = require('./routes/petty-cash');
+const chequeRoutes = require('./routes/cheques');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -89,6 +90,7 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/overtime', overtimeRoutes);
 app.use('/api/petty-cash', pettyCashRoutes);
+app.use('/api/cheques', chequeRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

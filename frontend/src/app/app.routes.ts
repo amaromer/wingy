@@ -204,6 +204,31 @@ export const routes: Routes = [
     data: { roles: ['Admin', 'Accountant'] },
     loadComponent: () => import('./features/received-payments/received-payment-form/received-payment-form.component').then(m => m.ReceivedPaymentFormComponent)
   },
+  // Cheque Routes
+  {
+    path: 'cheques',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/cheques/cheque-list/cheque-list.component').then(m => m.ChequeListComponent)
+  },
+  {
+    path: 'cheques/create',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/cheques/cheque-form/cheque-form.component').then(m => m.ChequeFormComponent)
+  },
+  {
+    path: 'cheques/:id/edit',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/cheques/cheque-form/cheque-form.component').then(m => m.ChequeFormComponent)
+  },
+  {
+    path: 'cheques/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin', 'Accountant'] },
+    loadComponent: () => import('./features/cheques/cheque-view/cheque-view.component').then(m => m.ChequeViewComponent)
+  },
   // HR Module Routes
   {
     path: 'employees',

@@ -49,6 +49,13 @@
         {{ 'NAVIGATION.RECEIVED_PAYMENTS' | translate }}
       </a>
       
+      <!-- Cheques - Admin and Accountant can view -->
+      <a routerLink="/cheques" routerLinkActive="active" class="nav-item" 
+         *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])" (click)="closeSidebar()">
+        <span class="nav-icon">🏦</span>
+        {{ 'NAVIGATION.CHEQUES' | translate }}
+      </a>
+      
       <!-- HR Module - Admin and Accountant can view -->
       <div class="nav-section" *ngIf="authService.hasAnyRole(['Admin', 'Accountant'])">
         <div class="nav-section-title">{{ 'NAVIGATION.HR_MODULE' | translate }}</div>

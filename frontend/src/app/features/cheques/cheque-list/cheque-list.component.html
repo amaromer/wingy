@@ -1,0 +1,235 @@
+<div class="cheque-list-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span>{{ error | translate }}</span>
+  </div>
+
+  <!-- Header -->
+  <div class="list-header">
+    <div class="header-content">
+      <h1>{{ 'CHEQUE.LIST_TITLE' | translate }}</h1>
+      <p>{{ 'CHEQUE.LIST_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="onCreateCheque()">
+        {{ 'CHEQUE.CREATE_NEW' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        [placeholder]="'CHEQUE.SEARCH_PLACEHOLDER' | translate"
+        (keyup.enter)="onSearch()"
+      >
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-header">
+      <h3>{{ 'CHEQUE.FILTERS.TITLE' | translate }}</h3>
+      <button class="clear-filters" (click)="onClearFilters()">
+        {{ 'CHEQUE.FILTERS.CLEAR' | translate }}
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>{{ 'CHEQUE.FILTERS.STATUS' | translate }}</label>
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+          <option value="">{{ 'CHEQUE.FILTERS.ALL_STATUSES' | translate }}</option>
+          <option value="Draft">{{ 'CHEQUE.STATUSES.DRAFT' | translate }}</option>
+          <option value="Issued">{{ 'CHEQUE.STATUSES.ISSUED' | translate }}</option>
+          <option value="Cleared">{{ 'CHEQUE.STATUSES.CLEARED' | translate }}</option>
+          <option value="Cancelled">{{ 'CHEQUE.STATUSES.CANCELLED' | translate }}</option>
+          <option value="Void">{{ 'CHEQUE.STATUSES.VOID' | translate }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'CHEQUE.FILTERS.CURRENCY' | translate }}</label>
+        <select [(ngModel)]="selectedCurrency" (change)="onFilterChange()">
+          <option value="">{{ 'CHEQUE.FILTERS.ALL_CURRENCIES' | translate }}</option>
+          <option value="AED">AED</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'CHEQUE.FILTERS.DATE_FROM' | translate }}</label>
+        <input 
+          type="date" 
+          [(ngModel)]="dateFrom"
+          (change)="onFilterChange()"
+        >
+      </div>
+
+      <div class="filter-group">
+        <label>{{ 'CHEQUE.FILTERS.DATE_TO' | translate }}</label>
+        <input 
+          type="date" 
+          [(ngModel)]="dateTo"
+          (change)="onFilterChange()"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error">
+    <div class="error-icon">⚠️</div>
+    <h3>{{ 'COMMON.ERROR' | translate }}</h3>
+    <p>{{ error | translate }}</p>
+    <button class="retry-btn" (click)="loadCheques()">
+      {{ 'COMMON.RETRY' | translate }}
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && cheques.length === 0">
+    <div class="empty-icon">🏦</div>
+    <h3>{{ 'CHEQUE.EMPTY_TITLE' | translate }}</h3>
+    <p>{{ 'CHEQUE.EMPTY_MESSAGE' | translate }}</p>
+    <button class="btn" (click)="onCreateCheque()">
+      {{ 'CHEQUE.CREATE_NEW' | translate }}
+    </button>
+  </div>
+
+  <!-- Cheques Table -->
+  <div class="table-container" *ngIf="!loading && !error && cheques.length > 0">
+    <table class="cheques-table">
+      <thead>
+        <tr>
+          <th class="sortable" (click)="onSort('cheque_number')">
+            {{ 'CHEQUE.FIELDS.CHEQUE_NUMBER' | translate }}
+            <span class="sort-icon">{{ getSortIcon('cheque_number') }}</span>
+          </th>
+          <th class="sortable" (click)="onSort('payee_name')">
+            {{ 'CHEQUE.FIELDS.PAYEE_NAME' | translate }}
+            <span class="sort-icon">{{ getSortIcon('payee_name') }}</span>
+          </th>
+          <th class="sortable" (click)="onSort('amount')">
+            {{ 'CHEQUE.FIELDS.AMOUNT' | translate }}
+            <span class="sort-icon">{{ getSortIcon('amount') }}</span>
+          </th>
+          <th class="sortable" (click)="onSort('currency')">
+            {{ 'CHEQUE.FIELDS.CURRENCY' | translate }}
+            <span class="sort-icon">{{ getSortIcon('currency') }}</span>
+          </th>
+          <th class="sortable" (click)="onSort('cheque_date')">
+            {{ 'CHEQUE.FIELDS.CHEQUE_DATE' | translate }}
+            <span class="sort-icon">{{ getSortIcon('cheque_date') }}</span>
+          </th>
+          <th class="sortable" (click)="onSort('status')">
+            {{ 'CHEQUE.FIELDS.STATUS' | translate }}
+            <span class="sort-icon">{{ getSortIcon('status') }}</span>
+          </th>
+          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cheque of cheques">
+          <td>
+            <span class="cheque-number">{{ cheque.cheque_number }}</span>
+          </td>
+          <td>
+            <span class="payee-name">{{ cheque.payee_name }}</span>
+          </td>
+          <td>
+            <span class="amount">{{ formatCurrency(cheque.amount, cheque.currency) }}</span>
+          </td>
+          <td>{{ cheque.currency }}</td>
+          <td>{{ formatDate(cheque.cheque_date) }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(cheque.status)">
+              {{ getStatusIcon(cheque.status) }} {{ cheque.status }}
+            </span>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="btn btn-view" (click)="onViewCheque(cheque)" title="{{ 'COMMON.VIEW' | translate }}">
+                👁️
+              </button>
+              <button class="btn btn-edit" (click)="onEditCheque(cheque)" title="{{ 'COMMON.EDIT' | translate }}">
+                ✏️
+              </button>
+              <button 
+                class="btn btn-approve" 
+                (click)="onApproveCheque(cheque)" 
+                *ngIf="cheque.status === 'Draft'"
+                title="{{ 'CHEQUE.ACTIONS.APPROVE' | translate }}"
+              >
+                ✅
+              </button>
+              <button 
+                class="btn btn-void" 
+                (click)="onVoidCheque(cheque)" 
+                *ngIf="cheque.status !== 'Void' && cheque.status !== 'Cancelled'"
+                title="{{ 'CHEQUE.ACTIONS.VOID' | translate }}"
+              >
+                ❌
+              </button>
+              <button 
+                class="btn btn-delete" 
+                (click)="onDeleteCheque(cheque)" 
+                title="{{ 'COMMON.DELETE' | translate }}"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!loading && !error && cheques.length > 0">
+    <div class="pagination-info">
+      {{ 'COMMON.SHOWING' | translate }} {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, totalItems) }} {{ 'COMMON.OF' | translate }} {{ totalItems }} {{ 'COMMON.ITEMS' | translate }}
+    </div>
+    <div class="pagination-controls">
+      <button 
+        class="btn" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        ◀
+      </button>
+      <button 
+        class="btn" 
+        *ngFor="let page of getPageNumbers()"
+        [class.active]="page === currentPage"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+      <button 
+        class="btn" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        ▶
+      </button>
+    </div>
+  </div>
+</div> 

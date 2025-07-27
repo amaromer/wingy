@@ -114,6 +114,7 @@
     "MAIN_CATEGORIES": "الفئات الرئيسية",
     "EXPENSES": "المصروفات",
     "RECEIVED_PAYMENTS": "المدفوعات المستلمة",
+    "CHEQUES": "الشيكات",
     "USERS": "المستخدمون",
     "PROFILE": "الملف الشخصي",
     "CONSTRUCTION_ERP": "ونجي",
@@ -1144,5 +1145,109 @@
     "RECENT_TRANSACTIONS": "المعاملات الأخيرة",
     "TOTAL_EXPENSES": "إجمالي المصروفات",
     "EXPENSE_CREDIT_DIFFERENCE": "المصروفات مقابل الرصيد"
+  },
+  "CHEQUE": {
+    "LIST_TITLE": "الشيكات",
+    "LIST_SUBTITLE": "إدارة وتتبع جميع الشيكات لعملك",
+    "CREATE_TITLE": "إنشاء شيك",
+    "CREATE_SUBTITLE": "إنشاء شيك جديد مع تحويل تلقائي للمبلغ إلى كلمات",
+    "EDIT_TITLE": "تعديل الشيك",
+    "EDIT_SUBTITLE": "تحديث معلومات الشيك",
+    "VIEW_TITLE": "عرض الشيك",
+    "VIEW_SUBTITLE": "تفاصيل ومعلومات الشيك",
+    "PRINT_CHEQUE": "طباعة الشيك",
+    "CREATE_NEW": "إنشاء شيك جديد",
+    "CREATE_FIRST": "إنشاء أول شيك لك",
+    "EMPTY_TITLE": "لا توجد شيكات بعد",
+    "EMPTY_MESSAGE": "ابدأ بإنشاء أول شيك لك.",
+    "SEARCH_PLACEHOLDER": "البحث برقم الشيك أو اسم المستفيد...",
+    "PRINT_CHEQUE": "طباعة الشيك",
+    "APPROVE_CHEQUE": "الموافقة على الشيك",
+    "VOID_CHEQUE": "إلغاء الشيك",
+    "ERROR": {
+      "LOADING_CHEQUES": "فشل في تحميل الشيكات. يرجى المحاولة مرة أخرى.",
+      "LOADING_CHEQUE": "فشل في تحميل الشيك. يرجى المحاولة مرة أخرى.",
+      "CREATING_CHEQUE": "فشل في إنشاء الشيك. يرجى المحاولة مرة أخرى.",
+      "UPDATING_CHEQUE": "فشل في تحديث الشيك. يرجى المحاولة مرة أخرى.",
+      "DELETING_CHEQUE": "فشل في حذف الشيك. يرجى المحاولة مرة أخرى.",
+      "APPROVING_CHEQUE": "فشل في الموافقة على الشيك. يرجى المحاولة مرة أخرى.",
+      "VOIDING_CHEQUE": "فشل في إلغاء الشيك. يرجى المحاولة مرة أخرى.",
+      "LOADING_PROJECTS": "فشل في تحميل المشاريع. يرجى المحاولة مرة أخرى.",
+      "LOADING_SUPPLIERS": "فشل في تحميل الموردين. يرجى المحاولة مرة أخرى.",
+      "LOADING_DATA": "فشل في تحميل البيانات. يرجى المحاولة مرة أخرى."
+    },
+    "SUCCESS": {
+      "CREATE_SUCCESS": "تم إنشاء الشيك بنجاح!",
+      "UPDATE_SUCCESS": "تم تحديث الشيك بنجاح!",
+      "DELETE_SUCCESS": "تم حذف الشيك بنجاح!",
+      "APPROVE_SUCCESS": "تمت الموافقة على الشيك بنجاح!",
+      "VOID_SUCCESS": "تم إلغاء الشيك بنجاح!"
+    },
+    "SECTIONS": {
+      "BASIC_INFO": "المعلومات الأساسية",
+      "AMOUNT": "تفاصيل المبلغ",
+      "ADDITIONAL_INFO": "معلومات إضافية",
+      "BANK_INFO": "معلومات البنك"
+    },
+    "FIELDS": {
+      "CHEQUE_NUMBER": "رقم الشيك",
+      "CHEQUE_NUMBER_PLACEHOLDER": "أدخل رقم الشيك",
+      "PAYEE_NAME": "اسم المستفيد",
+      "PAYEE_NAME_PLACEHOLDER": "أدخل اسم المستفيد",
+      "AMOUNT": "المبلغ",
+      "AMOUNT_PLACEHOLDER": "أدخل المبلغ",
+      "AMOUNT_IN_WORDS": "المبلغ بالكلمات",
+      "CURRENCY": "العملة",
+      "CHEQUE_DATE": "تاريخ الشيك",
+      "ISSUE_DATE": "تاريخ الإصدار",
+      "BANK_NAME": "اسم البنك",
+      "BRANCH_NAME": "اسم الفرع",
+      "ACCOUNT_NUMBER": "رقم الحساب",
+      "IBAN": "رقم الآيبان",
+      "ACCOUNT_HOLDER": "صاحب الحساب",
+      "PROJECT": "المشروع",
+      "SELECT_PROJECT": "اختر مشروعاً",
+      "SUPPLIER": "المورد",
+      "SELECT_SUPPLIER": "اختر مورداً",
+      "DESCRIPTION": "الوصف",
+      "DESCRIPTION_PLACEHOLDER": "أدخل الوصف",
+      "STATUS": "الحالة",
+      "SIGNATURE_REQUIRED": "التوقيع مطلوب",
+      "VOID_REASON": "سبب الإلغاء",
+      "VOID_REASON_PLACEHOLDER": "أدخل سبب الإلغاء"
+    },
+    "STATUSES": {
+      "DRAFT": "مسودة",
+      "ISSUED": "صادر",
+      "CLEARED": "مقبوض",
+      "CANCELLED": "ملغي",
+      "VOID": "ملغي"
+    },
+    "FILTERS": {
+      "TITLE": "المرشحات",
+      "STATUS": "الحالة",
+      "CURRENCY": "العملة",
+      "DATE_FROM": "التاريخ من",
+      "DATE_TO": "التاريخ إلى",
+      "AMOUNT_MIN": "الحد الأدنى للمبلغ",
+      "AMOUNT_MAX": "الحد الأقصى للمبلغ",
+      "ALL_STATUSES": "جميع الحالات",
+      "ALL_CURRENCIES": "جميع العملات",
+      "CLEAR": "مسح المرشحات"
+    },
+    "ACTIONS": {
+      "CREATE": "إنشاء شيك",
+      "EDIT": "تعديل",
+      "DELETE": "حذف",
+      "VIEW": "عرض",
+      "APPROVE": "موافقة",
+      "VOID": "إلغاء",
+      "PRINT": "طباعة"
+    },
+    "CONFIRMATIONS": {
+      "DELETE": "هل أنت متأكد من أنك تريد حذف هذا الشيك؟",
+      "APPROVE": "هل أنت متأكد من أنك تريد الموافقة على هذا الشيك؟",
+      "VOID": "هل أنت متأكد من أنك تريد إلغاء هذا الشيك؟ لا يمكن التراجع عن هذا الإجراء."
+    }
   }
 } 
