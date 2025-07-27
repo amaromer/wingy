@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { Cheque } from '../../../core/models/cheque.model';
+import { Cheque, Project, Supplier } from '../../../core/models/cheque.model';
 import { ChequeService } from '../../../core/services/cheque.service';
 
 @Component({
@@ -274,5 +274,19 @@ export class ChequeViewComponent implements OnInit {
 
   formatDate(date: string): string {
     return this.chequeService.formatDate(date);
+  }
+
+  getProjectName(projectId: string | Project): string {
+    if (typeof projectId === 'string') {
+      return projectId;
+    }
+    return projectId?.name || 'N/A';
+  }
+
+  getSupplierName(supplierId: string | Supplier): string {
+    if (typeof supplierId === 'string') {
+      return supplierId;
+    }
+    return supplierId?.name || 'N/A';
   }
 } 

@@ -146,12 +146,12 @@
         <div class="detail-grid">
           <div class="detail-item" *ngIf="cheque.project_id">
             <label>{{ 'CHEQUE.FIELDS.PROJECT' | translate }}</label>
-            <span class="value">{{ cheque.project_id }}</span>
+            <span class="value">{{ getProjectName(cheque.project_id) }}</span>
           </div>
           
           <div class="detail-item" *ngIf="cheque.supplier_id">
             <label>{{ 'CHEQUE.FIELDS.SUPPLIER' | translate }}</label>
-            <span class="value">{{ cheque.supplier_id }}</span>
+            <span class="value">{{ getSupplierName(cheque.supplier_id) }}</span>
           </div>
           
           <div class="detail-item full-width" *ngIf="cheque.description">
