@@ -122,28 +122,28 @@ export const ADCB_CHEQUE_CONFIG: ChequePrintConfig = {
   },
       fields: {
       date: {
-        top: '24mm',
+        top: '26mm',
         left: '124mm',
         width: '65mm',
         fontSize: '17px',
         textAlign: 'right'
       },
       payee: {
-        top: '40mm',
+        top: '42mm',
         left: '134mm',
         maxWidth: '125mm',
         fontSize: '30px',
         textAlign: 'right'
       },
       amount: {
-        top: '62mm',
-        left: '125mm',
+        top: '63mm',
+        left: '129mm',
         width: '65mm',
-        fontSize: '22px',
+        fontSize: '19px',
         textAlign: 'right'
       },
       amountWords: {
-        top: '54mm',
+        top: '55mm',
         left: '56mm',
         maxWidth: '145mm',
         height: '25mm',

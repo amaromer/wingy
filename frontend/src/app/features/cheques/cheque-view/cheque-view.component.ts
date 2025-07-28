@@ -413,8 +413,12 @@ export class ChequeViewComponent implements OnInit {
   }
 
   formatAmountForPrint(amount: number): string {
-    // Format amount without currency symbol for print template
-    return amount.toFixed(2);
+    // Format amount with # symbols and thousand separators for print template
+    const formattedAmount = amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return `#${formattedAmount}#`;
   }
 
   formatDate(date: string): string {
