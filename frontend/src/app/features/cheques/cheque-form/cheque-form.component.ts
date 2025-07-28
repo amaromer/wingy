@@ -213,7 +213,6 @@ export class ChequeFormComponent implements OnInit {
   }
 
   private numberToWords(num: number, language: 'en' | 'ar'): string {
-    // This is a basic implementation - in production, use a proper library
     if (num === 0) return language === 'ar' ? 'صفر' : 'Zero';
     
     const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
@@ -230,43 +229,130 @@ export class ChequeFormComponent implements OnInit {
     let result = '';
     
     if (language === 'ar') {
-      // Arabic conversion (simplified)
-      if (integerPart < 10) {
-        result = arabicOnes[integerPart];
-      } else if (integerPart < 20) {
-        result = arabicTeens[integerPart - 10];
-      } else if (integerPart < 100) {
-        const onesDigit = integerPart % 10;
-        const tensDigit = Math.floor(integerPart / 10);
-        if (onesDigit === 0) {
-          result = arabicTens[tensDigit];
-        } else {
-          result = arabicOnes[onesDigit] + ' و' + arabicTens[tensDigit];
-        }
-      } else {
-        result = 'مائة و' + this.numberToWords(integerPart - 100, 'ar');
-      }
+      result = this.convertToArabicWords(integerPart);
     } else {
-      // English conversion (simplified)
-      if (integerPart < 10) {
-        result = ones[integerPart];
-      } else if (integerPart < 20) {
-        result = teens[integerPart - 10];
-      } else if (integerPart < 100) {
-        const onesDigit = integerPart % 10;
-        const tensDigit = Math.floor(integerPart / 10);
-        result = tens[tensDigit] + (onesDigit > 0 ? '-' + ones[onesDigit] : '');
-      } else {
-        result = 'One Hundred and ' + this.numberToWords(integerPart - 100, 'en');
-      }
+      result = this.convertToEnglishWords(integerPart);
     }
 
     if (decimalPart > 0) {
-      const decimalWords = this.numberToWords(decimalPart, language);
+      const decimalWords = language === 'ar' 
+        ? this.convertToArabicWords(decimalPart) 
+        : this.convertToEnglishWords(decimalPart);
       result += language === 'ar' ? ' و' + decimalWords + ' هللة' : ' and ' + decimalWords + ' cents';
     }
 
     return result;
+  }
+
+  private convertToEnglishWords(num: number): string {
+    if (num === 0) return '';
+    
+    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    
+    if (num < 10) {
+      return ones[num];
+    }
+    if (num < 20) {
+      return teens[num - 10];
+    }
+    if (num < 100) {
+      const onesDigit = num % 10;
+      const tensDigit = Math.floor(num / 10);
+      return tens[tensDigit] + (onesDigit > 0 ? '-' + ones[onesDigit] : '');
+    }
+    if (num < 1000) {
+      const hundreds = Math.floor(num / 100);
+      const remainder = num % 100;
+      let result = ones[hundreds] + ' Hundred';
+      if (remainder > 0) {
+        result += ' and ' + this.convertToEnglishWords(remainder);
+      }
+      return result;
+    }
+    if (num < 1000000) {
+      const thousands = Math.floor(num / 1000);
+      const remainder = num % 1000;
+      let result = this.convertToEnglishWords(thousands) + ' Thousand';
+      if (remainder > 0) {
+        if (remainder < 100) {
+          result += ' and ' + this.convertToEnglishWords(remainder);
+        } else {
+          result += ', ' + this.convertToEnglishWords(remainder);
+        }
+      }
+      return result;
+    }
+    if (num < 1000000000) {
+      const millions = Math.floor(num / 1000000);
+      const remainder = num % 1000000;
+      let result = this.convertToEnglishWords(millions) + ' Million';
+      if (remainder > 0) {
+        result += ', ' + this.convertToEnglishWords(remainder);
+      }
+      return result;
+    }
+    return 'Number too large';
+  }
+
+  private convertToArabicWords(num: number): string {
+    if (num === 0) return '';
+    
+    const arabicOnes = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+    const arabicTens = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+    const arabicTeens = ['عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+    
+    if (num < 10) {
+      return arabicOnes[num];
+    }
+    if (num < 20) {
+      return arabicTeens[num - 10];
+    }
+    if (num < 100) {
+      const onesDigit = num % 10;
+      const tensDigit = Math.floor(num / 10);
+      if (onesDigit === 0) {
+        return arabicTens[tensDigit];
+      } else {
+        return arabicOnes[onesDigit] + ' و' + arabicTens[tensDigit];
+      }
+    }
+    if (num < 1000) {
+      const hundreds = Math.floor(num / 100);
+      const remainder = num % 100;
+      let result = '';
+      if (hundreds === 1) {
+        result = 'مائة';
+      } else if (hundreds === 2) {
+        result = 'مئتان';
+      } else {
+        result = arabicOnes[hundreds] + ' مائة';
+      }
+      if (remainder > 0) {
+        result += ' و' + this.convertToArabicWords(remainder);
+      }
+      return result;
+    }
+    if (num < 1000000) {
+      const thousands = Math.floor(num / 1000);
+      const remainder = num % 1000;
+      let result = '';
+      if (thousands === 1) {
+        result = 'ألف';
+      } else if (thousands === 2) {
+        result = 'ألفان';
+      } else if (thousands < 11) {
+        result = arabicOnes[thousands] + ' آلاف';
+      } else {
+        result = this.convertToArabicWords(thousands) + ' ألف';
+      }
+      if (remainder > 0) {
+        result += ' و' + this.convertToArabicWords(remainder);
+      }
+      return result;
+    }
+    return 'رقم كبير جداً';
   }
 
   async onSubmit(): Promise<void> {
