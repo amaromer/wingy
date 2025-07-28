@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { Cheque, Project, Supplier } from '../../../core/models/cheque.model';
 import { ChequeService } from '../../../core/services/cheque.service';
+import { DEFAULT_CHEQUE_CONFIG, ChequePrintConfig } from '../../../core/config/cheque-print.config';
 
 @Component({
   selector: 'app-cheque-view',
@@ -61,8 +62,8 @@ export class ChequeViewComponent implements OnInit {
       return;
     }
 
-    // Create print window with cheque template
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    // Create print preview window with cheque template
+    const printWindow = window.open('', '_blank', 'width=1000,height=800,scrollbars=yes,resizable=yes');
     if (!printWindow) {
       console.error('Failed to open print window');
       return;
@@ -73,10 +74,10 @@ export class ChequeViewComponent implements OnInit {
     printWindow.document.write(printContent);
     printWindow.document.close();
     
-    // Wait for content to load then print
+    // Focus the window and wait for content to load
+    printWindow.focus();
     printWindow.onload = () => {
-      printWindow.print();
-      printWindow.close();
+      console.log('Print template loaded successfully');
     };
   }
 
@@ -84,6 +85,7 @@ export class ChequeViewComponent implements OnInit {
     if (!this.cheque) return '';
 
     const cheque = this.cheque;
+    const config = DEFAULT_CHEQUE_CONFIG;
     
     return `
       <!DOCTYPE html>
@@ -92,27 +94,132 @@ export class ChequeViewComponent implements OnInit {
         <title>Cheque - ${cheque.cheque_number}</title>
         <style>
           @media print {
-            body { 
-              margin: 0; 
-              padding: 0; 
-              background: transparent;
+            * {
+              margin: 0 !important;
+              padding: 0 !important;
+              box-sizing: border-box !important;
             }
+            
+            html, body { 
+              margin: 0 !important; 
+              padding: 0 !important; 
+              background: white !important;
+              width: 100% !important;
+              height: 100% !important;
+              overflow: hidden !important;
+              font-family: 'Courier New', monospace !important;
+              display: flex !important;
+              justify-content: flex-end !important;
+              align-items: center !important;
+            }
+            
+            .cheque-container { 
+              width: 216mm !important;
+              height: 110mm !important;
+              margin: 0 !important;
+              position: relative !important;
+              background: transparent !important;
+              border: none !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+              page-break-after: avoid !important;
+              page-break-before: avoid !important;
+            }
+            
+            .cheque-background {
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              height: 100% !important;
+              background-image: url('${window.location.origin}${config.background.imageUrl}') !important;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              background-color: #f0f0f0 !important;
+              opacity: 1 !important;
+            }
+            
             .cheque-fields { 
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              height: 100% !important;
+              z-index: 10 !important;
             }
-            .no-print { display: none; }
+            
+            .no-print { display: none !important; }
+            
             .field { 
-              position: absolute;
-              font-family: 'Courier New', monospace;
-              font-weight: bold;
-              color: #000;
-              background: transparent;
-              border: none;
-              outline: none;
+              position: absolute !important;
+              font-family: 'Courier New', monospace !important;
+              font-weight: bold !important;
+              color: #000 !important;
+              background: transparent !important;
+              border: none !important;
+              outline: none !important;
+              z-index: 15 !important;
+            }
+            
+            .date-field {
+              top: ${config.fields.date.top} !important;
+              left: ${config.fields.date.left} !important;
+              width: ${config.fields.date.width || 'auto'} !important;
+              font-size: ${config.fields.date.fontSize} !important;
+              font-weight: bolder !important;
+              text-align: ${config.fields.date.textAlign || 'left'} !important;
+            }
+            
+            .payee-field {
+              top: ${config.fields.payee.top} !important;
+              left: ${config.fields.payee.left} !important;
+              max-width: ${config.fields.payee.maxWidth || 'none'} !important;
+              font-size: ${config.fields.payee.fontSize} !important;
+              text-align: ${config.fields.payee.textAlign || 'left'} !important;
+              white-space: nowrap !important;
+              overflow: hidden !important;
+              text-overflow: ellipsis !important;
+            }
+            
+            .amount-field {
+              top: ${config.fields.amount.top} !important;
+              left: ${config.fields.amount.left} !important;
+              width: ${config.fields.amount.width || 'auto'} !important;
+              font-size: ${config.fields.amount.fontSize} !important;
+              text-align: ${config.fields.amount.textAlign || 'left'} !important;
+              font-weight: bold !important;
+            }
+            
+            .amount-words-field {
+              top: ${config.fields.amountWords.top} !important;
+              left: ${config.fields.amountWords.left} !important;
+              max-width: ${config.fields.amountWords.maxWidth || 'none'} !important;
+              height: ${config.fields.amountWords.height || 'auto'} !important;
+              font-size: ${config.fields.amountWords.fontSize} !important;
+              line-height: ${config.fields.amountWords.lineHeight || '1.2'} !important;
+              text-align: ${config.fields.amountWords.textAlign || 'left'} !important;
+              white-space: pre-wrap !important;
+              word-wrap: break-word !important;
+              overflow: hidden !important;
+            }
+            
+            @page {
+              size: 216mm 110mm !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            @page :first {
+              margin: 0 !important;
+            }
+            
+            @page :left {
+              margin: 0 !important;
+            }
+            
+            @page :right {
+              margin: 0 !important;
             }
           }
           
@@ -121,9 +228,39 @@ export class ChequeViewComponent implements OnInit {
             margin: 0;
             padding: 0;
             background: white;
-            position: relative;
             width: 100%;
             height: 100vh;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-height: 100vh;
+          }
+          
+          .cheque-container {
+            width: 216mm;
+            height: 110mm;
+            position: relative;
+            background: transparent;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 0;
+            max-width: 100%;
+            max-height: 100vh;
+          }
+          
+          .cheque-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('${window.location.origin}${config.background.imageUrl}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #f0f0f0;
+            opacity: 1;
+            border: 1px solid #ccc;
           }
           
           .cheque-fields {
@@ -133,13 +270,13 @@ export class ChequeViewComponent implements OnInit {
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 10;
           }
           
           .field {
             position: absolute;
             font-family: 'Courier New', monospace;
             font-weight: bold;
-            font-size: 14px;
             color: #000;
             background: transparent;
             border: none;
@@ -147,113 +284,116 @@ export class ChequeViewComponent implements OnInit {
             text-align: left;
             white-space: nowrap;
             overflow: hidden;
+            z-index: 15;
           }
           
+          /* Cheque field positions based on configuration */
           .date-field {
-            top: 120px;
-            left: 450px;
-            font-size: 12px;
+            top: ${config.fields.date.top};
+            left: ${config.fields.date.left};
+            width: ${config.fields.date.width || 'auto'};
+            font-size: ${config.fields.date.fontSize};
+            font-weight: bolder;
+            text-align: ${config.fields.date.textAlign || 'left'};
           }
           
           .payee-field {
-            top: 180px;
-            left: 80px;
-            font-size: 16px;
-            max-width: 400px;
+            top: ${config.fields.payee.top};
+            left: ${config.fields.payee.left};
+            max-width: ${config.fields.payee.maxWidth || 'none'};
+            font-size: ${config.fields.payee.fontSize};
+            text-align: ${config.fields.payee.textAlign || 'left'};
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
           }
           
           .amount-words-field {
-            top: 220px;
-            left: 80px;
-            font-size: 12px;
-            max-width: 500px;
-            line-height: 1.3;
+            top: ${config.fields.amountWords.top};
+            left: ${config.fields.amountWords.left};
+            max-width: ${config.fields.amountWords.maxWidth || 'none'};
+            height: ${config.fields.amountWords.height || 'auto'};
+            font-size: ${config.fields.amountWords.fontSize};
+            line-height: ${config.fields.amountWords.lineHeight || '1.2'};
+            text-align: ${config.fields.amountWords.textAlign || 'left'};
             white-space: pre-wrap;
             word-wrap: break-word;
+            overflow: hidden;
           }
           
           .amount-field {
-            top: 260px;
-            left: 450px;
-            font-size: 16px;
-            text-align: right;
-            min-width: 150px;
+            top: ${config.fields.amount.top};
+            left: ${config.fields.amount.left};
+            width: ${config.fields.amount.width || 'auto'};
+            font-size: ${config.fields.amount.fontSize};
+            text-align: ${config.fields.amount.textAlign || 'left'};
+            font-weight: bold;
           }
           
-          .print-button {
+          .print-button, .preview-button {
             position: fixed;
             top: 20px;
-            right: 20px;
             padding: 10px 20px;
-            background: #007bff;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
             z-index: 1000;
+            margin-right: 10px;
+          }
+          
+          .print-button {
+            right: 140px;
+            background: #007bff;
+            color: white;
+          }
+          
+          .preview-button {
+            right: 20px;
+            background: #6c757d;
+            color: white;
           }
           
           .print-button:hover {
             background: #0056b3;
           }
           
-          .instructions {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            max-width: 300px;
-            font-size: 12px;
-            z-index: 1000;
-          }
-          
-          .instructions h4 {
-            margin: 0 0 10px 0;
-            color: #333;
-          }
-          
-          .instructions ul {
-            margin: 0;
-            padding-left: 20px;
-          }
-          
-          .instructions li {
-            margin-bottom: 5px;
+          .preview-button:hover {
+            background: #545b62;
           }
         </style>
       </head>
       <body>
-        <div class="instructions no-print">
-          <h4>Printing Instructions:</h4>
-          <ul>
-            <li>Place pre-printed cheque in printer</li>
-            <li>Ensure proper alignment</li>
-            <li>Print only the filled fields</li>
-            <li>Fields will be positioned automatically</li>
-          </ul>
-        </div>
+
         
         <button class="print-button no-print" onclick="window.print()">Print Cheque</button>
+        <button class="preview-button no-print" onclick="window.close()">Close Preview</button>
         
-        <div class="cheque-fields">
-          <!-- Date Field -->
-          <div class="field date-field">${this.formatDate(cheque.cheque_date)}</div>
+        <div class="cheque-container">
+          <div class="cheque-background" style="background-image: url('${window.location.origin}${config.background.imageUrl}'); background-color: #f0f0f0;" onerror="console.log('Background image failed to load: ${window.location.origin}${config.background.imageUrl}');"></div>
+          <div class="cheque-fields">
+            <!-- Date Field -->
+            <div class="field date-field">${this.formatDate(cheque.cheque_date)}</div>
+            
+            <!-- Payee Name Field -->
+            <div class="field payee-field">${cheque.payee_name}</div>
+            
+            <!-- Amount Field -->
+            <div class="field amount-field">${this.formatAmountForPrint(cheque.amount)}</div>
+            
+            <!-- Amount in Words Field -->
+            <div class="field amount-words-field">${cheque.amount_in_words}</div>
+          </div>
           
-          <!-- Payee Name Field -->
-          <div class="field payee-field">${cheque.payee_name}</div>
-          
-          <!-- Amount Field -->
-          <div class="field amount-field">${this.formatCurrency(cheque.amount, cheque.currency)}</div>
-          
-          <!-- Amount in Words Field -->
-          <div class="field amount-words-field">${cheque.amount_in_words}</div>
+          <!-- Print guide (only visible in preview) -->
+          <div class="print-guide no-print" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px dashed #ff0000; pointer-events: none; z-index: 20;">
+            <div style="position: absolute; top: 5px; left: 5px; background: rgba(255,0,0,0.8); color: white; padding: 2px 5px; font-size: 10px; font-family: Arial;">
+              Cheque Background: 216mm × 110mm
+            </div>
+            <div style="position: absolute; bottom: 5px; left: 5px; background: rgba(0,255,0,0.8); color: white; padding: 2px 5px; font-size: 10px; font-family: Arial;">
+              Check field positioning against background
+            </div>
+          </div>
         </div>
       </body>
       </html>
@@ -270,6 +410,11 @@ export class ChequeViewComponent implements OnInit {
 
   formatCurrency(amount: number, currency: string): string {
     return this.chequeService.formatCurrency(amount, currency);
+  }
+
+  formatAmountForPrint(amount: number): string {
+    // Format amount without currency symbol for print template
+    return amount.toFixed(2);
   }
 
   formatDate(date: string): string {
